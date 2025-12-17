@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+  {{>head}}
+  <body>
+    {{>header}}
+    
+    <main class="container py-5">
+      <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+          <h1 class="mb-4">
+            <i class="fas fa-file-signature"></i> Review Pengajuan
+          </h1>
+
+          {{#if error}}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="fas fa-exclamation-circle"></i> {{error}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {{/if}}
+
+          <div class="row">
+            <!-- Surat Section -->
+            <div class="col-lg-8 mb-4">
+              <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0">
+                    <i class="fas fa-file-alt"></i> Surat Izin
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <!-- Render surat HTML -->
+                  <div id="suratContainer" style="border: 1px solid #ddd; padding: 20px; background-color: #fff; min-height: 400px;">
+                    {{{pengajuan.surat_izin}}}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tanda Tangan Karyawan -->
+              <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                  <h5 class="mb-0">
+                    <i class="fas fa-pen-fancy"></i> Tanda Tangan Karyawan
+                  </h5>
+                </div>
+                <div class="card-body text-center">
+                  {{#if pengajuan.ttd_karyawan}}
+                    <img src="{{pengajuan.ttd_karyawan}}" alt="TTD Karyawan" style="max-width: 300px; max-height: 150px;">
+                  {{else}}
+                    <p class="text-muted">Tanda tangan belum disediakan</p>
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+
+            <!-- Review Section -->
+            <div class="col-lg-4">
+              <!-- Status Card -->
+              <div class="card shadow mb-4">
+                <div class="card-header bg-secondary text-white">
+                  <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i> Informasi
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <p>
+                    <strong>Nama Karyawan:</strong><br>
+                    {{pengajuan.karyawan_nama}}
+                  </p>
+                  <p>
+                    <strong>Email:</strong><br>
+                    {{pengajuan.karyawan_email}}
+                  </p>
+                  <p>
+                    <strong>Jabatan:</strong><br>
+                    {{pengajuan.karyawan_jabatan}}
+                  </p>
+                  <p>
+                    <strong>Status Pengajuan:</strong><br>
+                    {{#if (eq pengajuan.status "menunggu_persetujuan")}}
+                      <span class="badge bg-warning">
+                        <i class="fas fa-hourglass-half"></i> Menunggu Persetujuan
+                      </span>
+                    {{else if (eq pengajuan.status "disetujui")}}
+                      <span class="badge bg-success">
+                        <i class="fas fa-check"></i> Disetujui
+                      </span>
+                    {{else}}
+                      <span class="badge bg-danger">
+                        <i class="fas fa-times"></i> Ditolak
+                      </span>
+                    {{/if}}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Action Card -->
+              {{#if (eq pengajuan.status "menunggu_persetujuan")}}
+                <div class="card shadow">
+                  <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                      <i class="fas fa-check-circle"></i> Keputusan
+                    </h5>
+                  </div>
+                  <div class="card-body">
+                    <form id="reviewForm">
+                      <div class="mb-3">
+                        <label for="keputusan" class="form-label">
+                          Pilihan:
+                        </label>
+                        <div class="form-check mb-2">
+                          <input class="form-check-input" type="radio" name="keputusan" id="setuju" value="approve" checked>
+                          <label class="form-check-label" for="setuju">
+                            <i class="fas fa-check"></i> Setujui
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="keputusan" id="tolak" value="reject">
+                          <label class="form-check-label" for="tolak">
+                            <i class="fas fa-times"></i> Tolak
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="mb-3" id="catatanTolak" style="display: none;">
+                        <label for="catatan" class="form-label">
+                          Catatan Penolakan:
+                        </label>
+                        <textarea class="form-control" id="catatan" name="catatan" rows="3"></textarea>
+                      </div>
+
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-success btn-lg" onclick="approveRequest()">
+                          <i class="fas fa-thumbs-up"></i> Setujui
+                        </button>
+                        <button type="button" class="btn btn-danger btn-lg" onclick="rejectRequest()">
+                          <i class="fas fa-thumbs-down"></i> Tolak
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              {{else}}
+                <div class="card shadow">
+                  <div class="card-body text-center">
+                    <p class="text-muted">
+                      Pengajuan sudah diproses dan tidak dapat diubah.
+                    </p>
+                    {{#if pengajuan.ttd_penanggung_jawab}}
+                      <img src="{{pengajuan.ttd_penanggung_jawab}}" alt="TTD Penanggung Jawab" style="max-width: 200px; max-height: 100px;">
+                    {{/if}}
+                  </div>
+                </div>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {{>footer}}
+
+    <script>
+      document.getElementById('tolak').addEventListener('change', function() {
+        document.getElementById('catatanTolak').style.display = 'block';
+      });
+
+      document.getElementById('setuju').addEventListener('change', function() {
+        document.getElementById('catatanTolak').style.display = 'none';
+      });
+
+      function approveRequest() {
+        if (confirm('Anda yakin ingin menyetujui pengajuan ini?')) {
+          // Send approve request
+          fetch('/api/admin/pengajuan/{{pengajuan._id}}/approve', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'approve' })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              alert('Pengajuan telah disetujui');
+              location.reload();
+            }
+          })
+          .catch(err => alert('Error: ' + err.message));
+        }
+      }
+
+      function rejectRequest() {
+        const catatan = document.getElementById('catatan').value;
+        if (!catatan) {
+          alert('Silakan isi catatan penolakan');
+          return;
+        }
+
+        if (confirm('Anda yakin ingin menolak pengajuan ini?')) {
+          fetch('/api/admin/pengajuan/{{pengajuan._id}}/reject', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ catatan: catatan })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              alert('Pengajuan telah ditolak');
+              location.reload();
+            }
+          })
+          .catch(err => alert('Error: ' + err.message));
+        }
+      }
+    </script>
+  </body>
+</html>

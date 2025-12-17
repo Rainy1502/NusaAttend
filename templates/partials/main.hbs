@@ -1,0 +1,22 @@
+<!-- ==================== MAIN LAYOUT TEMPLATE ==================== -->
+<!-- Layout untuk halaman umum yang tidak termasuk login atau dashboard -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} | NusaAttend</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Konten halaman akan di-render di sini -->
+    {{{body}}}
+
+    <!-- Socket.io untuk real-time notification -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="/js/app.js"></script>
+</body>
+</html>

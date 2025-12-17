@@ -1,53 +1,134 @@
 # NusaAttend - Portal Administrasi Kehadiran Tim
 
+**Status Project**: 🚧 Work In Progress - Phase 1: Login & Admin Dashboard  
+**Last Updated**: December 17, 2025
+
 NusaAttend adalah portal administrasi internal berbasis website yang dirancang untuk membantu tim atau organisasi skala kecil hingga menengah dalam mengelola pengajuan administrasi kehadiran secara terpusat, terstruktur, dan real-time.
 
-## Fitur Utama
+## 📋 Fitur yang Sudah Diimplementasi
 
-- **Autentikasi Pengguna**: Login dan logout untuk anggota tim dan admin
-- **Sistem Surat Izin**: Pengajuan cuti tahunan, izin tidak masuk, izin sakit, dan WFH
-- **Tanda Tangan Digital**: Tanda tangan visual pada surat izin
-- **Alur Persetujuan Real-time**: Approval oleh penanggung jawab dengan notifikasi socket
-- **Absensi Harian**: Absen masuk dan pulang dengan integrasi surat izin
-- **Perhitungan Sisa Cuti**: Tracking otomatis sisa cuti tahunan
-- **Email Notifikasi**: Notifikasi email untuk pengajuan dan perubahan status
-- **Chatbot Bantuan**: Rule-based chatbot untuk menjawab pertanyaan umum
-- **Dashboard Real-time**: Lihat status pengajuan secara real-time
+- ✅ **Login Page**: Login dengan email dan password
+- ✅ **Admin Dashboard**: Dashboard admin dengan role-based access
+- ✅ **Session Management**: Session-based authentication
+- ✅ **Password Hashing**: Secure password dengan Bcrypt
 
-## Teknologi yang Digunakan
+## 🔜 Fitur yang Akan Datang
 
-- **Backend**: Express.js
+- 📝 **Autentikasi Pengguna**: Register dan logout untuk anggota tim dan admin
+- 📋 **Sistem Surat Izin**: Pengajuan cuti tahunan, izin tidak masuk, izin sakit, dan WFH
+- ✍️ **Tanda Tangan Digital**: Tanda tangan visual pada surat izin
+- 🔔 **Alur Persetujuan Real-time**: Approval oleh penanggung jawab dengan notifikasi socket
+- 📅 **Absensi Harian**: Absen masuk dan pulang dengan integrasi surat izin
+- 🗓️ **Perhitungan Sisa Cuti**: Tracking otomatis sisa cuti tahunan
+- 📧 **Email Notifikasi**: Notifikasi email untuk pengajuan dan perubahan status
+- 💬 **Chatbot Bantuan**: Rule-based chatbot untuk menjawab pertanyaan umum
+- 📊 **Dashboard Real-time**: Lihat status pengajuan secara real-time
+
+## 💻 Teknologi yang Digunakan
+
+- **Backend**: Express.js (Node.js)
 - **Database**: MongoDB
 - **Real-time**: Socket.io
-- **Frontend Template**: Handlebars
+- **Frontend Template**: Handlebars (express-handlebars)
 - **Email**: Nodemailer
-- **Autentikasi**: JWT & Session
+- **Autentikasi**: Session-based + JWT
 - **Enkripsi Password**: Bcrypt
+- **Styling**: Custom CSS (No Framework)
+- **Icons**: Font Awesome 6.4.0
 
-## Struktur Folder
+## 📁 Struktur Folder Project
 
 ```
 NusaAttend/
 ├── src/
-│   ├── app.js                 # Entry point aplikasi
-│   ├── config/                # Konfigurasi (database, email, etc)
-│   │   ├── database.js
-│   │   ├── email.js
-│   │   └── socket.js
-│   ├── models/                # MongoDB models/schemas
-│   │   ├── User.js
-│   │   ├── Pengajuan.js
-│   │   ├── Absensi.js
-│   │   └── Chatbot.js
-│   ├── controllers/           # Business logic
-│   │   ├── authController.js
-│   │   ├── pengajuanController.js
-│   │   ├── absensiController.js
-│   │   ├── adminController.js
-│   │   └── chatbotController.js
-│   ├── routes/                # API routes
-│   │   ├── auth.js
-│   │   ├── pengajuan.js
+│   ├── app.js                      # Main Express application
+│   ├── config/
+│   │   ├── database.js             # MongoDB connection
+│   │   └── socket.js               # Socket.io configuration
+│   ├── controllers/
+│   │   └── authController.js       # ✅ Login/Register logic
+│   ├── middleware/
+│   │   ├── auth.js                 # Authentication middleware
+│   │   └── errorHandler.js         # Error handling
+│   ├── models/
+│   │   └── User.js                 # User schema & model
+│   ├── routes/
+│   │   └── auth.js                 # ✅ Auth routes (login/logout)
+│   ├── services/                   # Business services
+│   └── utils/                      # Utility functions
+│
+├── public/
+│   ├── css/
+│   │   └── styles.css              # ✅ All styling (dashboard, login, etc)
+│   ├── img/                        # Images
+│   └── js/                         # Client-side scripts
+│
+├── templates/
+│   ├── main.hbs                    # Layout template (untuk halaman umum)
+│   ├── dashboard-layout.hbs        # ✅ Dashboard layout (sidebar + main content)
+│   ├── views/
+│   │   ├── login.hbs               # ✅ Login page
+│   │   ├── register.hbs            # Register page (belum dimodifikasi)
+│   │   └── admin/
+│   │       └── dashboard.hbs       # ✅ Admin dashboard
+│   └── partials/
+│       ├── header.hbs              # Header component
+│       ├── footer.hbs              # ✅ Footer component (dashboard)
+│       └── (partials lainnya)
+│
+├── backup/                         # 🔐 Backup folder (referensi & tidak dipakai)
+│   ├── src/
+│   │   ├── config/                 # Email, logger, constants
+│   │   ├── controllers/            # Chatbot, pengajuan, absensi, admin
+│   │   ├── middleware/             # Validation
+│   │   ├── models/                 # Pengajuan, Absensi, Chatbot, index
+│   │   ├── routes/                 # Chatbot, pengajuan, absensi, admin
+│   │   └── services/               # Email service
+│   ├── templates/views/            # Register, chatbot, index, 404, supervisor, employee
+│   └── README.md                   # Penjelasan backup folder
+│
+├── package.json
+├── README.md                       # File ini
+└── .env                           # Environment variables
+```
+
+## 🎯 File yang AKTIF di Project
+
+✅ **Sudah dimodifikasi & digunakan untuk login & dashboard:**
+
+- `src/app.js` - Main application setup
+- `src/controllers/authController.js` - Login & authentication
+- `src/routes/auth.js` - Auth routing
+- `src/models/User.js` - User model
+- `src/middleware/auth.js` - Auth middleware
+- `src/middleware/errorHandler.js` - Error handling
+- `src/config/database.js` - MongoDB connection
+- `src/config/socket.js` - Socket.io setup
+- `templates/views/login.hbs` - Login page
+- `templates/views/admin/dashboard.hbs` - Admin dashboard
+- `templates/dashboard-layout.hbs` - Dashboard layout
+- `templates/partials/footer.hbs` - Footer
+- `public/css/styles.css` - All CSS
+
+## 🏗️ Tentang main.hbs & Templates
+
+**main.hbs**: Layout template utama untuk halaman umum (non-dashboard)
+- Digunakan untuk halaman seperti home, register, chatbot, dll
+- Include `header` dan `footer` partial
+- Tidak digunakan untuk login (login punya layout sendiri: `layout: false`)
+- Belum dimodifikasi karena fokus pada login & dashboard admin
+
+**dashboard-layout.hbs**: Layout khusus untuk dashboard (dengan sidebar)
+- ✅ Sudah dimodifikasi untuk admin dashboard
+- Memiliki struktur: sidebar + main-content + footer
+- Include dashboard footer partial
+
+## 🔐 Backup Folder
+
+Folder `backup/` berisi kerangka awal yang **TIDAK DIGUNAKAN** dalam project aktif:
+- Referensi untuk fitur-fitur yang akan dikembangkan
+- Tidak boleh di-edit atau di-copy ke project root tanpa kebutuhan khusus
+- Lihat `backup/README.md` untuk detail lengkap
 │   │   ├── absensi.js
 │   │   ├── admin.js
 │   │   └── chatbot.js

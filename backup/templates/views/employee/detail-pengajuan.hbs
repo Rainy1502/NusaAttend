@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+  {{>head}}
+  <body>
+    {{>header}}
+    
+    <main class="container py-5">
+      <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+          <a href="/pengajuan" class="btn btn-secondary mb-3">
+            <i class="fas fa-arrow-left"></i> Kembali
+          </a>
+
+          <h1 class="mb-4">
+            <i class="fas fa-file-alt"></i> Detail Pengajuan
+          </h1>
+
+          <div class="row">
+            <!-- Surat Section -->
+            <div class="col-lg-8 mb-4">
+              <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0">
+                    <i class="fas fa-file-alt"></i> Surat Izin
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div id="suratContainer" style="border: 1px solid #ddd; padding: 20px; background-color: #fff; min-height: 400px;">
+                    {{{pengajuan.surat_izin}}}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tanda Tangan Section -->
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                      <h6 class="mb-0">
+                        <i class="fas fa-pen-fancy"></i> Tanda Tangan Karyawan
+                      </h6>
+                    </div>
+                    <div class="card-body text-center">
+                      {{#if pengajuan.ttd_karyawan}}
+                        <img src="{{pengajuan.ttd_karyawan}}" alt="TTD Karyawan" style="max-width: 100%; max-height: 150px;">
+                      {{else}}
+                        <p class="text-muted">Tanda tangan belum disediakan</p>
+                      {{/if}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="card shadow">
+                    <div class="card-header bg-warning text-dark">
+                      <h6 class="mb-0">
+                        <i class="fas fa-pen-fancy"></i> Tanda Tangan Penanggung Jawab
+                      </h6>
+                    </div>
+                    <div class="card-body text-center">
+                      {{#if pengajuan.ttd_penanggung_jawab}}
+                        <img src="{{pengajuan.ttd_penanggung_jawab}}" alt="TTD Penanggung Jawab" style="max-width: 100%; max-height: 150px;">
+                      {{else}}
+                        <p class="text-muted">Menunggu persetujuan</p>
+                      {{/if}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="col-lg-4">
+              <!-- Status Card -->
+              <div class="card shadow mb-4">
+                <div class="card-header bg-secondary text-white">
+                  <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i> Status
+                  </h5>
+                </div>
+                <div class="card-body">
+                  {{#if (eq pengajuan.status "disetujui")}}
+                    <div class="alert alert-success mb-3">
+                      <i class="fas fa-check-circle"></i> Disetujui
+                    </div>
+                  {{else if (eq pengajuan.status "menunggu_persetujuan")}}
+                    <div class="alert alert-warning mb-3">
+                      <i class="fas fa-hourglass-half"></i> Menunggu Persetujuan
+                    </div>
+                  {{else}}
+                    <div class="alert alert-danger mb-3">
+                      <i class="fas fa-times-circle"></i> Ditolak
+                    </div>
+                  {{/if}}
+
+                  <p>
+                    <strong>Jenis Pengajuan:</strong><br>
+                    {{capitalize pengajuan.jenis_pengajuan}}
+                  </p>
+
+                  <p>
+                    <strong>Tanggal Mulai:</strong><br>
+                    {{format_date pengajuan.tanggal_mulai}}
+                  </p>
+
+                  <p>
+                    <strong>Tanggal Selesai:</strong><br>
+                    {{format_date pengajuan.tanggal_selesai}}
+                  </p>
+
+                  <p>
+                    <strong>Jumlah Hari:</strong><br>
+                    {{pengajuan.jumlah_hari}} hari
+                  </p>
+
+                  <p>
+                    <strong>Alasan:</strong><br>
+                    {{pengajuan.alasan}}
+                  </p>
+
+                  {{#if pengajuan.catatan_penolakan}}
+                    <div class="alert alert-danger mt-3">
+                      <strong>Catatan Penolakan:</strong><br>
+                      {{pengajuan.catatan_penolakan}}
+                    </div>
+                  {{/if}}
+
+                  <p class="text-muted small">
+                    <strong>Tanggal Pengajuan:</strong> {{format_date pengajuan.createdAt}}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {{>footer}}
+  </body>
+</html>

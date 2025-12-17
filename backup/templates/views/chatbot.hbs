@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+  {{>head}}
+  <body>
+    {{>header}}
+    
+    <main class="container py-5">
+      <h1 class="mb-4">
+        <i class="fas fa-robot"></i> Chatbot Bantuan
+      </h1>
+
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card shadow" style="height: 500px; display: flex; flex-direction: column;">
+            <!-- Chat Messages Area -->
+            <div class="card-body" id="chatMessages" style="overflow-y: auto; flex-grow: 1;">
+              <div class="mb-3">
+                <div class="alert alert-info">
+                  <strong>Chatbot NusaAttend</strong><br>
+                  Halo! Saya siap membantu Anda. Silakan tanyakan apa saja tentang sistem pengajuan, absensi, atau fitur lainnya.
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="card-footer bg-light">
+              <form id="chatForm" class="d-flex gap-2">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="chatInput" 
+                  placeholder="Ketik pertanyaan Anda..."
+                  autocomplete="off"
+                >
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-paper-plane"></i> Kirim
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggested Questions -->
+        <div class="col-lg-4">
+          <div class="card shadow-sm bg-light">
+            <div class="card-body">
+              <h5 class="card-title">
+                <i class="fas fa-question-circle"></i> Pertanyaan Umum
+              </h5>
+              <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary btn-sm text-start" onclick="sendQuestion('Apa jenis-jenis pengajuan yang tersedia?')">
+                  <i class="fas fa-chevron-right"></i> Jenis pengajuan apa yang tersedia?
+                </button>
+                <button class="btn btn-outline-primary btn-sm text-start" onclick="sendQuestion('Berapa jumlah cuti tahunan?')">
+                  <i class="fas fa-chevron-right"></i> Berapa jumlah cuti tahunan?
+                </button>
+                <button class="btn btn-outline-primary btn-sm text-start" onclick="sendQuestion('Bagaimana cara membuat pengajuan?')">
+                  <i class="fas fa-chevron-right"></i> Bagaimana cara membuat pengajuan?
+                </button>
+                <button class="btn btn-outline-primary btn-sm text-start" onclick="sendQuestion('Apa itu WFH?')">
+                  <i class="fas fa-chevron-right"></i> Apa itu Work From Home?
+                </button>
+                <button class="btn btn-outline-primary btn-sm text-start" onclick="sendQuestion('Bagaimana cara melihat status pengajuan?')">
+                  <i class="fas fa-chevron-right"></i> Cara melihat status pengajuan?
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {{>footer}}
+
+    <script>
+      const chatForm = document.getElementById('chatForm');
+      const chatInput = document.getElementById('chatInput');
+      const chatMessages = document.getElementById('chatMessages');
+
+      // Sample responses
+      const responses = {
+        jenis: 'Tersedia 4 jenis pengajuan: Cuti Tahunan, Izin Tidak Masuk Kerja, Izin Sakit, dan Work From Home (WFH).',
+        cuti: 'Setiap karyawan mendapat 12 hari cuti tahunan yang dapat digunakan sepanjang tahun.',
+        buat: 'Untuk membuat pengajuan, silakan ke menu Pengajuan dan klik "Buat Surat Izin", kemudian isi formulir dengan data Anda.',
+        wfh: 'Work From Home (WFH) adalah izin untuk bekerja dari rumah dengan alasan tertentu yang dapat disetujui oleh atasan.',
+        status: 'Anda dapat melihat status pengajuan di halaman Dashboard atau Riwayat Pengajuan.'
+      };
+
+      chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const message = chatInput.value.trim();
+        
+        if (message) {
+          addMessage('user', message);
+          chatInput.value = '';
+          
+          // Simulate bot response delay
+          setTimeout(() => {
+            const response = getBotResponse(message);
+            addMessage('bot', response);
+          }, 500);
+        }
+      });
+
+      function sendQuestion(question) {
+        chatInput.value = question;
+        chatForm.dispatchEvent(new Event('submit'));
+      }
+
+      function addMessage(sender, message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'mb-3';
+        
+        if (sender === 'user') {
+          messageDiv.innerHTML = `
+            <div class="text-end">
+              <span class="badge bg-primary p-2" style="max-width: 80%; display: inline-block; text-align: left;">
+                ${message}
+              </span>
+            </div>
+          `;
+        } else {
+          messageDiv.innerHTML = `
+            <div class="alert alert-light border">
+              <strong>Bot:</strong> ${message}
+            </div>
+          `;
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function getBotResponse(message) {
+        const lower = message.toLowerCase();
+        
+        if (lower.includes('jenis') || lower.includes('pengajuan')) {
+          return responses.jenis;
+        } else if (lower.includes('cuti')) {
+          return responses.cuti;
+        } else if (lower.includes('membuat') || lower.includes('buat')) {
+          return responses.buat;
+        } else if (lower.includes('wfh') || lower.includes('work from home')) {
+          return responses.wfh;
+        } else if (lower.includes('status')) {
+          return responses.status;
+        } else {
+          return 'Maaf, saya belum memahami pertanyaan Anda. Silakan coba pertanyaan lain atau hubungi admin untuk bantuan lebih lanjut.';
+        }
+      }
+    </script>
+  </body>
+</html>

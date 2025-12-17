@@ -1,0 +1,133 @@
+<!-- ==================== HEADER DASHBOARD ADMIN ==================== -->
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Dashboard Admin Sistem</h1>
+    <p class="dashboard-subtitle">Kelola pengajuan dan data sistem NusaAttend</p>
+</div>
+
+<!-- ==================== KARTU INFORMASI ROLE ==================== -->
+<!-- Menampilkan hak akses dan tanggung jawab admin -->
+<div class="alert-card success-alert">
+    <div class="alert-icon success-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <div class="alert-content">
+        <h3>Peran Admin Sistem</h3>
+        <ul class="feature-list">
+            <li><i class="fas fa-check"></i> Membuat dan mengelola akun karyawan</li>
+            <li><i class="fas fa-check"></i> Membuat dan mengelola akun penanggung jawab</li>
+            <li><i class="fas fa-check"></i> Mengelola data dasar pengguna sistem</li>
+            <li><i class="fas fa-times"></i> Tidak ikut dalam proses persetujuan izin</li>
+            <li><i class="fas fa-times"></i> Tidak mengantisipasi surat izin</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ==================== GRID STATISTIK ==================== -->
+<!-- Menampilkan data ringkas sistem -->
+<div class="stats-grid">
+    <!-- Kartu Total Karyawan -->
+    <div class="stat-card">
+        <div class="stat-icon user-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+            <p class="stat-number">24</p>
+            <p class="stat-label">Total Karyawan</p>
+        </div>
+    </div>
+
+    <!-- Kartu Total Penanggung Jawab -->
+    <div class="stat-card">
+        <div class="stat-icon pending-icon">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-content">
+            <p class="stat-number">3</p>
+            <p class="stat-label">Penanggung Jawab</p>
+        </div>
+    </div>
+
+    <!-- Kartu Akun Aktif -->
+    <div class="stat-card">
+        <div class="stat-icon active-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-content">
+            <p class="stat-number">27</p>
+            <p class="stat-label">Akun Aktif</p>
+        </div>
+    </div>
+
+    <!-- Kartu Aktivitas Hari Ini -->
+    <div class="stat-card">
+        <div class="stat-icon activity-icon">
+            <i class="fas fa-activity"></i>
+        </div>
+        <div class="stat-content">
+            <p class="stat-number">18</p>
+            <p class="stat-label">Aktivitas Hari Ini</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== BAGIAN AKTIVITAS TERBARU ==================== -->
+<!-- Log aktivitas terbaru di sistem -->
+<div class="activity-section">
+    <h2 class="section-title">Aktivitas Terbaru</h2>
+
+    <div class="activity-list">
+        <!-- Item aktivitas 1 -->
+        <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div class="activity-content">
+                <p class="activity-text"><strong>Akun karyawan baru dibuat</strong></p>
+                <p class="activity-person">Dewi Lestari - Marketing</p>
+                <p class="activity-time">2 jam lalu</p>
+            </div>
+        </div>
+
+        <!-- Item aktivitas 2 -->
+        <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div class="activity-content">
+                <p class="activity-text"><strong>Data karyawan diperbarui</strong></p>
+                <p class="activity-person">Andi Pratama - Staff IT</p>
+                <p class="activity-time">3 jam lalu</p>
+            </div>
+        </div>
+
+        <!-- Item aktivitas 3 -->
+        <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div class="activity-content">
+                <p class="activity-text"><strong>Penanggung jawab ditambahkan</strong></p>
+                <p class="activity-person">Budi Santoso - Manager HRD</p>
+                <p class="activity-time">1 hari lalu</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== GRID MANAJEMEN ==================== -->
+<!-- Tombol akses fitur manajemen utama -->
+<div class="management-grid">
+    <!-- Kartu Manajemen Karyawan -->
+    <div class="management-card">
+        <div class="card-header">
+            <i class="fas fa-users"></i>
+            <h3>Manajemen Karyawan</h3>
+        </div>
+        <p class="card-description">Tambah, edit, atau hapus akun karyawan dari sistem</p>
+        <button class="btn btn-primary">Kelola Karyawan</button>
+    </div>
+
+    <!-- Kartu Manajemen Penanggung Jawab -->
+    <div class="management-card">
+        <div class="card-header">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Manajemen Penanggung Jawab</h3>
+        </div>
+        <p class="card-description">Tambah atau ubah akun penanggung jawab kehadiran</p>
+        <button class="btn btn-primary">Kelola Penanggung Jawab</button>
+    </div>
+</div>
