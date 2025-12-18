@@ -920,3 +920,734 @@ footer a:hover {
 .btn { padding: 10px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
 .btn-primary { background-color: #4f39f6; color: white; width: 100%; }
 .btn-primary:hover { background-color: #3d2ae3; }
+
+/* ==================== HALAMAN MANAJEMEN KARYAWAN ==================== */
+
+/* Header halaman manajemen karyawan */
+.manajemen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  margin: 0;
+  background-color: white;
+  border-bottom: 1px solid #f0f1f3;
+  gap: 16px;
+}
+
+.manajemen-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.manajemen-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0;
+  line-height: 36px;
+}
+
+.manajemen-subtitle {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Tombol tambah karyawan */
+.btn-tambah-karyawan {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 12px 24px;
+  background-color: #4f39f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.btn-tambah-karyawan:hover {
+  background-color: #3d2ae3;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-tambah-karyawan i {
+  font-size: 18px;
+}
+
+/* Kartu catatan informasi */
+.kartu-catatan {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px;
+  margin: 24px 32px;
+  background-color: #eff6ff;
+  border: 1px solid #bedbff;
+  border-radius: 14px;
+}
+
+.catatan-ikon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #1c398e;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.catatan-konten {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.catatan-label {
+  font-size: 14px;
+  color: #1c398e;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Container tabel karyawan */
+.tabel-karyawan-container {
+  background-color: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  margin: 0 32px 32px 32px;
+  overflow: hidden;
+}
+
+.tabel-header {
+  display: flex;
+  align-items: center;
+  padding: 24px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.tabel-judul {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Wrapper tabel dengan horizontal scroll */
+.tabel-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-height: 500px;
+}
+
+/* Tabel daftar karyawan */
+.tabel-daftar-karyawan {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+/* Header tabel */
+.tabel-kepala {
+  background-color: #f9fafb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.baris-header {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.sel-header {
+  padding: 16px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #364153;
+  text-align: left;
+  text-transform: none;
+  line-height: 24px;
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+/* Kolom header spesifik */
+.nama-header {
+  min-width: 164px;
+}
+
+.email-header {
+  min-width: 312px;
+}
+
+.jabatan-header {
+  min-width: 138px;
+}
+
+.penanggung-jawab-header {
+  min-width: 223px;
+}
+
+.sisa-cuti-header {
+  min-width: 137px;
+}
+
+.status-header {
+  min-width: 113px;
+}
+
+.aksi-header {
+  min-width: 137px;
+  text-align: center;
+}
+
+/* Baris data tabel */
+.baris-data {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.baris-data:hover {
+  background-color: #f9fafb;
+}
+
+.sel-data {
+  padding: 16px 24px;
+  font-size: 16px;
+  color: #101828;
+  text-align: left;
+  line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sel-data.email-cell,
+.sel-data.jabatan-cell,
+.sel-data.penanggung-jawab-cell {
+  color: #4a5565;
+  font-size: 16px;
+}
+
+.sel-data.sisa-cuti-cell {
+  color: #4a5565;
+  font-size: 16px;
+}
+
+/* Kolom Nama */
+.nama-karyawan {
+  font-weight: 500;
+}
+
+/* Kolom Email */
+.email-karyawan {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+
+/* Kolom Sisa Cuti */
+.sisa-cuti-karyawan {
+  font-weight: 500;
+}
+
+/* Badge Status */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.status-aktif {
+  background-color: #dcfce7;
+  color: #016630;
+}
+
+.status-nonaktif {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Container aksi tombol */
+.kontainer-aksi {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Tombol aksi */
+.tombol-aksi {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 16px;
+  background-color: transparent;
+  color: #4a5565;
+}
+
+.tombol-aksi:hover {
+  background-color: #f3f4f6;
+}
+
+.tombol-edit {
+  color: #4f39f6;
+}
+
+.tombol-edit:hover {
+  background-color: #eff6ff;
+  color: #1c398e;
+}
+
+.tombol-hapus {
+  color: #dc3545;
+}
+
+.tombol-hapus:hover {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Pesan kosong data */
+.pesan-kosong {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+  color: #718096;
+  gap: 12px;
+}
+
+.ikon-kosong {
+  font-size: 48px;
+  color: #cbd5e1;
+}
+
+.teks-kosong {
+  font-size: 16px;
+  color: #718096;
+  margin: 0;
+}
+
+/* ==================== MODAL FORM KARYAWAN ==================== */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.modal-aktif {
+  display: flex;
+}
+
+.modal-dialog {
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+}
+
+.tombol-tutup-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: transparent;
+  color: #4a5565;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 18px;
+}
+
+.tombol-tutup-modal:hover {
+  background-color: #f3f4f6;
+  color: #101828;
+}
+
+/* Form di modal */
+.form-karyawan {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.grup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label-form {
+  font-size: 14px;
+  font-weight: 600;
+  color: #364153;
+  margin: 0;
+}
+
+.wajib {
+  color: #dc3545;
+}
+
+.input-form {
+  height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5dc;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background-color: #fff;
+  color: #0a0a0a;
+}
+
+.input-form::placeholder {
+  color: rgba(10, 10, 10, 0.5);
+}
+
+.input-form:focus {
+  outline: none;
+  border-color: #4f39f6;
+  box-shadow: 0 0 0 3px rgba(79, 57, 246, 0.1);
+  background-color: #fafbff;
+}
+
+/* Select form styling */
+.input-form[type="select"],
+select.input-form {
+  cursor: pointer;
+  padding: 10px 12px;
+}
+
+/* Pesan error */
+.pesan-error {
+  font-size: 12px;
+  color: #dc3545;
+  margin: 0;
+  min-height: 16px;
+  line-height: 16px;
+}
+
+/* Catatan form */
+.catatan-form {
+  font-size: 12px;
+  color: #718096;
+  margin: 0;
+  display: block;
+}
+
+/* Label checkbox */
+.label-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #364153;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.label-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4f39f6;
+}
+
+.teks-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* Container tombol modal */
+.kontainer-tombol-modal {
+  display: flex;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.tombol-batal,
+.tombol-simpan {
+  flex: 1;
+  height: 44px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tombol-batal {
+  background-color: #f3f4f6;
+  color: #364153;
+}
+
+.tombol-batal:hover {
+  background-color: #e5e7eb;
+}
+
+.tombol-simpan {
+  background-color: #4f39f6;
+  color: white;
+}
+
+.tombol-simpan:hover {
+  background-color: #3d2ae3;
+  box-shadow: 0 2px 8px rgba(79, 57, 246, 0.3);
+}
+
+/* ==================== MODAL KONFIRMASI HAPUS ==================== */
+
+.modal-overlay-konfirmasi {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay-konfirmasi.modal-aktif {
+  display: flex;
+}
+
+.modal-dialog-kecil {
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+}
+
+.modal-header-konfirmasi {
+  padding: 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.modal-title-konfirmasi {
+  font-size: 18px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+}
+
+.modal-body-konfirmasi {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.teks-konfirmasi {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 20px;
+}
+
+.peringatan-konfirmasi {
+  font-size: 13px;
+  color: #dc3545;
+  margin: 0;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.peringatan-konfirmasi i {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* Container tombol konfirmasi */
+.kontainer-tombol-konfirmasi {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 24px 24px;
+}
+
+.tombol-batal-konfirmasi,
+.tombol-hapus-konfirmasi {
+  flex: 1;
+  height: 44px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tombol-batal-konfirmasi {
+  background-color: #f3f4f6;
+  color: #364153;
+}
+
+.tombol-batal-konfirmasi:hover {
+  background-color: #e5e7eb;
+}
+
+.tombol-hapus-konfirmasi {
+  background-color: #dc3545;
+  color: white;
+}
+
+.tombol-hapus-konfirmasi:hover {
+  background-color: #bb2d3b;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+@media (max-width: 1024px) {
+  .manajemen-header {
+    padding: 16px 24px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-tambah-karyawan {
+    width: 100%;
+  }
+
+  .tabel-karyawan-container {
+    margin: 16px 24px 24px 24px;
+  }
+
+  .sel-header,
+  .sel-data {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .nama-header { min-width: 120px; }
+  .email-header { min-width: 200px; }
+  .jabatan-header { min-width: 100px; }
+  .penanggung-jawab-header { min-width: 150px; }
+  .sisa-cuti-header { min-width: 100px; }
+  .status-header { min-width: 90px; }
+  .aksi-header { min-width: 110px; }
+}
+
+@media (max-width: 768px) {
+  .manajemen-header {
+    padding: 16px 16px;
+  }
+
+  .manajemen-title {
+    font-size: 22px;
+  }
+
+  .manajemen-subtitle {
+    font-size: 14px;
+  }
+
+  .kartu-catatan {
+    margin: 16px 16px;
+    padding: 12px 16px;
+  }
+
+  .tabel-karyawan-container {
+    margin: 16px 16px 16px 16px;
+    border-radius: 10px;
+  }
+
+  .tabel-wrapper {
+    max-height: 400px;
+  }
+
+  .sel-header,
+  .sel-data {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .nama-header { min-width: 100px; }
+  .email-header { min-width: 140px; }
+  .jabatan-header { min-width: 80px; }
+  .penanggung-jawab-header { min-width: 100px; }
+  .sisa-cuti-header { min-width: 80px; }
+  .status-header { min-width: 70px; }
+  .aksi-header { min-width: 80px; }
+
+  .kontainer-aksi {
+    gap: 4px;
+  }
+
+  .tombol-aksi {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .modal-dialog {
+    max-width: 90%;
+  }
+}

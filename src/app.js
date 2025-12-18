@@ -66,7 +66,7 @@ app.use(session(konfigurasiSession));
 // ==================== VIEW ENGINE (HANDLEBARS) ====================
 app.engine('hbs', require('express-handlebars').engine({
   extname: 'hbs',
-  layoutsDir: path.join(__dirname, '../templates/partials'),  // Dashboard layout dipindah ke partials
+  layoutsDir: path.join(__dirname, '../templates/partials'),  // Layouts berada di partials folder
   partialsDir: path.join(__dirname, '../templates/partials'),
   helpers: {
     // Bantu untuk format tanggal dengan lokal Indonesia
@@ -165,75 +165,198 @@ app.get('/dashboard', (req, res) => {
     res.render('admin/dashboard', { 
       title: 'Dashboard Admin - NusaAttend',
       user: req.session.user,
-      layout: 'dashboard-layout'
+      layout: 'dashboard-layout',
+      halaman: 'dashboard'
     });
   } else if (role === 'supervisor') {
     res.render('supervisor/dashboard', { 
       title: 'Dashboard Supervisor - NusaAttend',
       user: req.session.user,
-      layout: 'dashboard-layout'
+      layout: 'dashboard-layout',
+      halaman: 'dashboard'
     });
   } else {
     res.render('employee/dashboard', { 
       title: 'Dashboard Karyawan - NusaAttend',
       user: req.session.user,
-      layout: 'dashboard-layout'
+      layout: 'dashboard-layout',
+      halaman: 'dashboard'
+    });
+  }
+});
+
+// ==================== RUTE PENGAJUAN (BERBASIS ROLE) ====================
+
+// Halaman pengajuan - berbeda tampilan untuk admin, supervisor, dan karyawan
+app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
+  const role = req.session.user.role;
+  
+  if (role === 'admin') {
+    // Admin melihat semua pengajuan yang diajukan oleh karyawan
+    res.render('admin/pengajuan', { 
+      title: 'Manajemen Pengajuan - NusaAttend',
+      user: req.session.user,
+      layout: 'dashboard-layout',
+      halaman: 'pengajuan'
+    });
+  } else if (role === 'supervisor') {
+    // Supervisor melihat pengajuan untuk direview
+    res.render('supervisor/pengajuan', { 
+      title: 'Review Pengajuan - NusaAttend',
+      user: req.session.user,
+      layout: 'dashboard-layout',
+      halaman: 'pengajuan'
+    });
+  } else {
+    // Karyawan melihat riwayat pengajuan mereka
+    res.render('employee/pengajuan', { 
+      title: 'Riwayat Pengajuan - NusaAttend',
+      user: req.session.user,
+      layout: 'dashboard-layout',
+      halaman: 'riwayat-pengajuan'
     });
   }
 });
 
 // ==================== RUTE KARYAWAN ====================
 
-// Halaman riwayat pengajuan
-app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
-  res.render('employee/pengajuan', { 
-    title: 'Riwayat Pengajuan - NusaAttend',
-    user: req.session.user
-  });
-});
-
 // Halaman buat pengajuan surat izin
 app.get('/pengajuan/buat', middlewareAuntenfikasi, (req, res) => {
+  const role = req.session.user.role;
+  
+  // Hanya karyawan yang bisa membuat pengajuan
+  if (role !== 'employee' && role !== 'karyawan') {
+    return res.status(403).render('404', {
+      title: 'Akses Ditolak - NusaAttend',
+      message: 'Anda tidak memiliki akses untuk membuat pengajuan.'
+    });
+  }
+  
   res.render('employee/buat-pengajuan', { 
     title: 'Buat Surat Izin - NusaAttend',
-    user: req.session.user
+    user: req.session.user,
+    layout: 'dashboard-layout',
+    halaman: 'buat-pengajuan'
   });
 });
 
 // Halaman absensi
 app.get('/absensi', middlewareAuntenfikasi, (req, res) => {
+  const role = req.session.user.role;
+  
+  // Hanya karyawan yang bisa mengakses absensi
+  if (role !== 'employee' && role !== 'karyawan') {
+    return res.status(403).render('404', {
+      title: 'Akses Ditolak - NusaAttend',
+      message: 'Anda tidak memiliki akses ke halaman absensi.'
+    });
+  }
+  
   res.render('employee/absensi', { 
     title: 'Absensi - NusaAttend',
-    user: req.session.user
+    user: req.session.user,
+    layout: 'dashboard-layout',
+    halaman: 'absensi'
+  });
+});
+
+
+// ==================== RUTE ADMIN ====================
+
+// Halaman manajemen karyawan
+app.get('/admin/karyawan', middlewareAuntenfikasi, (req, res) => {
+  const role = req.session.user.role;
+  
+  // Hanya admin yang bisa mengakses manajemen karyawan
+  if (role !== 'admin') {
+    return res.status(403).render('404', {
+      title: 'Akses Ditolak - NusaAttend',
+      message: 'Anda tidak memiliki akses ke halaman manajemen karyawan.'
+    });
+  }
+  
+  res.render('admin/manajemen-karyawan', { 
+    title: 'Manajemen Karyawan - NusaAttend',
+    user: req.session.user,
+    layout: 'dashboard-layout',
+    halaman: 'karyawan'
+  });
+});
+
+// Halaman laporan admin
+app.get('/admin/laporan', middlewareAuntenfikasi, (req, res) => {
+  const role = req.session.user.role;
+  
+  // Hanya admin yang bisa mengakses laporan admin
+  if (role !== 'admin') {
+    return res.status(403).render('404', {
+      title: 'Akses Ditolak - NusaAttend',
+      message: 'Anda tidak memiliki akses ke halaman laporan admin.'
+    });
+  }
+  
+  res.render('admin/laporan', { 
+    title: 'Laporan - NusaAttend',
+    user: req.session.user,
+    layout: 'dashboard-layout',
+    halaman: 'laporan'
   });
 });
 
 // ==================== RUTE SUPERVISOR ====================
 
-// Halaman review pengajuan
-app.get('/supervisor/pengajuan', middlewareAuntenfikasi, (req, res) => {
-  res.render('supervisor/dashboard', { 
-    title: 'Review Pengajuan - NusaAttend',
-    user: req.session.user
+// Halaman laporan supervisor
+app.get('/supervisor/laporan', middlewareAuntenfikasi, (req, res) => {
+  const role = req.session.user.role;
+  
+  // Hanya supervisor yang bisa mengakses laporan supervisor
+  if (role !== 'supervisor') {
+    return res.status(403).render('404', {
+      title: 'Akses Ditolak - NusaAttend',
+      message: 'Anda tidak memiliki akses ke halaman laporan supervisor.'
+    });
+  }
+  
+  res.render('supervisor/laporan', { 
+    title: 'Laporan Tim - NusaAttend',
+    user: req.session.user,
+    layout: 'dashboard-layout',
+    halaman: 'laporan'
   });
 });
 
-// Halaman review detail pengajuan
-app.get('/supervisor/pengajuan/:id', middlewareAuntenfikasi, (req, res) => {
-  res.render('supervisor/review-pengajuan', { 
-    title: 'Review Pengajuan - NusaAttend',
-    user: req.session.user
-  });
-});
-
-// ==================== RUTE ADMIN ====================
-
-// Halaman manajemen pengajuan
-app.get('/admin/pengajuan', middlewareAuntenfikasi, (req, res) => {
-  res.render('admin/dashboard', { 
-    title: 'Manajemen Pengajuan - NusaAttend',
-    user: req.session.user
-  });
+// Halaman detail review pengajuan (khusus supervisor)
+app.get('/pengajuan/:id', middlewareAuntenfikasi, (req, res) => {
+  const role = req.session.user.role;
+  const { id } = req.params;
+  
+  // Karyawan dan supervisor bisa melihat detail pengajuan
+  if (role === 'employee' || role === 'karyawan') {
+    res.render('employee/detail-pengajuan', { 
+      title: 'Detail Pengajuan - NusaAttend',
+      user: req.session.user,
+      layout: 'dashboard-layout',
+      halaman: 'pengajuan'
+    });
+  } else if (role === 'supervisor') {
+    res.render('supervisor/detail-pengajuan', { 
+      title: 'Detail Review Pengajuan - NusaAttend',
+      user: req.session.user,
+      layout: 'dashboard-layout',
+      halaman: 'pengajuan'
+    });
+  } else if (role === 'admin') {
+    res.render('admin/detail-pengajuan', { 
+      title: 'Detail Pengajuan - NusaAttend',
+      user: req.session.user,
+      layout: 'dashboard-layout',
+      halaman: 'pengajuan'
+    });
+  } else {
+    return res.status(403).render('404', {
+      title: 'Akses Ditolak - NusaAttend'
+    });
+  }
 });
 
 // ==================== HANDLER ERROR ====================

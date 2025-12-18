@@ -1,25 +1,20 @@
+/**
+ * Konfigurasi koneksi MongoDB
+ * Menggunakan MongoDB Atlas (Cloud)
+ * Untuk keperluan akademik - NusaAttend
+ */
+
 const mongoose = require('mongoose');
 
-/**
- * Fungsi untuk menghubungkan ke database MongoDB
- * Menggunakan URI dari environment variable atau default ke localhost
- */
-const hubungkanDB = async () => {
+const koneksiDatabase = async () => {
   try {
-    const uriMongo = process.env.MONGODB_URI || 'mongodb://localhost:27017/nusaattend';
-    
-    // Koneksi ke MongoDB dengan options modern
-    const koneksi = await mongoose.connect(uriMongo, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGODB_URI);
 
-    console.log(`✓ MongoDB Terhubung: ${koneksi.connection.host}`);
-    return koneksi;
+    console.log('✅ Koneksi MongoDB Atlas berhasil');
   } catch (error) {
-    console.error(`✗ Gagal Koneksi MongoDB: ${error.message}`);
+    console.error('❌ Gagal koneksi MongoDB:', error.message);
     process.exit(1);
   }
 };
 
-module.exports = hubungkanDB;
+module.exports = koneksiDatabase;
