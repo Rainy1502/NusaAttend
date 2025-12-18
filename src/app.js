@@ -102,12 +102,24 @@ app.set('views', path.join(__dirname, '../templates/views'));
 // Rute autentikasi
 app.use('/api/auth', rutAuntenfikasi);
 
+// Halaman home/landing - menampilkan informasi produk
+app.get('/home', (req, res) => {
+  res.render('home', { 
+    title: 'Home - NusaAttend',
+    layout: 'main'
+  });
+});
+
 // Halaman utama - redirect ke dashboard atau login
 app.get('/', (req, res) => {
   if (req.session.user) {
     return res.redirect('/dashboard');
   }
-  res.redirect('/login');
+  // Jika belum login, tampilkan halaman home/landing page
+  res.render('home', { 
+    title: 'Home - NusaAttend',
+    layout: 'main'
+  });
 });
 
 // Halaman login

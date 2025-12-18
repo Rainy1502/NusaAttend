@@ -1651,3 +1651,734 @@ select.input-form {
     max-width: 90%;
   }
 }
+
+/* ==================== HALAMAN HOME/LANDING PAGE ==================== */
+
+/**
+ * Styling untuk halaman beranda (home page)
+ * Mencakup: header, hero section, fitur, alur, peran, CTA, footer
+ */
+
+/* -------- NAVBAR HALAMAN HOME -------- */
+.halaman-beranda {
+  /* Container utama untuk seluruh halaman home */
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.bilah-navigasi {
+  /* Navbar untuk halaman home */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  padding: 16px 0;
+}
+
+.kontainer-nav {
+  /* Kontainer flex untuk logo dan tombol */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 159px;
+}
+
+.grup-logo {
+  /* Grup berisi logo dan teks */
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.kotak-logo {
+  /* Box untuk icon logo */
+  background-color: #4f39f6;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+.teks-logo {
+  /* Teks nama dan tagline aplikasi */
+  line-height: 1.2;
+}
+
+.nama-aplikasi {
+  /* Nama aplikasi "NusaAttend" */
+  font-size: 16px;
+  font-weight: 600;
+  color: #312c85;
+  margin: 0;
+}
+
+.tagline-aplikasi {
+  /* Tagline di bawah nama aplikasi */
+  font-size: 12px;
+  color: #4a5565;
+  margin: 0;
+}
+
+.tombol-masuk-header {
+  /* Tombol masuk di navbar */
+  background-color: #4f39f6;
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(79, 57, 246, 0.2);
+}
+
+.tombol-masuk-header:hover {
+  background-color: #3d2fd0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(79, 57, 246, 0.3);
+}
+
+/* -------- HERO SECTION -------- */
+.bagian-hero {
+  /* Hero section dengan gradient background */
+  position: relative;
+  padding: 172px 159px;
+  text-align: center;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.latar-belakang-gradien {
+  /* Latar belakang gradient untuk hero */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(120.19deg, rgb(239, 246, 255) 0%, rgb(238, 242, 255) 50%, rgb(250, 245, 255) 100%);
+  z-index: 0;
+}
+
+.konten-hero {
+  /* Konten hero (memastikan di atas gradient) */
+  position: relative;
+  z-index: 1;
+  max-width: 768px;
+}
+
+.ikon-utama-kontainer {
+  /* Kontainer untuk icon utama */
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.kotak-ikon-utama {
+  /* Box untuk icon utama herokan*/
+  background-color: #ffffff;
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: #4f39f6;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.06);
+}
+
+.judul-hero {
+  /* Judul utama hero section */
+  font-size: 24px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 24px 0;
+  line-height: 1.3;
+}
+
+.deskripsi-hero {
+  /* Deskripsi produk di hero */
+  font-size: 18px;
+  color: #364153;
+  line-height: 1.6;
+  margin: 0 0 48px 0;
+}
+
+.grup-tombol-hero {
+  /* Grup untuk dua tombol CTA */
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tombol-masuk-besar {
+  /* Tombol "Masuk ke Sistem" */
+  background-color: #4f39f6;
+  color: #ffffff;
+  padding: 16px 48px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.06);
+}
+
+.tombol-masuk-besar:hover {
+  background-color: #3d2fd0;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(79, 57, 246, 0.3);
+}
+
+.tombol-pelajari {
+  /* Tombol "Pelajari Lebih Lanjut" */
+  background-color: #ffffff;
+  color: #4f39f6;
+  border: 2px solid #4f39f6;
+  padding: 14px 46px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tombol-pelajari:hover {
+  background-color: #f0ecff;
+  border-color: #3d2fd0;
+  transform: translateY(-2px);
+}
+
+/* -------- FITUR UTAMA SECTION -------- */
+.bagian-fitur-utama {
+  /* Section untuk fitur-fitur utama */
+  background-color: #ffffff;
+  padding: 80px 159px;
+}
+
+.kontainer-bagian {
+  /* Kontainer standar untuk section */
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.kepala-bagian {
+  /* Header section dengan judul dan deskripsi */
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.judul-bagian {
+  /* Judul utama section */
+  font-size: 18px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.subjudul-bagian {
+  /* Subjudul section */
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.grid-fitur-empat-kolom {
+  /* Grid 4 kolom untuk fitur */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.kartu-fitur {
+  /* Kartu fitur individual */
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 24px;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.kartu-fitur:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+}
+
+.ikon-fitur {
+  /* Icon dalam kartu fitur */
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 24px;
+}
+
+.ikon-fitur.biru {
+  background-color: #dbeafe;
+  color: #0284c7;
+}
+
+.ikon-fitur.hijau {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.ikon-fitur.ungu {
+  background-color: #f3e8ff;
+  color: #9333ea;
+}
+
+.ikon-fitur.oranye {
+  background-color: #ffedd4;
+  color: #fb923c;
+}
+
+.judul-fitur {
+  /* Judul kartu fitur */
+  font-size: 16px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.deskripsi-fitur {
+  /* Deskripsi kartu fitur */
+  font-size: 14px;
+  color: #4a5565;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* -------- ALUR PENGGUNAAN SECTION -------- */
+.bagian-alur-penggunaan {
+  /* Section untuk alur penggunaan */
+  background-color: #ffffff;
+  padding: 80px 159px;
+}
+
+.grid-alur-empat-langkah {
+  /* Grid 4 kolom untuk alur langkah */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.kartu-alur {
+  /* Kartu langkah alur */
+  text-align: center;
+}
+
+.nomor-langkah {
+  /* Nomor step (1, 2, 3, 4) */
+  background-color: #4f39f6;
+  color: #ffffff;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 auto 24px;
+}
+
+.judul-langkah {
+  /* Judul langkah */
+  font-size: 16px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.deskripsi-langkah {
+  /* Deskripsi langkah */
+  font-size: 14px;
+  color: #4a5565;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* -------- SISTEM BERBASIS PERAN SECTION -------- */
+.bagian-sistem-peran {
+  /* Section untuk peran-peran sistem */
+  background-color: #ffffff;
+  padding: 80px 159px;
+}
+
+.grid-peran-tiga-kolom {
+  /* Grid 3 kolom untuk peran */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.kartu-peran {
+  /* Kartu peran individual */
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 32px 32px;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.kartu-karyawan {
+  background: linear-gradient(147.294deg, rgb(239, 246, 255) 0%, rgb(219, 234, 254) 100%);
+  border-color: #bedbff;
+}
+
+.kartu-penanggung-jawab {
+  background: linear-gradient(147.294deg, rgb(250, 245, 255) 0%, rgb(243, 232, 255) 100%);
+  border-color: #e9d4ff;
+}
+
+.kartu-admin {
+  background: linear-gradient(147.295deg, rgb(238, 242, 255) 0%, rgb(224, 231, 255) 100%);
+  border-color: #c6d2ff;
+}
+
+.ikon-peran {
+  /* Icon untuk peran */
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+.ikon-peran.biru {
+  background-color: #155dfc;
+  color: #ffffff;
+}
+
+.ikon-peran.ungu {
+  background-color: #9810fa;
+  color: #ffffff;
+}
+
+.ikon-peran.biru-pekat {
+  background-color: #4f39f6;
+  color: #ffffff;
+}
+
+.judul-peran {
+  /* Judul peran */
+  font-size: 16px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.daftar-akses {
+  /* Daftar akses/fitur per peran */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.daftar-akses li {
+  /* Item dalam daftar akses */
+  font-size: 14px;
+  color: #364153;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.daftar-akses i {
+  /* Icon check */
+  color: #4f39f6;
+  font-size: 12px;
+}
+
+/* -------- CALL TO ACTION SECTION -------- */
+.bagian-cta {
+  /* Section CTA dengan background gradient */
+  padding: 80px 159px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kotak-cta {
+  /* Box CTA dengan gradient background */
+  background: linear-gradient(135deg, #4f39f6 0%, #9810fa 100%);
+  border-radius: 16px;
+  padding: 48px;
+  text-align: center;
+  max-width: 832px;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1), 0 8px 10px rgba(0, 0, 0, 0.06);
+}
+
+.ikon-cta {
+  /* Icon dalam CTA section */
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #ffffff;
+  margin: 0 auto 24px;
+}
+
+.judul-cta {
+  /* Judul CTA */
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.deskripsi-cta {
+  /* Deskripsi CTA */
+  font-size: 16px;
+  color: #e0e7ff;
+  line-height: 1.5;
+  margin: 0 0 32px 0;
+}
+
+.tombol-cta-besar {
+  /* Tombol CTA */
+  background-color: #ffffff;
+  color: #4f39f6;
+  padding: 16px 48px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tombol-cta-besar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* -------- FOOTER -------- */
+.footer-halaman {
+  /* Footer halaman home */
+  background-color: #101828;
+  color: #ffffff;
+  padding: 40px 159px;
+}
+
+.konten-footer {
+  /* Kontainer konten footer */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.bagian-footer-logo {
+  /* Bagian logo di footer */
+  display: flex;
+  align-items: center;
+}
+
+.grup-logo-kecil {
+  /* Grup logo kecil di footer */
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.kotak-logo-kecil {
+  /* Box logo di footer */
+  background-color: #4f39f6;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+.teks-logo-kecil {
+  /* Teks logo kecil */
+  line-height: 1.2;
+}
+
+.nama-footer {
+  /* Nama aplikasi di footer */
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.tagline-footer {
+  /* Tagline di footer */
+  font-size: 12px;
+  color: #99a1af;
+  margin: 0;
+}
+
+.bagian-footer-info {
+  /* Bagian informasi/copyright footer */
+  text-align: right;
+}
+
+.teks-copyright {
+  /* Teks copyright */
+  font-size: 12px;
+  color: #99a1af;
+  margin: 0 0 2px 0;
+  line-height: 1.3;
+}
+
+.teks-deskripsi-footer {
+  /* Teks deskripsi footer */
+  font-size: 12px;
+  color: #6a7282;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* -------- RESPONSIVE DESIGN -------- */
+
+@media (max-width: 1024px) {
+  /* Tablet dan layar kecil */
+  
+  .kontainer-nav,
+  .bagian-hero,
+  .bagian-fitur-utama,
+  .bagian-alur-penggunaan,
+  .bagian-sistem-peran,
+  .bagian-cta,
+  .footer-halaman {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .grid-fitur-empat-kolom,
+  .grid-alur-empat-langkah {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .grid-peran-tiga-kolom {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .judul-bagian {
+    font-size: 20px;
+  }
+
+  .subjudul-bagian {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile */
+  
+  .kontainer-nav {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .bilah-navigasi {
+    padding: 12px 0;
+  }
+
+  .tombol-masuk-header {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .bagian-hero,
+  .bagian-fitur-utama,
+  .bagian-alur-penggunaan,
+  .bagian-sistem-peran,
+  .bagian-cta,
+  .footer-halaman {
+    padding: 40px 16px;
+  }
+
+  .judul-hero {
+    font-size: 20px;
+  }
+
+  .deskripsi-hero {
+    font-size: 16px;
+  }
+
+  .grup-tombol-hero {
+    gap: 12px;
+  }
+
+  .tombol-masuk-besar,
+  .tombol-pelajari {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .grid-fitur-empat-kolom,
+  .grid-alur-empat-langkah,
+  .grid-peran-tiga-kolom {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .kartu-fitur,
+  .kartu-peran {
+    padding: 16px;
+  }
+
+  .kotak-cta {
+    padding: 32px 16px;
+  }
+
+  .konten-footer {
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .bagian-footer-info {
+    text-align: center;
+  }
+}
