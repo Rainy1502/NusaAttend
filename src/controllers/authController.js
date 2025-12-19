@@ -95,7 +95,7 @@ const kontrolerAuntenfikasi = {
         ? '/admin/dashboard' 
         : pengguna.role === 'supervisor' 
         ? '/supervisor/dashboard' 
-        : '/employee/dashboard';
+        : '/karyawan/dashboard';
 
       res.redirect(urlDashboard);
     } catch (error) {

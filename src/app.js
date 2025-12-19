@@ -102,20 +102,35 @@ app.set('views', path.join(__dirname, '../templates/views'));
 // Rute autentikasi
 app.use('/api/auth', rutAuntenfikasi);
 
+// Halaman home/landing - menampilkan informasi produk
+// Halaman publik: tidak memerlukan autentikasi, ditampilkan dari folder publik
+app.get('/home', (req, res) => {
+  res.render('publik/home', { 
+    title: 'Home - NusaAttend',
+    layout: 'main'
+  });
+});
+
 // Halaman utama - redirect ke dashboard atau login
+// Halaman publik: jika sudah login redirect ke dashboard, jika belum tampilkan halaman home dari folder publik
 app.get('/', (req, res) => {
   if (req.session.user) {
     return res.redirect('/dashboard');
   }
-  res.redirect('/login');
+  // Jika belum login, tampilkan halaman home/landing page dari folder publik
+  res.render('publik/home', { 
+    title: 'Home - NusaAttend',
+    layout: 'main'
+  });
 });
 
 // Halaman login
+// Halaman publik: menampilkan form login dari folder publik
 app.get('/login', (req, res) => {
   if (req.session.user) {
     return res.redirect('/dashboard');
   }
-  res.render('login', { 
+  res.render('publik/login', { 
     title: 'Login - NusaAttend',
     layout: false
   });
@@ -176,7 +191,7 @@ app.get('/dashboard', (req, res) => {
       halaman: 'dashboard'
     });
   } else {
-    res.render('employee/dashboard', { 
+    res.render('karyawan/dashboard', { 
       title: 'Dashboard Karyawan - NusaAttend',
       user: req.session.user,
       layout: 'dashboard-layout',
@@ -226,7 +241,7 @@ app.get('/pengajuan/buat', middlewareAuntenfikasi, (req, res) => {
   
   // Hanya karyawan yang bisa membuat pengajuan
   if (role !== 'employee' && role !== 'karyawan') {
-    return res.status(403).render('404', {
+    return res.status(403).render('publik/404', {
       title: 'Akses Ditolak - NusaAttend',
       message: 'Anda tidak memiliki akses untuk membuat pengajuan.'
     });
@@ -246,7 +261,7 @@ app.get('/absensi', middlewareAuntenfikasi, (req, res) => {
   
   // Hanya karyawan yang bisa mengakses absensi
   if (role !== 'employee' && role !== 'karyawan') {
-    return res.status(403).render('404', {
+    return res.status(403).render('publik/404', {
       title: 'Akses Ditolak - NusaAttend',
       message: 'Anda tidak memiliki akses ke halaman absensi.'
     });
@@ -269,7 +284,7 @@ app.get('/admin/karyawan', middlewareAuntenfikasi, (req, res) => {
   
   // Hanya admin yang bisa mengakses manajemen karyawan
   if (role !== 'admin') {
-    return res.status(403).render('404', {
+    return res.status(403).render('publik/404', {
       title: 'Akses Ditolak - NusaAttend',
       message: 'Anda tidak memiliki akses ke halaman manajemen karyawan.'
     });
@@ -289,7 +304,7 @@ app.get('/admin/laporan', middlewareAuntenfikasi, (req, res) => {
   
   // Hanya admin yang bisa mengakses laporan admin
   if (role !== 'admin') {
-    return res.status(403).render('404', {
+    return res.status(403).render('publik/404', {
       title: 'Akses Ditolak - NusaAttend',
       message: 'Anda tidak memiliki akses ke halaman laporan admin.'
     });
@@ -311,7 +326,7 @@ app.get('/supervisor/laporan', middlewareAuntenfikasi, (req, res) => {
   
   // Hanya supervisor yang bisa mengakses laporan supervisor
   if (role !== 'supervisor') {
-    return res.status(403).render('404', {
+    return res.status(403).render('publik/404', {
       title: 'Akses Ditolak - NusaAttend',
       message: 'Anda tidak memiliki akses ke halaman laporan supervisor.'
     });

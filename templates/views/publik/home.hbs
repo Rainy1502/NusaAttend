@@ -1,0 +1,295 @@
+{{!-- 
+  Halaman Home/Landing Page NusaAttend
+  Menampilkan informasi produk, fitur, alur penggunaan, dan role-based access
+  Layout: main.hbs (untuk halaman publik)
+  Node ID Figma: 51:82
+--}}
+
+<div class="halaman-beranda">
+  {{!-- ==================== HEADER NAVBAR ==================== --}}
+  <nav class="bilah-navigasi">
+    <div class="kontainer-nav">
+      {{!-- Logo & Branding --}}
+      <div class="grup-logo">
+        <div class="kotak-logo">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="teks-logo">
+          <h1 class="nama-aplikasi">NusaAttend</h1>
+          <p class="tagline-aplikasi">Portal Administrasi Kehadiran</p>
+        </div>
+      </div>
+
+      {{!-- Tombol Masuk di Header --}}
+      <a href="/login" class="tombol-masuk-header">
+        <span>Masuk ke Sistem</span>
+      </a>
+    </div>
+  </nav>
+
+  {{!-- ==================== HERO SECTION ==================== --}}
+  <section class="bagian-hero">
+    <div class="latar-belakang-gradien"></div>
+    
+    <div class="konten-hero">
+      {{!-- Icon Utama --}}
+      <div class="ikon-utama-kontainer">
+        <div class="kotak-ikon-utama">
+          <i class="fas fa-clipboard-check"></i>
+        </div>
+      </div>
+
+      {{!-- Heading Utama --}}
+      <h2 class="judul-hero">Portal Administrasi Kehadiran Tim</h2>
+
+      {{!-- Deskripsi Produk --}}
+      <p class="deskripsi-hero">
+        NusaAttend adalah sistem informasi manajemen kehadiran yang digunakan untuk mengelola pengajuan izin, cuti, dan absensi secara terpusat. 
+        Dirancang untuk mempermudah koordinasi antara karyawan dan penanggung jawab dalam proses administrasi kehadiran.
+      </p>
+
+      {{!-- Tombol CTA --}}
+      <div class="grup-tombol-hero">
+        <a href="/login" class="tombol-utama tombol-masuk-besar">
+          <span>Masuk ke Sistem</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="#fitur-utama" class="tombol-sekunder tombol-pelajari">
+          <span>Pelajari Lebih Lanjut</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {{!-- ==================== FITUR UTAMA SECTION ==================== --}}
+  <section class="bagian-fitur-utama" id="fitur-utama">
+    <div class="kontainer-bagian">
+      {{!-- Header Bagian --}}
+      <div class="kepala-bagian">
+        <h3 class="judul-bagian">Fitur Utama Sistem</h3>
+        <p class="subjudul-bagian">
+          Kelola administrasi kehadiran dengan mudah melalui fitur-fitur yang terintegrasi
+        </p>
+      </div>
+
+      {{!-- Grid Fitur (4 kolom) --}}
+      <div class="grid-fitur-empat-kolom">
+        {{!-- Fitur 1: Pengajuan Surat Izin --}}
+        <div class="kartu-fitur">
+          <div class="ikon-fitur biru">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <h4 class="judul-fitur">Pengajuan Surat Izin Online</h4>
+          <p class="deskripsi-fitur">
+            Ajukan izin, cuti, dan sakit secara digital dengan tanda tangan elektronik
+          </p>
+        </div>
+
+        {{!-- Fitur 2: Persetujuan Terpusat --}}
+        <div class="kartu-fitur">
+          <div class="ikon-fitur hijau">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h4 class="judul-fitur">Persetujuan Administrasi Terpusat</h4>
+          <p class="deskripsi-fitur">
+            Sistem approval hierarkis untuk penanggung jawab dan manajemen
+          </p>
+        </div>
+
+        {{!-- Fitur 3: Notifikasi Real-time --}}
+        <div class="kartu-fitur">
+          <div class="ikon-fitur ungu">
+            <i class="fas fa-bell"></i>
+          </div>
+          <h4 class="judul-fitur">Notifikasi Status Real-time</h4>
+          <p class="deskripsi-fitur">
+            Terima pemberitahuan otomatis untuk setiap perubahan status pengajuan
+          </p>
+        </div>
+
+        {{!-- Fitur 4: Rekap Kehadiran --}}
+        <div class="kartu-fitur">
+          <div class="ikon-fitur oranye">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <h4 class="judul-fitur">Rekap Kehadiran Tim</h4>
+          <p class="deskripsi-fitur">
+            Pantau statistik kehadiran dan laporan komprehensif untuk evaluasi
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{!-- ==================== ALUR PENGGUNAAN SECTION ==================== --}}
+  <section class="bagian-alur-penggunaan">
+    <div class="kontainer-bagian">
+      {{!-- Header Bagian --}}
+      <div class="kepala-bagian">
+        <h3 class="judul-bagian">Alur Penggunaan Sistem</h3>
+        <p class="subjudul-bagian">
+          Proses administrasi kehadiran yang sederhana dan terstruktur
+        </p>
+      </div>
+
+      {{!-- Grid Alur (4 langkah) --}}
+      <div class="grid-alur-empat-langkah">
+        {{!-- Langkah 1 --}}
+        <div class="kartu-alur">
+          <div class="nomor-langkah">1</div>
+          <h4 class="judul-langkah">Login ke Sistem</h4>
+          <p class="deskripsi-langkah">
+            Masuk menggunakan kredensial yang telah diberikan oleh admin sistem
+          </p>
+        </div>
+
+        {{!-- Langkah 2 --}}
+        <div class="kartu-alur">
+          <div class="nomor-langkah">2</div>
+          <h4 class="judul-langkah">Ajukan Administrasi Kehadiran</h4>
+          <p class="deskripsi-langkah">
+            Buat pengajuan izin, cuti, atau lakukan absensi harian melalui dashboard
+          </p>
+        </div>
+
+        {{!-- Langkah 3 --}}
+        <div class="kartu-alur">
+          <div class="nomor-langkah">3</div>
+          <h4 class="judul-langkah">Pantau Status Pengajuan</h4>
+          <p class="deskripsi-langkah">
+            Lacak progress persetujuan dan terima notifikasi untuk setiap update
+          </p>
+        </div>
+
+        {{!-- Langkah 4 --}}
+        <div class="kartu-alur">
+          <div class="nomor-langkah">4</div>
+          <h4 class="judul-langkah">Terima Keputusan & Notifikasi</h4>
+          <p class="deskripsi-langkah">
+            Dapatkan konfirmasi final dan akses riwayat pengajuan lengkap
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{!-- ==================== SISTEM BERBASIS PERAN SECTION ==================== --}}
+  <section class="bagian-sistem-peran">
+    <div class="kontainer-bagian">
+      {{!-- Header Bagian --}}
+      <div class="kepala-bagian">
+        <h3 class="judul-bagian">Sistem Berbasis Peran</h3>
+        <p class="subjudul-bagian">
+          Tiga tingkat akses untuk memastikan keamanan dan efisiensi pengelolaan
+        </p>
+      </div>
+
+      {{!-- Grid Peran (3 kolom) --}}
+      <div class="grid-peran-tiga-kolom">
+        {{!-- Kartu Karyawan --}}
+        <div class="kartu-peran kartu-karyawan">
+          <div class="ikon-peran biru">
+            <i class="fas fa-user"></i>
+          </div>
+          <h4 class="judul-peran">Karyawan</h4>
+          <ul class="daftar-akses">
+            <li><i class="fas fa-check"></i> Pengajuan izin dan cuti</li>
+            <li><i class="fas fa-check"></i> Absensi harian</li>
+            <li><i class="fas fa-check"></i> Riwayat pengajuan</li>
+          </ul>
+        </div>
+
+        {{!-- Kartu Penanggung Jawab --}}
+        <div class="kartu-peran kartu-penanggung-jawab">
+          <div class="ikon-peran ungu">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <h4 class="judul-peran">Penanggung Jawab</h4>
+          <ul class="daftar-akses">
+            <li><i class="fas fa-check"></i> Review dan approval pengajuan</li>
+            <li><i class="fas fa-check"></i> Rekap kehadiran tim</li>
+            <li><i class="fas fa-check"></i> Tinjau keberatan</li>
+          </ul>
+        </div>
+
+        {{!-- Kartu Admin Sistem --}}
+        <div class="kartu-peran kartu-admin">
+          <div class="ikon-peran biru-pekat">
+            <i class="fas fa-cog"></i>
+          </div>
+          <h4 class="judul-peran">Admin Sistem</h4>
+          <ul class="daftar-akses">
+            <li><i class="fas fa-check"></i> Manajemen user dan role</li>
+            <li><i class="fas fa-check"></i> Log keberatan administratif</li>
+            <li><i class="fas fa-check"></i> Konfigurasi sistem</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{!-- ==================== CALL TO ACTION SECTION ==================== --}}
+  <section class="bagian-cta">
+    <div class="kotak-cta">
+      <div class="ikon-cta">
+        <i class="fas fa-rocket"></i>
+      </div>
+      <h3 class="judul-cta">Siap Mengelola Kehadiran dengan Lebih Efisien?</h3>
+      <p class="deskripsi-cta">
+        Mulai gunakan NusaAttend untuk mempermudah proses administrasi kehadiran tim Anda
+      </p>
+      <a href="/login" class="tombol-cta-besar">
+        <span>Masuk Sekarang</span>
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </section>
+
+  {{!-- ==================== FOOTER GLOBAL ==================== --}}
+  {{> footer}}
+</div>
+
+{{!-- ==================== VANILLA JAVASCRIPT UNTUK INTERAKSI ==================== --}}
+<script>
+/**
+ * Script untuk interaksi halaman home/landing page
+ * - Smooth scroll untuk anchor links
+ * - Hover effects pada tombol
+ * - Optional: Analytics tracking
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+  /**
+   * Smooth scroll untuk navigasi ke section dengan anchor
+   * Contoh: <a href="#fitur-utama"> akan scroll ke section dengan id="fitur-utama"
+   */
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const hrefValue = this.getAttribute('href');
+      
+      // Abaikan jika hanya "#" tanpa target
+      if (hrefValue === '#') return;
+      
+      const targetElement = document.querySelector(hrefValue);
+      if (targetElement) {
+        e.preventDefault();
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  /**
+   * Optional: Tambahkan class 'active' pada tombol ketika diklik
+   * Untuk memberikan visual feedback kepada user
+   */
+  document.querySelectorAll('.tombol-utama, .tombol-sekunder, .tombol-cta-besar').forEach(button => {
+    button.addEventListener('click', function() {
+      // Hanya berikan feedback jika bukan link eksternal/navigasi
+      this.style.opacity = '0.8';
+      setTimeout(() => {
+        this.style.opacity = '1';
+      }, 200);
+    });
+  });
+});
+</script>

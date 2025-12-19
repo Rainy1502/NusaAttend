@@ -1,0 +1,144 @@
+{{!-- 
+  Dashboard Karyawan - NusaAttend
+  Menampilkan ringkasan kehadiran, pengajuan, dan statistik karyawan
+  Figma Node ID: 4:2455
+  Layout: dashboard-layout (dengan sidebar)
+  Pengguna: Karyawan (staff)
+--}}
+
+<div class="halaman-dashboard-karyawan">
+  {{!-- ==================== KONTEN UTAMA ==================== --}}
+  <div class="konten-dashboard-karyawan">
+    
+    {{!-- ==================== BAGIAN SAMBUTAN & RINGKASAN ==================== --}}
+    <section class="bagian-sambutan-karyawan">
+      <div class="container-sambutan">
+        {{!-- Judul sambutan dengan nama user --}}
+        <h1 class="judul-sambutan">Selamat Datang, {{user.nama}}</h1>
+        {{!-- Sub-deskripsi halaman --}}
+        <p class="deskripsi-sambutan">Ringkasan kehadiran dan pengajuan Anda</p>
+      </div>
+    </section>
+
+    {{!-- ==================== BAGIAN STATISTIK - 4 KARTU INFO ==================== --}}
+    <section class="bagian-statistik-karyawan">
+      {{!-- Kartu Statistik 1: Sisa Cuti --}}
+      <div class="kartu-statistik">
+        <div class="kontainer-ikon-statistik bg-biru-muda">
+          <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="konten-statistik">
+          <div class="angka-statistik">{{user.sisaCuti}}</div>
+          <div class="label-statistik">Sisa Cuti</div>
+          <div class="keterangan-statistik">dari {{user.totalCuti}} hari</div>
+        </div>
+      </div>
+
+      {{!-- Kartu Statistik 2: Kehadiran Bulan Ini --}}
+      <div class="kartu-statistik">
+        <div class="kontainer-ikon-statistik bg-hijau-muda">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="konten-statistik">
+          <div class="angka-statistik">{{user.kehadiranBulanIni}}</div>
+          <div class="label-statistik">Kehadiran Bulan Ini</div>
+          <div class="keterangan-statistik">dari {{user.hariKerja}} hari</div>
+        </div>
+      </div>
+
+      {{!-- Kartu Statistik 3: Menunggu Persetujuan --}}
+      <div class="kartu-statistik">
+        <div class="kontainer-ikon-statistik bg-kuning-muda">
+          <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="konten-statistik">
+          <div class="angka-statistik">{{user.menungguPersetujuan}}</div>
+          <div class="label-statistik">Menunggu Persetujuan</div>
+          <div class="keterangan-statistik">pengajuan</div>
+        </div>
+      </div>
+
+      {{!-- Kartu Statistik 4: Tidak Hadir --}}
+      <div class="kartu-statistik">
+        <div class="kontainer-ikon-statistik bg-merah-muda">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <div class="konten-statistik">
+          <div class="angka-statistik">{{user.tidakHadir}}</div>
+          <div class="label-statistik">Tidak Hadir</div>
+          <div class="keterangan-statistik">hari</div>
+        </div>
+      </div>
+    </section>
+
+    {{!-- ==================== BAGIAN TABEL PENGAJUAN TERBARU ==================== --}}
+    <section class="bagian-pengajuan-terbaru">
+      <div class="header-pengajuan">
+        <h2 class="judul-pengajuan">Pengajuan Terbaru</h2>
+      </div>
+
+      {{!-- Tabel Pengajuan --}}
+      <div class="wrapper-tabel">
+        <table class="tabel-pengajuan">
+          {{!-- Header Tabel --}}
+          <thead class="header-tabel">
+            <tr>
+              <th class="kolom-jenis-izin">Jenis Izin</th>
+              <th class="kolom-tanggal">Tanggal</th>
+              <th class="kolom-diajukan">Diajukan</th>
+              <th class="kolom-status">Status</th>
+            </tr>
+          </thead>
+
+          {{!-- Body Tabel --}}
+          <tbody class="body-tabel">
+            {{#each pengajuanTerbaru}}
+            {{!-- Baris Tabel untuk setiap pengajuan --}}
+            <tr class="baris-tabel">
+              <td class="sel-jenis-izin">{{this.jenisIzin}}</td>
+              <td class="sel-tanggal">{{this.tanggal}}</td>
+              <td class="sel-diajukan">{{this.diajukan}}</td>
+              <td class="sel-status">
+                {{!-- Badge Status dengan warna berbeda berdasarkan status --}}
+                {{#if (eq this.status 'menunggu')}}
+                  <span class="badge badge-menunggu">menunggu persetujuan</span>
+                {{else if (eq this.status 'disetujui')}}
+                  <span class="badge badge-disetujui">disetujui</span>
+                {{else if (eq this.status 'ditolak')}}
+                  <span class="badge badge-ditolak">ditolak</span>
+                {{/if}}
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+{{!-- ==================== SCRIPT UNTUK INTERAKSI ==================== --}}
+<script>
+  /**
+   * Script dashboard karyawan
+   * Menangani interaksi sederhana pada halaman dashboard
+   */
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    /**
+     * Tambahkan class 'aktif' pada menu dashboard di sidebar
+     * untuk menunjukkan halaman mana yang sedang aktif
+     */
+    const tombolDashboard = document.querySelector('.tombol-sidebar[href="/dashboard/karyawan"]');
+    if (tombolDashboard) {
+      tombolDashboard.classList.add('aktif');
+    }
+
+    /**
+     * Optional: Log untuk debugging
+     * Menunjukkan data user yang sudah ter-load
+     */
+    console.log('Dashboard karyawan berhasil dimuat');
+  });
+</script>
