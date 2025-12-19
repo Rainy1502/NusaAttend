@@ -1,7 +1,7 @@
 # NusaAttend - Portal Administrasi Kehadiran Tim
 
-**Status Project**: 🚧 Work In Progress - Phase 1: Login & Admin Dashboard  
-**Last Updated**: December 17, 2025
+**Status Project**: 🚧 Work In Progress - Phase 2: Frontend Integration & Dashboard  
+**Last Updated**: December 20, 2025
 
 NusaAttend adalah portal administrasi internal berbasis website yang dirancang untuk membantu tim atau organisasi skala kecil hingga menengah dalam mengelola pengajuan administrasi kehadiran secara terpusat, terstruktur, dan real-time.
 
@@ -9,8 +9,11 @@ NusaAttend adalah portal administrasi internal berbasis website yang dirancang u
 
 - ✅ **Login Page**: Login dengan email dan password
 - ✅ **Admin Dashboard**: Dashboard admin dengan role-based access
-- ✅ **Session Management**: Session-based authentication
+- ✅ **Employee Dashboard (Karyawan)**: Dashboard karyawan dengan statistik & pengajuan terbaru
+- ✅ **Global Footer**: Footer terintegrasi di semua halaman
+- ✅ **Session Management**: Session-based authentication dengan MongoDB store
 - ✅ **Password Hashing**: Secure password dengan Bcrypt
+- ✅ **Responsive Design**: Desktop, tablet, dan mobile layouts
 
 ## 🔜 Fitur yang Akan Datang
 
@@ -67,26 +70,24 @@ NusaAttend/
 │   ├── main.hbs                    # Layout template (untuk halaman umum)
 │   ├── dashboard-layout.hbs        # ✅ Dashboard layout (sidebar + main content)
 │   ├── views/
-│   │   ├── login.hbs               # ✅ Login page
-│   │   ├── register.hbs            # Register page (belum dimodifikasi)
-│   │   └── admin/
-│   │       └── dashboard.hbs       # ✅ Admin dashboard
+│   │   ├── publik/                 # ✅ Public pages (no auth required)
+│   │   │   ├── home.hbs            # Landing page
+│   │   │   ├── login.hbs           # ✅ Login page with global footer & back button
+│   │   │   └── 404.hbs             # 404 error page
+│   │   ├── admin/
+│   │   │   └── dashboard.hbs       # ✅ Admin dashboard
+│   │   └── karyawan/
+│   │       └── dashboard.hbs       # ✅ Employee dashboard dengan statistik & pengajuan terbaru
 │   └── partials/
 │       ├── header.hbs              # Header component
-│       ├── footer.hbs              # ✅ Footer component (dashboard)
+│       ├── footer.hbs              # ✅ Global footer component
 │       └── (partials lainnya)
 │
 ├── backup/                         # 🔐 Backup folder (referensi & tidak dipakai)
-│   ├── src/
-│   │   ├── config/                 # Email, logger, constants
-│   │   ├── controllers/            # Chatbot, pengajuan, absensi, admin
-│   │   ├── middleware/             # Validation
-│   │   ├── models/                 # Pengajuan, Absensi, Chatbot, index
-│   │   ├── routes/                 # Chatbot, pengajuan, absensi, admin
-│   │   └── services/               # Email service
-│   ├── templates/views/            # Register, chatbot, index, 404, supervisor, employee
-│   └── README.md                   # Penjelasan backup folder
+│   ├── src/                        # Reference files untuk fitur mendatang
+│   └── templates/views/            # Reference templates
 │
+├── dokumentasi-progress/           # Documentation & progress tracking
 ├── package.json
 ├── README.md                       # File ini
 └── .env                           # Environment variables
@@ -94,39 +95,57 @@ NusaAttend/
 
 ## 🎯 File yang AKTIF di Project
 
-✅ **Sudah dimodifikasi & digunakan untuk login & dashboard:**
+✅ **Sudah dimodifikasi & digunakan untuk login, dashboard admin, dan dashboard karyawan:**
 
-- `src/app.js` - Main application setup
-- `src/controllers/authController.js` - Login & authentication
+- `src/app.js` - Main application setup dengan routing publik & protected
+- `src/controllers/authController.js` - Login & authentication logic
 - `src/routes/auth.js` - Auth routing
-- `src/models/User.js` - User model
-- `src/middleware/auth.js` - Auth middleware
-- `src/middleware/errorHandler.js` - Error handling
+- `src/models/User.js` - User model dengan role & statistik
+- `src/middleware/auth.js` - Auth middleware untuk protected routes
+- `src/middleware/errorHandler.js` - Error handling dengan 404 publik
 - `src/config/database.js` - MongoDB connection
 - `src/config/socket.js` - Socket.io setup
-- `templates/views/login.hbs` - Login page
+- `templates/views/publik/login.hbs` - ✅ Login page dengan back button & global footer
+- `templates/views/publik/home.hbs` - Landing page
+- `templates/views/publik/404.hbs` - Error page
 - `templates/views/admin/dashboard.hbs` - Admin dashboard
-- `templates/dashboard-layout.hbs` - Dashboard layout
-- `templates/partials/footer.hbs` - Footer
-- `public/css/styles.css` - All CSS
+- `templates/views/karyawan/dashboard.hbs` - ✅ Employee dashboard (statistik, pengajuan terbaru)
+- `templates/dashboard-layout.hbs` - Dashboard layout dengan sidebar
+- `templates/partials/footer.hbs` - ✅ Global footer untuk semua halaman
+- `public/css/styles.css` - ✅ All CSS (2774 lines) termasuk dashboard styling
+- `public/js/` - Client-side scripts
 
-## 🏗️ Tentang main.hbs & Templates
+## 🏗️ Tentang Views & Folder Organization
 
-**main.hbs**: Layout template utama untuk halaman umum (non-dashboard)
-- Digunakan untuk halaman seperti home, register, chatbot, dll
-- Include `header` dan `footer` partial
-- Tidak digunakan untuk login (login punya layout sendiri: `layout: false`)
-- Belum dimodifikasi karena fokus pada login & dashboard admin
+**publik/ folder**: Halaman publik yang tidak memerlukan autentikasi
+- `publik/home.hbs` - Landing page / beranda
+- `publik/login.hbs` - Login page dengan back button dan global footer
+- `publik/404.hbs` - Error page untuk access denied & not found
+
+**admin/ folder**: Halaman khusus admin (memerlukan role: admin)
+- `admin/dashboard.hbs` - Dashboard admin dengan sidebar
+
+**karyawan/ folder**: Halaman khusus karyawan/employee (memerlukan login)
+- `karyawan/dashboard.hbs` - Dashboard karyawan dengan statistik:
+  - Sisa cuti tahunan (9/12)
+  - Kehadiran bulan ini (18/20)
+  - Menunggu persetujuan (2 pengajuan)
+  - Tidak hadir (1 hari)
+  - Tabel pengajuan terbaru dengan status badges
 
 **dashboard-layout.hbs**: Layout khusus untuk dashboard (dengan sidebar)
-- ✅ Sudah dimodifikasi untuk admin dashboard
-- Memiliki struktur: sidebar + main-content + footer
-- Include dashboard footer partial
+- Struktur: sidebar + main-content + global footer
+- Digunakan untuk semua halaman protected (admin, karyawan, supervisor)
+
+**main.hbs**: Layout template utama untuk halaman umum (non-dashboard)
+- Include header dan footer partial
+- Digunakan untuk halaman register, error, dll
+- Belum banyak digunakan dalam phase ini
 
 ## 🔐 Backup Folder
 
 Folder `backup/` berisi kerangka awal yang **TIDAK DIGUNAKAN** dalam project aktif:
-- Referensi untuk fitur-fitur yang akan dikembangkan
+- Referensi untuk fitur-fitur yang akan dikembangkan (pengajuan, absensi, chatbot, supervisor)
 - Tidak boleh di-edit atau di-copy ke project root tanpa kebutuhan khusus
 - Lihat `backup/README.md` untuk detail lengkap
 ```
@@ -221,13 +240,19 @@ http://localhost:3000
 - `_id`: ObjectId
 - `nama_lengkap`: String
 - `email`: String (unique)
-- `password`: String (hashed)
+- `password`: String (hashed dengan bcrypt)
 - `jabatan`: String
 - `role`: String (employee, supervisor, admin)
 - `jatah_cuti_tahunan`: Number (default: 12)
 - `sisa_cuti`: Number
 - `created_at`: Date
 - `updated_at`: Date
+
+**Catatan**: Dalam dashboard karyawan, data statistik ditampilkan berdasarkan:
+- `sisa_cuti` / `jatah_cuti_tahunan` (Sisa Cuti)
+- Perhitungan kehadiran dari koleksi absensi (Kehadiran)
+- Pengajuan dengan status 'menunggu' (Menunggu Persetujuan)
+- Absensi dengan status 'tidak_hadir' (Tidak Hadir)
 
 ### Koleksi: pengajuan
 - `_id`: ObjectId
