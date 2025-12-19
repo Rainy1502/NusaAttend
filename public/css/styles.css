@@ -400,6 +400,64 @@ footer a:hover {
   text-decoration: underline;
 }
 
+/* ==================== TOMBOL NAVIGASI KEMBALI KE BERANDA ==================== */
+/* Tombol navigasi untuk kembali ke halaman home dari halaman login */
+
+.tombol-kembali-beranda {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #4f39f6;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(79, 57, 246, 0.1);
+}
+
+.tombol-kembali-beranda:hover {
+  background-color: #f7faff;
+  color: #3d2ae3;
+  box-shadow: 0px 8px 12px -2px rgba(0, 0, 0, 0.1);
+  transform: translateX(-2px);
+}
+
+.tombol-kembali-beranda i {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.tombol-kembali-beranda:hover i {
+  transform: translateX(-2px);
+}
+
+.teks-tombol-kembali {
+  display: inline-block;
+}
+
+/* Responsive: Hide text on mobile, show icon only */
+@media (max-width: 768px) {
+  .tombol-kembali-beranda {
+    padding: 10px 12px;
+  }
+
+  .teks-tombol-kembali {
+    display: none;
+  }
+
+  .tombol-kembali-beranda i {
+    font-size: 18px;
+  }
+}
+
 /* Alert Styles */
 .alert {
   padding: 12px 16px;
@@ -2192,7 +2250,338 @@ select.input-form {
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* -------- FOOTER -------- */
+/* ==================== DASHBOARD KARYAWAN ==================== */
+/* Styling untuk halaman dashboard karyawan */
+
+.halaman-dashboard-karyawan {
+  width: 100%;
+  height: 100%;
+  background-color: #f9fafb;
+}
+
+.konten-dashboard-karyawan {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Bagian Sambutan */
+.bagian-sambutan-karyawan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.container-sambutan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.judul-sambutan {
+  font-size: 24px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 36px;
+}
+
+.deskripsi-sambutan {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Bagian Statistik - Grid 4 Kolom */
+.bagian-statistik-karyawan {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.kartu-statistik {
+  background-color: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.kartu-statistik:hover {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.kontainer-ikon-statistik {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+}
+
+.kontainer-ikon-statistik.bg-biru-muda {
+  background-color: #dbeafe;
+  color: #0284c7;
+}
+
+.kontainer-ikon-statistik.bg-hijau-muda {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.kontainer-ikon-statistik.bg-kuning-muda {
+  background-color: #fef9c2;
+  color: #ca8a04;
+}
+
+.kontainer-ikon-statistik.bg-merah-muda {
+  background-color: #ffe2e2;
+  color: #dc2626;
+}
+
+.konten-statistik {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.angka-statistik {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  line-height: 24px;
+}
+
+.label-statistik {
+  font-size: 16px;
+  color: #4a5565;
+  line-height: 24px;
+}
+
+.keterangan-statistik {
+  font-size: 14px;
+  color: #6a7282;
+  line-height: 20px;
+}
+
+/* Bagian Pengajuan Terbaru */
+.bagian-pengajuan-terbaru {
+  background-color: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.header-pengajuan {
+  border-bottom: 1px solid #f3f4f6;
+  padding: 24px;
+}
+
+.judul-pengajuan {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Wrapper Tabel */
+.wrapper-tabel {
+  overflow-x: auto;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Tabel Pengajuan */
+.tabel-pengajuan {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+/* Header Tabel */
+.header-tabel {
+  background-color: #f9fafb;
+  position: sticky;
+  top: 0;
+}
+
+.header-tabel th {
+  font-size: 16px;
+  font-weight: 700;
+  color: #364153;
+  padding: 12px 24px;
+  text-align: left;
+  border-bottom: 1px solid #f3f4f6;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.kolom-jenis-izin {
+  width: 25%;
+}
+
+.kolom-tanggal {
+  width: 22%;
+}
+
+.kolom-diajukan {
+  width: 20%;
+}
+
+.kolom-status {
+  width: 33%;
+}
+
+/* Body Tabel */
+.body-tabel tr {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.body-tabel tr:hover {
+  background-color: #f9fafb;
+}
+
+.baris-tabel td {
+  font-size: 16px;
+  color: #4a5565;
+  padding: 16px 24px;
+  line-height: 24px;
+}
+
+.sel-jenis-izin {
+  color: #101828;
+  font-weight: 500;
+}
+
+.sel-status {
+  text-align: left;
+}
+
+/* Badge Status */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.badge-menunggu {
+  background-color: #fef9c2;
+  color: #894b00;
+}
+
+.badge-disetujui {
+  background-color: #dcfce7;
+  color: #016630;
+}
+
+.badge-ditolak {
+  background-color: #ffe2e2;
+  color: #991b1b;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 1024px) {
+  .bagian-statistik-karyawan {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .konten-dashboard-karyawan {
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .kolom-jenis-izin {
+    width: 30%;
+  }
+
+  .kolom-tanggal {
+    width: 25%;
+  }
+
+  .kolom-diajukan {
+    width: 20%;
+  }
+
+  .kolom-status {
+    width: 25%;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+  .bagian-statistik-karyawan {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 16px;
+  }
+
+  .konten-dashboard-karyawan {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .judul-sambutan {
+    font-size: 20px;
+    line-height: 30px;
+  }
+
+  .deskripsi-sambutan {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .bagian-pengajuan-terbaru {
+    border-radius: 10px;
+  }
+
+  .header-pengajuan {
+    padding: 16px;
+  }
+
+  .judul-pengajuan {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .header-tabel th {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .baris-tabel td {
+    font-size: 13px;
+    padding: 12px;
+  }
+
+  .badge {
+    font-size: 12px;
+    padding: 3px 10px;
+  }
+
+  .wrapper-tabel {
+    max-height: 400px;
+  }
+}
+
+/* -------- FOOTER --------*/
 .footer-halaman {
   /* Footer halaman home */
   background-color: #101828;

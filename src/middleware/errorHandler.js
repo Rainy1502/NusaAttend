@@ -19,10 +19,10 @@ const penggantiKesalahan = (err, req, res, next) => {
 
 /**
  * Middleware untuk menangani halaman yang tidak ditemukan (404)
- * Render halaman 404 ketika rute tidak ada
+ * Render halaman 404 ketika rute tidak ada dari folder publik
  */
 const penggantiTidakDitemukan = (req, res) => {
-  res.status(404).render('404', { title: 'Halaman Tidak Ditemukan' });
+  res.status(404).render('publik/404', { title: 'Halaman Tidak Ditemukan' });
 };
 
 module.exports = { penggantiKesalahan, penggantiTidakDitemukan };
