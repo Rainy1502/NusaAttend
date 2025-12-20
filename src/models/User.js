@@ -33,7 +33,7 @@ const skemaUser = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['karyawan', 'supervisor', 'admin'],
+      enum: ['karyawan', 'penanggung-jawab', 'admin'],
       default: 'karyawan'
     },
     jatah_cuti_tahunan: {
@@ -52,20 +52,20 @@ const skemaUser = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: function() {
-        // Hanya wajib untuk role 'karyawan', tidak untuk supervisor/admin
+        // Hanya wajib untuk role 'karyawan', tidak untuk penanggung-jawab/admin
         return this.role === 'karyawan';
       },
       validate: {
         async: true,
         validator: async function(value) {
-          // Skip validation jika tidak required (supervisor/admin)
+          // Skip validation jika tidak required (penanggung-jawab/admin)
           if (this.role !== 'karyawan') return true;
           if (!value) return false;
           
           const supervisor = await mongoose.model('User').findById(value);
-          return supervisor && supervisor.role === 'supervisor';
+          return supervisor && supervisor.role === 'penanggung-jawab';
         },
-        message: 'Penanggung jawab harus memiliki role supervisor'
+        message: 'Penanggung jawab harus memiliki role penanggung-jawab'
       }
     },
     createdAt: {

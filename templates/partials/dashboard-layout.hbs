@@ -20,9 +20,9 @@
         <!-- Informasi Pengguna di Sidebar -->
         <div class="sidebar-user-info">
             <p class="user-role-title">{{user.role}}</p>
-            <p class="user-role-label">{{#if (eq user.role 'admin')}}Administrator Sistem{{else if (eq user.role 'supervisor')}}Supervisor{{else}}Karyawan{{/if}}</p>
+            <p class="user-role-label">{{#if (eq user.role 'admin')}}Administrator Sistem{{else if (eq user.role 'penanggung-jawab')}}Penanggung Jawab{{else}}Karyawan{{/if}}</p>
             <span class="user-role-badge">
-                {{#if (eq user.role 'admin')}}Admin Sistem{{else if (eq user.role 'supervisor')}}Supervisor{{else}}Karyawan{{/if}}
+                {{#if (eq user.role 'admin')}}Admin Sistem{{else if (eq user.role 'penanggung-jawab')}}Penanggung Jawab{{else}}Karyawan{{/if}}
             </span>
         </div>
 
@@ -38,7 +38,7 @@
                     <i class="fas fa-users"></i>
                     <span>Manajemen Karyawan</span>
                 </a>
-                <a href="/admin/supervisor" class="menu-item {{isActive 'supervisor' halaman}}">
+                <a href="/admin/penanggung-jawab" class="menu-item {{isActive 'supervisor' halaman}}">
                     <i class="fas fa-user-tie"></i>
                     <span>Manajemen Penanggung Jawab</span>
                 </a>
@@ -46,8 +46,8 @@
                     <i class="fas fa-shield-alt"></i>
                     <span>Log Keberatan</span>
                 </a>
-            {{else if (eq user.role 'supervisor')}}
-                <!-- Menu untuk Supervisor -->
+            {{else if (eq user.role 'penanggung-jawab')}}
+                <!-- Menu untuk Penanggung Jawab -->
                 <a href="/dashboard" class="menu-item {{isActive 'dashboard' halaman}}">
                     <i class="fas fa-th"></i>
                     <span>Dashboard</span>

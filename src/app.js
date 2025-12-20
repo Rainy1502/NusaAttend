@@ -13,6 +13,12 @@ const inisialisasiSocket = require('./config/socket');
 // ==================== IMPORT RUTE ====================
 const rutAuntenfikasi = require('./routes/auth');
 const rutAdminKaryawan = require('./routes/adminKaryawan');
+/**
+ * [REFACTOR AKADEMIK]
+ * Mengubah import dari 'adminSupervisor' ke 'adminPenanggungJawab'
+ * untuk konsistensi terminologi lintas sistem sesuai ketentuan dosen
+ */
+const rutAdminPenanggungJawab = require('./routes/adminPenanggungJawab');
 // const rutPengajuan = require('./routes/pengajuan'); // Di-backup
 // const rutAbsensi = require('./routes/absensi');     // Di-backup
 // const rutAdmin = require('./routes/admin');         // Di-backup
@@ -92,6 +98,15 @@ app.engine('hbs', require('express-handlebars').engine({
     // Bantu untuk cek halaman aktif di menu
     isActive: function(page, currentPage) {
       return page === currentPage ? 'active' : '';
+    },
+    // Bantu untuk format tanggal (alias untuk format_date)
+    formatTanggal: function(date, locale = 'id') {
+      if (!date) return '';
+      const d = new Date(date);
+      if (locale === 'id') {
+        return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+      return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     }
   }
 }));
@@ -162,6 +177,14 @@ app.post('/logout', (req, res) => {
 // Daftarkan router admin karyawan dengan middleware autentikasi
 app.use('/api/admin', middlewareAuntenfikasi, rutAdminKaryawan);
 
+/**
+ * [REFACTOR AKADEMIK]
+ * Mengubah variabel dari rutAdminSupervisor ke rutAdminPenanggungJawab
+ * untuk konsistensi terminologi lintas sistem sesuai ketentuan dosen
+ */
+// Daftarkan router admin penanggung jawab dengan middleware autentikasi
+app.use('/api/admin', middlewareAuntenfikasi, rutAdminPenanggungJawab);
+
 // app.use('/api/pengajuan', middlewareAuntenfikasi, rutPengajuan); // Di-backup
 // app.use('/api/absensi', middlewareAuntenfikasi, rutAbsensi);     // Di-backup
 // app.use('/api/chatbot', rutChatbot);                             // Di-backup
@@ -187,9 +210,9 @@ app.get('/dashboard', (req, res) => {
       layout: 'dashboard-layout',
       halaman: 'dashboard'
     });
-  } else if (role === 'supervisor') {
+  } else if (role === 'penanggung-jawab') {
     res.render('supervisor/dashboard', { 
-      title: 'Dashboard Supervisor - NusaAttend',
+      title: 'Dashboard Penanggung Jawab - NusaAttend',
       user: req.session.user,
       layout: 'dashboard-layout',
       halaman: 'dashboard'
@@ -218,8 +241,8 @@ app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
       layout: 'dashboard-layout',
       halaman: 'manajemen-karyawan'
     });
-  } else if (role === 'supervisor') {
-    // Supervisor melihat pengajuan untuk direview
+  } else if (role === 'penanggung-jawab') {
+    // Penanggung jawab melihat pengajuan untuk direview
     res.render('supervisor/pengajuan', { 
       title: 'Review Pengajuan - NusaAttend',
       user: req.session.user,
@@ -302,6 +325,63 @@ app.get('/admin/karyawan', middlewareAuntenfikasi, (req, res) => {
   });
 });
 
+// ==================== HALAMAN MANAJEMEN PENANGGUNG JAWAB (SUPERVISOR) ====================
+
+/**
+ * [REFACTOR AKADEMIK]
+ * Route untuk halaman manajemen penanggung jawab (supervisor)
+ * Path: '/admin/penanggung-jawab'
+ * Template: 'admin/manajemen-penanggung-jawab.hbs'
+ */
+app.get('/admin/penanggung-jawab', middlewareAuntenfikasi, async (req, res) => {
+  const role = req.session.user.role;
+  
+  // Hanya admin yang bisa mengakses manajemen supervisor
+  if (role !== 'admin') {
+    return res.status(403).render('publik/404', {
+      title: 'Akses Ditolak - NusaAttend',
+      message: 'Anda tidak memiliki akses ke halaman manajemen supervisor.'
+    });
+  }
+  
+  try {
+    // Fetch data supervisor dari database
+    const User = require('./models/User');
+    const dataSupervisor = await User.find({ role: 'penanggung-jawab' }).select('-password');
+    
+    // Hitung jumlah karyawan per supervisor
+    const daftarSupervisor = await Promise.all(
+      dataSupervisor.map(async (supervisor) => {
+        const jumlahKaryawan = await User.countDocuments({
+          penanggung_jawab_id: supervisor._id,
+          role: 'karyawan'
+        });
+        
+        return {
+          ...supervisor.toObject(),
+          jumlahKaryawan: jumlahKaryawan,
+          isAktif: supervisor.adalah_aktif
+        };
+      })
+    );
+    
+    res.render('admin/manajemen-penanggung-jawab', { 
+      title: 'Manajemen Penanggung Jawab - NusaAttend',
+      user: req.session.user,
+      layout: 'dashboard-layout',
+      halaman: 'supervisor',
+      daftarSupervisor: daftarSupervisor,
+      jumlahSupervisor: daftarSupervisor.length
+    });
+  } catch (error) {
+    console.error('Error loading supervisor data:', error);
+    res.status(500).render('publik/404', {
+      title: 'Error - NusaAttend',
+      message: 'Terjadi kesalahan saat memuat data supervisor.'
+    });
+  }
+});
+
 // ==================== HALAMAN LAPORAN ADMIN ====================
 
 // Halaman laporan admin
@@ -324,17 +404,17 @@ app.get('/admin/laporan', middlewareAuntenfikasi, (req, res) => {
   });
 });
 
-// ==================== RUTE SUPERVISOR ====================
+// ==================== RUTE PENANGGUNG JAWAB ====================
 
-// Halaman laporan supervisor
+// Halaman laporan penanggung jawab
 app.get('/supervisor/laporan', middlewareAuntenfikasi, (req, res) => {
   const role = req.session.user.role;
   
-  // Hanya supervisor yang bisa mengakses laporan supervisor
-  if (role !== 'supervisor') {
+  // Hanya penanggung jawab yang bisa mengakses laporan penanggung jawab
+  if (role !== 'penanggung-jawab') {
     return res.status(403).render('publik/404', {
       title: 'Akses Ditolak - NusaAttend',
-      message: 'Anda tidak memiliki akses ke halaman laporan supervisor.'
+      message: 'Anda tidak memiliki akses ke halaman laporan penanggung jawab.'
     });
   }
   
@@ -346,20 +426,20 @@ app.get('/supervisor/laporan', middlewareAuntenfikasi, (req, res) => {
   });
 });
 
-// Halaman detail review pengajuan (khusus supervisor)
+// Halaman detail review pengajuan (khusus penanggung jawab)
 app.get('/pengajuan/:id', middlewareAuntenfikasi, (req, res) => {
   const role = req.session.user.role;
   const { id } = req.params;
   
-  // Karyawan dan supervisor bisa melihat detail pengajuan
-  if (role === 'karyawan' || role === 'supervisor') {
+  // Karyawan dan penanggung jawab bisa melihat detail pengajuan
+  if (role === 'karyawan' || role === 'penanggung-jawab') {
     res.render('employee/detail-pengajuan', { 
       title: 'Detail Pengajuan - NusaAttend',
       user: req.session.user,
       layout: 'dashboard-layout',
       halaman: 'pengajuan'
     });
-  } else if (role === 'supervisor') {
+  } else if (role === 'penanggung-jawab') {
     res.render('supervisor/detail-pengajuan', { 
       title: 'Detail Review Pengajuan - NusaAttend',
       user: req.session.user,

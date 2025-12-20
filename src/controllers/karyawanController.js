@@ -260,7 +260,7 @@ const kontrolerKaryawan = {
    */
   async ambilSemuaSupervisor(req, res) {
     try {
-      const semuaSupervisor = await User.find({ role: 'supervisor' }).select(
+      const semuaSupervisor = await User.find({ role: 'penanggung-jawab' }).select(
         'nama_lengkap email'
       );
 

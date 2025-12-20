@@ -23,7 +23,7 @@ const daftarSupervisor = [
     email: 'budi@nusaattend.com',
     password: 'SupervisorSecure123!',
     jabatan: 'Supervisor IT Development',
-    role: 'supervisor',
+    role: 'penanggung-jawab',
     jatah_cuti_tahunan: 12,
     sisa_cuti: 12,
     adalah_aktif: true
@@ -33,7 +33,7 @@ const daftarSupervisor = [
     email: 'ahmad@nusaattend.com',
     password: 'SupervisorSecure123!',
     jabatan: 'Supervisor Finance',
-    role: 'supervisor',
+    role: 'penanggung-jawab',
     jatah_cuti_tahunan: 12,
     sisa_cuti: 12,
     adalah_aktif: true
@@ -43,7 +43,7 @@ const daftarSupervisor = [
     email: 'sari@nusaattend.com',
     password: 'SupervisorSecure123!',
     jabatan: 'Supervisor HR & Marketing',
-    role: 'supervisor',
+    role: 'penanggung-jawab',
     jatah_cuti_tahunan: 12,
     sisa_cuti: 12,
     adalah_aktif: true

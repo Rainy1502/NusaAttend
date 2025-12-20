@@ -93,7 +93,7 @@ const kontrolerAuntenfikasi = {
       // Jika request dari form HTML, redirect ke dashboard sesuai role
       const urlDashboard = pengguna.role === 'admin' 
         ? '/admin/dashboard' 
-        : pengguna.role === 'supervisor' 
+        : pengguna.role === 'penanggung-jawab' 
         ? '/supervisor/dashboard' 
         : '/karyawan/dashboard';
 

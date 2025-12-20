@@ -1,0 +1,242 @@
+<!-- ==================== HALAMAN MANAJEMEN PENANGGUNG JAWAB ==================== -->
+<!-- Halaman untuk admin mengelola data penanggung jawab kehadiran (supervisor) -->
+<!-- Fitur: CRUD penanggung jawab, lihat daftar, edit, dan hapus -->
+
+<!-- Header halaman manajemen penanggung jawab -->
+<div class="manajemen-header">
+    <div class="manajemen-info">
+        <h1 class="manajemen-title">Manajemen Penanggung Jawab</h1>
+        <p class="manajemen-subtitle">Kelola data akun penanggung jawab kehadiran</p>
+    </div>
+    {{!-- Tombol untuk membuka modal tambah penanggung jawab baru --}}
+    <button type="button" class="btn-tambah-penanggung-jawab" id="tombolBukaModalPenanggungJawab">
+        <i class="fas fa-plus"></i> Tambah Penanggung Jawab Baru
+    </button>
+</div>
+
+<!-- ==================== KOTAK INFORMASI TENTANG PENANGGUNG JAWAB ==================== -->
+{{!-- 
+    Kotak informasi (info box) yang menjelaskan peran dan tanggung jawab
+    penanggung jawab kehadiran dalam sistem NusaAttend
+--}}
+<div class="kartu-informasi-penanggung-jawab">
+    <div class="konten-informasi">
+        <div class="icon-informasi">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="teks-informasi">
+            <h3 class="judul-informasi">Tentang Penanggung Jawab Kehadiran</h3>
+            <ul class="daftar-informasi">
+                <li>• Bertugas meninjau dan menyetujui/menolak pengajuan izin karyawan</li>
+                <li>• Memberikan tanda tangan digital pada surat izin yang disetujui</li>
+                <li>• Dapat mengelola kehadiran karyawan yang berada di bawah tanggung jawabnya</li>
+                <li>• Biasanya adalah atasan langsung, supervisor, atau kepala tim</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== DAFTAR PENANGGUNG JAWAB ==================== -->
+{{!-- 
+    Container untuk tabel dinamis penanggung jawab
+    Akan di-render oleh JavaScript dari API
+--}}
+<div class="manajemen-container" id="daftarPenanggungJawabContainer">
+    <!-- Tabel akan dimuat di sini oleh JavaScript -->
+</div>
+
+<!-- ==================== MODAL TAMBAH PENANGGUNG JAWAB BARU ==================== -->
+{{!-- 
+    Modal pop-up untuk form tambah penanggung jawab baru
+    Muncul di atas halaman dengan overlay semi-transparan
+    Berisi form dengan validasi input
+--}}
+<div class="lapisanOverlay lapisanOverlayTambahPenanggungJawab" id="lapisanOverlayTambahPenanggungJawab">
+    <div class="modalTambahPenanggungJawab">
+        {{!-- Header modal dengan title dan tombol close --}}
+        <div class="headerModalPenanggungJawab">
+            <h2 class="judulModal">Tambah Penanggung Jawab Baru</h2>
+            <button type="button" class="tombolTutupModal" id="tombolTutupModalTambah" title="Tutup modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        {{!-- Form container --}}
+        <form class="formTambahPenanggungJawab" id="formTambahPenanggungJawab">
+            <div class="containerFormPenanggungJawab">
+                {{!-- Field: Nama Lengkap --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="inputNamaLengkap">
+                        <i class="fas fa-user"></i> Nama Lengkap <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="inputNamaLengkap" 
+                        name="nama_lengkap" 
+                        class="inputForm"
+                        placeholder="Masukkan nama lengkap"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Email Kerja --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="inputEmail">
+                        <i class="fas fa-envelope"></i> Email Kerja <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="inputEmail" 
+                        name="email" 
+                        class="inputForm"
+                        placeholder="nama@perusahaan.com"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Jabatan --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="inputJabatan">
+                        <i class="fas fa-briefcase"></i> Jabatan <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="inputJabatan" 
+                        name="jabatan" 
+                        class="inputForm"
+                        placeholder="Contoh: Manager HRD, Supervisor IT, Team Lead"
+                        required
+                    >
+                    <small class="teks-bantuan">Biasanya adalah atasan langsung atau kepala tim</small>
+                </div>
+
+                {{!-- Bagian Pengaturan Password --}}
+                <div class="kelompok-pengaturan-password">
+                    <h3 class="judul-pengaturan">Pengaturan Password Akun</h3>
+                    <div class="kontainer-checkbox">
+                        <input 
+                            type="checkbox" 
+                            id="checkboxGeneratePassword" 
+                            name="generatePassword" 
+                            class="checkbox-generate"
+                            checked
+                        >
+                        <label class="label-checkbox" for="checkboxGeneratePassword">
+                            Generate password otomatis (Direkomendasikan)
+                        </label>
+                    </div>
+                    <small class="teks-bantuan-password">
+                        Sistem akan membuat password acak yang aman dan mengirimkannya ke email
+                    </small>
+                </div>
+
+                {{!-- Kotak Informasi (Info Box) --}}
+                <div class="kotak-info-tambah">
+                    <p class="teks-info-tambah">
+                        <strong>Info:</strong> Setelah akun dibuat, penanggung jawab akan menerima email berisi kredensial login dan dapat langsung mengelola pengajuan izin dari karyawan yang berada di bawah tanggung jawabnya.
+                    </p>
+                </div>
+
+                {{!-- Tombol Form --}}
+                <div class="kelompokTombolForm">
+                    <button type="button" class="tombolBatal" id="tombolBatalTambah">
+                        Batal
+                    </button>
+                    <button type="submit" class="tombolSimpan">
+                        Buat Akun
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== MODAL EDIT PENANGGUNG JAWAB ==================== -->
+{{!-- 
+    Modal pop-up untuk form edit penanggung jawab
+    Muncul saat user klik tombol edit di tabel
+    Memuat data yang sudah ada ke dalam form
+--}}
+<div class="lapisanOverlay lapisanOverlayEditPenanggungJawab" id="lapisanOverlayEditPenanggungJawab">
+    <div class="modalEditPenanggungJawab">
+        {{!-- Header modal dengan title dan tombol close --}}
+        <div class="headerModalPenanggungJawab">
+            <h2 class="judulModal">Edit Data Penanggung Jawab</h2>
+            <button type="button" class="tombolTutupModal" id="tombolTutupModalEdit" title="Tutup modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        {{!-- Form container --}}
+        <form class="formEditPenanggungJawab" id="formEditPenanggungJawab">
+            <div class="containerFormPenanggungJawab">
+                {{!-- Field: Nama Lengkap --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="editInputNamaLengkap">
+                        <i class="fas fa-user"></i> Nama Lengkap <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="editInputNamaLengkap" 
+                        name="nama" 
+                        class="inputForm"
+                        placeholder="Masukkan nama lengkap"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Email Kerja --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="editInputEmail">
+                        <i class="fas fa-envelope"></i> Email Kerja <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="editInputEmail" 
+                        name="email" 
+                        class="inputForm"
+                        placeholder="Masukkan email kerja"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Jabatan --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="editInputJabatan">
+                        <i class="fas fa-briefcase"></i> Jabatan <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="editInputJabatan" 
+                        name="jabatan" 
+                        class="inputForm"
+                        placeholder="Contoh: Manager HRD, Supervisor IT"
+                        required
+                    >
+                    <small class="teks-bantuan">Biasanya adalah atasan langsung atau kepala tim</small>
+                </div>
+
+                {{!-- Kotak informasi detail --}}
+                <div class="kotak-info-edit-detail">
+                    <p class="teks-info-edit">
+                        <strong>Info:</strong> Setelah data penanggung jawab diperbarui, sistem akan menyimpan perubahan data akun penanggung jawab kehadiran dan dapat langsung mengelola pengajuan izin dari karyawan yang berada di bawah tanggung jawabnya.
+                    </p>
+                </div>
+
+                {{!-- Tombol Form --}}
+                <div class="kelompokTombolForm">
+                    <button type="button" class="tombolBatal" id="tombolBatalEdit">
+                        Batal
+                    </button>
+                    <button type="submit" class="tombolSimpan">
+                        <i class="fas fa-check"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== JAVASCRIPT UNTUK HALAMAN MANAJEMEN PENANGGUNG JAWAB ==================== -->
+{{!-- [REFACTOR AKADEMIK] Update script src dari manajemen-supervisor.js ke manajemen-penanggung-jawab.js --}}
+<script src="/js/manajemen-penanggung-jawab.js"></script>
