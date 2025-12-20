@@ -12,6 +12,7 @@ const inisialisasiSocket = require('./config/socket');
 
 // ==================== IMPORT RUTE ====================
 const rutAuntenfikasi = require('./routes/auth');
+const rutAdminKaryawan = require('./routes/adminKaryawan');
 // const rutPengajuan = require('./routes/pengajuan'); // Di-backup
 // const rutAbsensi = require('./routes/absensi');     // Di-backup
 // const rutAdmin = require('./routes/admin');         // Di-backup
@@ -158,6 +159,9 @@ app.post('/logout', (req, res) => {
 });
 
 // ==================== RUTE TERLINDUNGI ====================
+// Daftarkan router admin karyawan dengan middleware autentikasi
+app.use('/api/admin', middlewareAuntenfikasi, rutAdminKaryawan);
+
 // app.use('/api/pengajuan', middlewareAuntenfikasi, rutPengajuan); // Di-backup
 // app.use('/api/absensi', middlewareAuntenfikasi, rutAbsensi);     // Di-backup
 // app.use('/api/chatbot', rutChatbot);                             // Di-backup
@@ -207,12 +211,12 @@ app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
   const role = req.session.user.role;
   
   if (role === 'admin') {
-    // Admin melihat semua pengajuan yang diajukan oleh karyawan
-    res.render('admin/pengajuan', { 
-      title: 'Manajemen Pengajuan - NusaAttend',
+    // Admin melihat manajemen karyawan
+    res.render('admin/manajemen-karyawan', { 
+      title: 'Manajemen Karyawan - NusaAttend',
       user: req.session.user,
       layout: 'dashboard-layout',
-      halaman: 'pengajuan'
+      halaman: 'manajemen-karyawan'
     });
   } else if (role === 'supervisor') {
     // Supervisor melihat pengajuan untuk direview
@@ -240,7 +244,7 @@ app.get('/pengajuan/buat', middlewareAuntenfikasi, (req, res) => {
   const role = req.session.user.role;
   
   // Hanya karyawan yang bisa membuat pengajuan
-  if (role !== 'employee' && role !== 'karyawan') {
+  if (role !== 'karyawan') {
     return res.status(403).render('publik/404', {
       title: 'Akses Ditolak - NusaAttend',
       message: 'Anda tidak memiliki akses untuk membuat pengajuan.'
@@ -260,7 +264,7 @@ app.get('/absensi', middlewareAuntenfikasi, (req, res) => {
   const role = req.session.user.role;
   
   // Hanya karyawan yang bisa mengakses absensi
-  if (role !== 'employee' && role !== 'karyawan') {
+  if (role !== 'karyawan') {
     return res.status(403).render('publik/404', {
       title: 'Akses Ditolak - NusaAttend',
       message: 'Anda tidak memiliki akses ke halaman absensi.'
@@ -297,6 +301,8 @@ app.get('/admin/karyawan', middlewareAuntenfikasi, (req, res) => {
     halaman: 'karyawan'
   });
 });
+
+// ==================== HALAMAN LAPORAN ADMIN ====================
 
 // Halaman laporan admin
 app.get('/admin/laporan', middlewareAuntenfikasi, (req, res) => {
@@ -346,7 +352,7 @@ app.get('/pengajuan/:id', middlewareAuntenfikasi, (req, res) => {
   const { id } = req.params;
   
   // Karyawan dan supervisor bisa melihat detail pengajuan
-  if (role === 'employee' || role === 'karyawan') {
+  if (role === 'karyawan' || role === 'supervisor') {
     res.render('employee/detail-pengajuan', { 
       title: 'Detail Pengajuan - NusaAttend',
       user: req.session.user,

@@ -1,0 +1,314 @@
+<!-- ==================== HALAMAN MANAJEMEN KARYAWAN ==================== -->
+<!-- Halaman untuk admin mengelola data karyawan -->
+
+<!-- Header halaman manajemen karyawan -->
+<div class="manajemen-header">
+    <div class="manajemen-info">
+        <h1 class="manajemen-title">Manajemen Karyawan</h1>
+        <p class="manajemen-subtitle">Kelola dan pantau data karyawan perusahaan</p>
+    </div>
+    {{!-- Tombol untuk membuka modal tambah karyawan --}}
+    <button type="button" class="btn-tambah-karyawan" id="tombolBukaModalKaryawan">
+        <i class="fas fa-plus"></i> Tambah Karyawan
+    </button>
+</div>
+
+<!-- ==================== KOTAK INFORMASI CATATAN ==================== -->
+<div class="kartu-catatan">
+    <div class="catatan-konten">
+        <p class="catatan-label">
+            <strong>Catatan:</strong>
+            Data karyawan berasal dari data internal organisasi. Admin bertugas menginput data ke sistem untuk membuat akun pengguna.
+        </p>
+    </div>
+</div>
+
+<!-- ==================== MODAL TAMBAH KARYAWAN BARU ==================== -->
+{{!-- 
+    Modal pop-up untuk form tambah karyawan baru
+    Muncul di atas halaman dengan overlay semi-transparan
+    Berisi form dengan validasi input
+--}}
+<div class="lapisanOverlay lapisanOverlayTambahKaryawan" id="lapisanOverlayTambahKaryawan">
+    <div class="modalTambahKaryawan">
+        {{!-- Header modal dengan title dan tombol close --}}
+        <div class="headerModalKaryawan">
+            <h2 class="judulModal">Tambah Karyawan Baru</h2>
+            <button type="button" class="tombolTutupModal" id="tombolTutupModal" title="Tutup modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        {{!-- Form container --}}
+        <form class="formTambahKaryawan" id="formTambahKaryawan">
+            <div class="containerFormKaryawan">
+                {{!-- Field: Nama Lengkap --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="inputNamaLengkap">
+                        <i class="fas fa-user"></i> Nama Lengkap <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="inputNamaLengkap" 
+                        name="nama" 
+                        class="inputForm"
+                        placeholder="Masukkan nama lengkap"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Email Kerja --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="inputEmailKerja">
+                        <i class="fas fa-envelope"></i> Email Kerja <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="inputEmailKerja" 
+                        name="email" 
+                        class="inputForm"
+                        placeholder="nama@perusahaan.com"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Jabatan --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="inputJabatan">
+                        <i class="fas fa-briefcase"></i> Jabatan <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="inputJabatan" 
+                        name="jabatan" 
+                        class="inputForm"
+                        placeholder="Masukkan jabatan"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Penanggung Jawab (Supervisor) --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="inputPenanggungJawab">
+                        Penanggung Jawab <span class="tandaWajib">*</span>
+                    </label>
+                    <select 
+                        id="inputPenanggungJawab" 
+                        name="penanggungJawab" 
+                        class="inputForm"
+                        required
+                    >
+                        <option value="">Pilih penanggung jawab</option>
+                        <option value="budi-santoso">Budi Santoso</option>
+                        <option value="ahmad-wijaya">Ahmad Wijaya</option>
+                        <option value="sari-indah">Sari Indah</option>
+                    </select>
+                    <p class="teksKeterangan">
+                        Pilih atasan langsung atau supervisor yang akan menangani pengajuan izin karyawan ini
+                    </p>
+                </div>
+
+                {{!-- Field: Jatah Cuti Tahunan --}}
+                <div class="kelompokInputForm">
+                    <label class="labelInput" for="inputJatahCuti">
+                        Jatah Cuti Tahunan <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        id="inputJatahCuti" 
+                        name="jatahCuti" 
+                        class="inputForm"
+                        value="12"
+                        min="1"
+                        max="30"
+                        required
+                    >
+                    <p class="teksKeterangan">Biasanya 12 hari per tahun</p>
+                </div>
+
+                {{!-- Divider --}}
+                <div class="pemisahForm"></div>
+
+                {{!-- Pengaturan Password --}}
+                <div class="bagianPengaturanPassword">
+                    <h3 class="judulBagian">Pengaturan Password Akun</h3>
+                    <div class="containerCheckboxPassword">
+                        <input 
+                            type="checkbox" 
+                            id="checkboxGeneratePassword" 
+                            name="generatePassword" 
+                            class="inputCheckbox"
+                            checked
+                        >
+                        <label for="checkboxGeneratePassword" class="labelCheckbox">
+                            Generate password otomatis (Direkomendasikan)
+                        </label>
+                    </div>
+                    <p class="teksKeterangan">
+                        Sistem akan membuat password acak yang aman dan mengirimkannya ke email karyawan
+                    </p>
+                </div>
+
+                {{!-- Info Box --}}
+                <div class="kotak-info-modal">
+                    <div class="judul-info">
+                        <strong>Info:</strong>
+                    </div>
+                    <p class="teks-info">
+                        Setelah akun dibuat, karyawan akan menerima email berisi kredensial login untuk mengakses sistem NusaAttend.
+                    </p>
+                </div>
+            </div>
+
+            {{!-- Footer modal dengan tombol aksi --}}
+            <div class="footerModalKaryawan">
+                <button type="button" class="tombolBatal" id="tombolBatalForm">
+                    Batal
+                </button>
+                <button type="submit" class="tombolBuatAkun">
+                    Buat Akun
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== MODAL EDIT DATA KARYAWAN ==================== -->
+{{!-- 
+    Modal pop-up untuk form edit data karyawan yang sudah ada
+    Muncul di atas halaman dengan overlay semi-transparan
+    Berisi form dengan field yang dapat diubah
+    Hanya muncul ketika admin klik tombol "Edit" pada baris karyawan
+--}}
+<div class="lapisanOverlay lapisanOverlayEditKaryawan" id="lapisanOverlayEditKaryawan">
+    <div class="modalEditKaryawan" id="modalEditKaryawan">
+        {{!-- Header modal dengan title dan tombol close --}}
+        <div class="headerModalEdit">
+            <h2 class="judulModalEdit">Edit Data Karyawan</h2>
+            <button type="button" class="tombolTutupModalEdit" id="tombolTutupModalEdit" title="Tutup modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        {{!-- Form container untuk edit karyawan --}}
+        <form class="formEditKaryawan" id="formEditKaryawan">
+            {{!-- Hidden field untuk menyimpan ID karyawan yang sedang diedit --}}
+            <input type="hidden" id="idKaryawanEdit" name="idKaryawanEdit">
+
+            <div class="containerFormEditKaryawan">
+                {{!-- Field: Nama Lengkap --}}
+                <div class="kelompokInputEdit">
+                    <label class="labelInputEdit" for="inputNamaLengkapEdit">
+                        <i class="fas fa-user"></i> Nama Lengkap <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="inputNamaLengkapEdit" 
+                        name="nama_lengkap" 
+                        class="inputFormEdit"
+                        placeholder="Masukkan nama lengkap"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Email Kerja --}}
+                <div class="kelompokInputEdit">
+                    <label class="labelInputEdit" for="inputEmailKerjaEdit">
+                        <i class="fas fa-envelope"></i> Email Kerja <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="inputEmailKerjaEdit" 
+                        name="email" 
+                        class="inputFormEdit"
+                        placeholder="nama@perusahaan.com"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Jabatan --}}
+                <div class="kelompokInputEdit">
+                    <label class="labelInputEdit" for="inputJabatanEdit">
+                        <i class="fas fa-briefcase"></i> Jabatan <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="inputJabatanEdit" 
+                        name="jabatan" 
+                        class="inputFormEdit"
+                        placeholder="Masukkan jabatan"
+                        required
+                    >
+                </div>
+
+                {{!-- Field: Penanggung Jawab (Supervisor) --}}
+                <div class="kelompokInputEdit">
+                    <label class="labelInputEdit" for="inputPenanggungJawabEdit">
+                        Penanggung Jawab <span class="tandaWajib">*</span>
+                    </label>
+                    <select 
+                        id="inputPenanggungJawabEdit" 
+                        name="penanggung_jawab_id" 
+                        class="inputFormEdit"
+                        required
+                    >
+                        <option value="">Pilih penanggung jawab</option>
+                    </select>
+                    <p class="teksKeterangan">
+                        Pilih atasan langsung atau supervisor yang akan menangani pengajuan izin karyawan ini
+                    </p>
+                </div>
+
+                {{!-- Field: Jatah Cuti Tahunan --}}
+                <div class="kelompokInputEdit">
+                    <label class="labelInputEdit" for="inputJatahCutiEdit">
+                        Jatah Cuti Tahunan <span class="tandaWajib">*</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        id="inputJatahCutiEdit" 
+                        name="jatah_cuti_tahunan" 
+                        class="inputFormEdit"
+                        value="12"
+                        min="1"
+                        max="30"
+                        required
+                    >
+                    <p class="teksKeterangan">Biasanya 12 hari per tahun</p>
+                </div>
+
+                {{!-- Info Box --}}
+                <div class="kotak-info-modal">
+                    <div class="judul-info">
+                        <strong>Info:</strong>
+                    </div>
+                    <p class="teks-info">
+                        Setelah perubahan disimpan, karyawan akan menerima notifikasi update data melalui sistem.
+                    </p>
+                </div>
+            </div>
+
+            {{!-- Footer modal dengan tombol aksi --}}
+            <div class="footerModalEdit">
+                <button type="button" class="tombolBatalEdit" id="tombolBatalFormEdit">
+                    Batal
+                </button>
+                <button type="submit" class="tombolSimpanPerubahan">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Bagian daftar karyawan (dimuat secara dinamis via JavaScript) -->
+<div class="manajemen-container" id="daftarKaryawanContainer">
+    <!-- Loading state - akan diganti oleh JavaScript -->
+    <div style="text-align: center; padding: 40px;">
+        <p>Memuat data karyawan...</p>
+    </div>
+</div>
+
+{{!-- ==================== SCRIPT UNTUK HALAMAN INI ==================== --}}
+{{!-- Load JavaScript untuk modal dan form handling --}}
+<script src="/js/manajemen-karyawan.js"></script>

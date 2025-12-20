@@ -3,10 +3,12 @@
  * Dijalankan satu kali untuk inisialisasi data admin
  * 
  * Penggunaan:
- * node buatUserAdmin.js
+ * node database/buatUserAdmin.js
+ * atau
+ * cd database && node buatUserAdmin.js
  */
 
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -44,8 +46,8 @@ const skemaUser = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['employee', 'supervisor', 'admin'],
-      default: 'employee'
+      enum: ['karyawan', 'supervisor', 'admin'],
+      default: 'admin'
     },
     jatah_cuti_tahunan: {
       type: Number,

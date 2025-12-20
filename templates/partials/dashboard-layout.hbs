@@ -18,70 +18,67 @@
         </div>
 
         <!-- Informasi Pengguna di Sidebar -->
-        <div class="sidebar-user">
-            <p class="user-role">{{user.role}}</p>
-            <p class="user-name">{{user.nama_lengkap}}</p>
+        <div class="sidebar-user-info">
+            <p class="user-role-title">{{user.role}}</p>
+            <p class="user-role-label">{{#if (eq user.role 'admin')}}Administrator Sistem{{else if (eq user.role 'supervisor')}}Supervisor{{else}}Karyawan{{/if}}</p>
+            <span class="user-role-badge">
+                {{#if (eq user.role 'admin')}}Admin Sistem{{else if (eq user.role 'supervisor')}}Supervisor{{else}}Karyawan{{/if}}
+            </span>
         </div>
 
         <!-- Menu Navigasi - Berbeda Sesuai Role Pengguna -->
         <nav class="sidebar-menu">
             {{#if (eq user.role 'admin')}}
                 <!-- Menu untuk Admin -->
-                <a href="/dashboard" class="menu-item {{#if (isActive 'dashboard')}}active{{/if}}">
-                    <i class="fas fa-chart-line"></i>
+                <a href="/dashboard" class="menu-item {{isActive 'dashboard' halaman}}">
+                    <i class="fas fa-th"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/pengajuan" class="menu-item {{#if (isActive 'pengajuan')}}active{{/if}}">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Manajemen Pengajuan</span>
-                </a>
-                <a href="/admin/karyawan" class="menu-item {{#if (isActive 'karyawan')}}active{{/if}}">
+                <a href="/admin/karyawan" class="menu-item {{isActive 'karyawan' halaman}}">
                     <i class="fas fa-users"></i>
                     <span>Manajemen Karyawan</span>
                 </a>
-                <a href="/admin/laporan" class="menu-item {{#if (isActive 'laporan')}}active{{/if}}">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Laporan</span>
+                <a href="/admin/supervisor" class="menu-item {{isActive 'supervisor' halaman}}">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Manajemen Penanggung Jawab</span>
+                </a>
+                <a href="/admin/log-keberatan" class="menu-item {{isActive 'log-keberatan' halaman}}">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Log Keberatan</span>
                 </a>
             {{else if (eq user.role 'supervisor')}}
                 <!-- Menu untuk Supervisor -->
-                <a href="/dashboard" class="menu-item {{#if (isActive 'dashboard')}}active{{/if}}">
-                    <i class="fas fa-chart-line"></i>
+                <a href="/dashboard" class="menu-item {{isActive 'dashboard' halaman}}">
+                    <i class="fas fa-th"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/pengajuan" class="menu-item {{#if (isActive 'pengajuan')}}active{{/if}}">
+                <a href="/pengajuan" class="menu-item {{isActive 'pengajuan' halaman}}">
                     <i class="fas fa-check-circle"></i>
                     <span>Review Pengajuan</span>
                 </a>
-                <a href="/supervisor/laporan" class="menu-item {{#if (isActive 'laporan')}}active{{/if}}">
+                <a href="/supervisor/laporan" class="menu-item {{isActive 'laporan' halaman}}">
                     <i class="fas fa-chart-bar"></i>
                     <span>Laporan Tim</span>
                 </a>
             {{else}}
                 <!-- Menu untuk Karyawan -->
-                <a href="/dashboard" class="menu-item {{#if (isActive 'dashboard')}}active{{/if}}">
-                    <i class="fas fa-chart-line"></i>
+                <a href="/dashboard" class="menu-item {{isActive 'dashboard' halaman}}">
+                    <i class="fas fa-th"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/pengajuan/buat" class="menu-item {{#if (isActive 'buat-pengajuan')}}active{{/if}}">
+                <a href="/pengajuan/buat" class="menu-item {{isActive 'buat-pengajuan' halaman}}">
                     <i class="fas fa-plus-circle"></i>
                     <span>Buat Pengajuan</span>
                 </a>
-                <a href="/pengajuan" class="menu-item {{#if (isActive 'riwayat-pengajuan')}}active{{/if}}">
+                <a href="/pengajuan" class="menu-item {{isActive 'riwayat-pengajuan' halaman}}">
                     <i class="fas fa-history"></i>
                     <span>Riwayat Pengajuan</span>
                 </a>
-                <a href="/absensi" class="menu-item {{#if (isActive 'absensi')}}active{{/if}}">
+                <a href="/absensi" class="menu-item {{isActive 'absensi' halaman}}">
                     <i class="fas fa-clock"></i>
                     <span>Absensi</span>
                 </a>
             {{/if}}
-
-            <!-- Menu Chatbot - Tersedia untuk Semua Role -->
-            <a href="/chatbot" class="menu-item {{#if (isActive 'chatbot')}}active{{/if}}">
-                <i class="fas fa-comments"></i>
-                <span>Bantuan Chatbot</span>
-            </a>
         </nav>
 
         <!-- Tombol Logout di Footer Sidebar -->

@@ -750,37 +750,47 @@ footer a:hover {
   margin: 0;
 }
 
-/* Informasi pengguna di sidebar */
-.sidebar-user {
-  padding: 16px;
-  background-color: #e7f5ff;
-  border-radius: 8px;
-  margin: 16px;
+/* Informasi pengguna di sidebar - Sesuai Figma design node 3-884 */
+.sidebar-user-info {
+  padding: 12px;
+  background-color: #ecfdf5;
+  border-radius: 10px;
+  margin: 12px 16px 0 16px;
 }
 
-.user-role {
-  font-size: 11px;
-  color: #4f39f6;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.user-role-title {
+  font-size: 16px;
+  color: #004f3b;
   font-weight: 600;
   margin: 0 0 4px 0;
+  text-transform: capitalize;
 }
 
-.user-name {
-  font-size: 13px;
-  color: #312c85;
+.user-role-label {
+  font-size: 14px;
+  color: #059669;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.user-role-badge {
+  display: inline-block;
+  font-size: 12px;
+  color: #006045;
+  background-color: #a4f4cf;
+  padding: 4px 8px;
+  border-radius: 4px;
   font-weight: 600;
-  margin: 0;
+  text-transform: capitalize;
 }
 
 /* Menu navigasi di sidebar */
 .sidebar-menu {
   flex: 1;
-  padding: 12px 8px;
+  padding: 16px 8px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .menu-item {
@@ -788,17 +798,17 @@ footer a:hover {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  color: #4a5565;
+  color: #364153;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.3s ease;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
 }
 
 .menu-item i {
-  font-size: 16px;
+  font-size: 20px;
   width: 20px;
 }
 
@@ -826,23 +836,23 @@ footer a:hover {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: transparent;
+  color: #e7000b;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
 }
 
 .logout-btn:hover {
-  background-color: #ffeaa7;
+  background-color: rgba(231, 0, 11, 0.1);
   transform: translateY(-2px);
 }
 
 .logout-btn i {
-  font-size: 16px;
+  font-size: 20px;
 }
 
 /* ==================== KONTEN UTAMA DASHBOARD ==================== */
@@ -2771,3 +2781,1041 @@ select.input-form {
     text-align: center;
   }
 }
+
+/* ==================== MODAL TAMBAH KARYAWAN BARU ==================== */
+/* Styling untuk komponen modal form tambah karyawan */
+
+/* Lapisan overlay semi-transparan di belakang modal */
+.lapisanOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(50, 50, 50, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Overlay dalam keadaan tampil */
+.lapisanOverlay.tampil-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Container modal utama */
+.modalTambahKaryawan {
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 672px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: munculModal 0.3s ease-out;
+}
+
+/* Animasi munculnya modal */
+@keyframes munculModal {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Header modal dengan judul dan tombol close */
+.headerModalKaryawan {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 16px;
+}
+
+/* Judul modal */
+.judulModal {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Tombol close (X) pada header modal */
+.tombolTutupModal {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.tombolTutupModal:hover {
+  color: #1f2937;
+}
+
+/* Form container */
+.formTambahKaryawan {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Container untuk semua input form */
+.containerFormKaryawan {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  padding-bottom: 0;
+}
+
+/* Kelompok input (label + input field) */
+.kelompokInputForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Label untuk input */
+.labelInput {
+  font-size: 16px;
+  font-weight: 400;
+  color: #364153;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 24px;
+}
+
+/* Icon dalam label */
+.labelInput i {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tanda wajib (*) */
+.tandaWajib {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* Input form field (text, email, number) */
+.inputForm {
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  color: #0a0a0a;
+  background-color: white;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.inputForm::placeholder {
+  color: rgba(10, 10, 10, 0.5);
+}
+
+.inputForm:focus {
+  outline: none;
+  border-color: #4f39f6;
+  box-shadow: 0 0 0 3px rgba(79, 57, 246, 0.1);
+}
+
+/* Select dropdown */
+.inputForm[type="select"],
+.inputForm {
+  cursor: text;
+}
+
+.inputForm[type="select"]:focus {
+  cursor: pointer;
+}
+
+/* Teks keterangan di bawah input */
+.teksKeterangan {
+  font-size: 14px;
+  color: #6a7282;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Pemisah form (divider) */
+.pemisahForm {
+  border-top: 1px solid #e5e7eb;
+  margin: 8px 0;
+}
+
+/* Bagian pengaturan password */
+.bagianPengaturanPassword {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Judul bagian form */
+.judulBagian {
+  font-size: 16px;
+  font-weight: 400;
+  color: #101828;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Container untuk checkbox dengan label */
+.containerCheckboxPassword {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Input checkbox */
+.inputCheckbox {
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+  cursor: pointer;
+  accent-color: #4f39f6;
+  flex-shrink: 0;
+}
+
+/* Label untuk checkbox */
+.labelCheckbox {
+  font-size: 16px;
+  color: #364153;
+  cursor: pointer;
+  line-height: 24px;
+}
+
+/* Info box dengan background biru muda */
+.kotak-info-modal {
+  background-color: #eff6ff;
+  border: 1px solid #bedbff;
+  border-radius: 10px;
+  padding: 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Judul info box */
+.judul-info {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1c398e;
+  line-height: 20px;
+}
+
+/* Teks dalam info box */
+.teks-info {
+  font-size: 14px;
+  color: #1c398e;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Footer modal dengan tombol aksi */
+.footerModalKaryawan {
+  display: flex;
+  gap: 12px;
+  padding: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Tombol batal (secondary button) */
+.tombolBatal {
+  flex: 1;
+  padding: 12px 24px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  background-color: white;
+  color: #364153;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombolBatal:hover {
+  background-color: #f9fafb;
+  border-color: #b4bcc8;
+}
+
+.tombolBatal:active {
+  background-color: #f3f4f6;
+}
+
+/* Tombol buat akun (primary button) */
+.tombolBuatAkun {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background-color: #4f39f6;
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombolBuatAkun:hover {
+  background-color: #3d2ae3;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.tombolBuatAkun:active {
+  background-color: #3220c0;
+  transform: translateY(0);
+}
+
+/* ==================== MODAL EDIT DATA KARYAWAN ==================== */
+/* Styling khusus untuk modal edit dengan struktur serupa modal tambah */
+
+/* Overlay untuk modal edit */
+.lapisanOverlayEditKaryawan {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(50, 50, 50, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Overlay dalam keadaan tampil */
+.lapisanOverlayEditKaryawan.tampil-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Container modal edit - sama dengan modal tambah */
+.modalEditKaryawan {
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 672px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: munculModal 0.3s ease-out;
+}
+
+/* Header modal edit dengan judul dan tombol close */
+.headerModalEdit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 16px;
+}
+
+/* Judul modal edit */
+.judulModalEdit {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Tombol close (X) pada header modal edit */
+.tombolTutupModalEdit {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.tombolTutupModalEdit:hover {
+  color: #1f2937;
+}
+
+/* Form container untuk edit karyawan */
+.formEditKaryawan {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Container untuk semua input form edit */
+.containerFormEditKaryawan {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  padding-bottom: 0;
+}
+
+/* Kelompok input form edit (label + input field) */
+.kelompokInputEdit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Label untuk input edit */
+.labelInputEdit {
+  font-size: 16px;
+  font-weight: 400;
+  color: #364153;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 24px;
+}
+
+/* Icon dalam label edit */
+.labelInputEdit i {
+  font-size: 16px;
+  color: #6b7280;
+  width: 16px;
+  height: 16px;
+}
+
+/* Input field untuk form edit */
+.inputFormEdit {
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #0a0a0a;
+  line-height: 24px;
+  transition: all 0.2s ease;
+}
+
+/* Input field edit saat focus */
+.inputFormEdit:focus {
+  outline: none;
+  border-color: #4f39f6;
+  box-shadow: 0 0 0 3px rgba(79, 57, 246, 0.1);
+  background-color: #f9fafb;
+}
+
+/* Input field edit saat ada error */
+.inputFormEdit.error {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Teks keterangan untuk input edit */
+.teksKeterangan {
+  font-size: 14px;
+  color: #6a7282;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Footer modal edit dengan tombol aksi */
+.footerModalEdit {
+  display: flex;
+  gap: 12px;
+  padding: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Tombol batal edit (secondary button) */
+.tombolBatalEdit {
+  flex: 1;
+  padding: 12px 24px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  background-color: white;
+  color: #364153;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombolBatalEdit:hover {
+  background-color: #f9fafb;
+  border-color: #b4bcc8;
+}
+
+.tombolBatalEdit:active {
+  background-color: #f3f4f6;
+}
+
+/* Tombol simpan perubahan (primary button) */
+.tombolSimpanPerubahan {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background-color: #4f39f6;
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombolSimpanPerubahan:hover {
+  background-color: #3d2ae3;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.tombolSimpanPerubahan:active {
+  background-color: #3220c0;
+  transform: translateY(0);
+}
+
+/* Responsive styling untuk modal */
+@media (max-width: 768px) {
+  .modalTambahKaryawan {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .headerModalKaryawan {
+    padding: 16px;
+  }
+
+  .judulModal {
+    font-size: 18px;
+  }
+
+  .containerFormKaryawan {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .footerModalKaryawan {
+    padding: 16px;
+    flex-direction: column;
+  }
+
+  .tombolBatal,
+  .tombolBuatAkun {
+    width: 100%;
+  }
+}
+
+/* ==================== EMPTY STATE - PESAN KOSONG KARYAWAN ==================== */
+/* Styling untuk kondisi ketika belum ada data karyawan */
+
+.pesan-kosong-karyawan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 80px 32px;
+  text-align: center;
+  background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 16px;
+  border: 2px dashed #d1d5dc;
+  min-height: 500px;
+}
+
+/* Icon untuk empty state */
+.ikon-kosong-karyawan {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: #4f39f6;
+  flex-shrink: 0;
+}
+
+/* Teks pesan kosong */
+.teks-kosong-karyawan {
+  font-size: 16px;
+  color: #364153;
+  margin: 0;
+  line-height: 24px;
+  max-width: 400px;
+  font-weight: 500;
+}
+
+/* Tombol "Tambah Karyawan Pertama" */
+.tombol-tambah-pertama {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #4f39f6 0%, #3d2ae3 100%);
+  color: #ffffff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  border: none;
+}
+
+.tombol-tambah-pertama:hover {
+  background: linear-gradient(135deg, #3d2ae3 0%, #3220c0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 57, 246, 0.4);
+}
+
+.tombol-tambah-pertama:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(79, 57, 246, 0.2);
+}
+
+.tombol-tambah-pertama i {
+  font-size: 18px;
+}
+
+/* Responsive untuk empty state */
+@media (max-width: 768px) {
+  .pesan-kosong-karyawan {
+    padding: 60px 16px;
+    min-height: 400px;
+    gap: 20px;
+  }
+
+  .ikon-kosong-karyawan {
+    width: 64px;
+    height: 64px;
+    font-size: 40px;
+  }
+
+  .teks-kosong-karyawan {
+    font-size: 14px;
+  }
+
+  .tombol-tambah-pertama {
+    font-size: 14px;
+    padding: 10px 24px;
+  }
+}
+
+/* ==================== MODAL KONFIRMASI HAPUS ==================== */
+/* Styling untuk modal konfirmasi sebelum menghapus karyawan */
+
+.modal-konfirmasi-hapus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Modal dalam keadaan tampil */
+.modal-konfirmasi-hapus.tampil {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Overlay semi-transparan di belakang modal */
+.overlay-konfirmasi {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 0;
+}
+
+/* Container modal konfirmasi - tetap di tengah dengan z-index lebih tinggi */
+.konten-konfirmasi {
+  position: relative;
+  z-index: 1;
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+/* Animasi slide up saat modal muncul */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animasi slide down saat modal hilang */
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Header konfirmasi */
+.header-konfirmasi {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 16px;
+}
+
+.header-konfirmasi h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Tombol tutup konfirmasi */
+.tombol-tutup-konfirmasi {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.tombol-tutup-konfirmasi:hover {
+  color: #1f2937;
+}
+
+/* Body konfirmasi */
+.body-konfirmasi {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+/* Icon warning */
+.icon-warning {
+  width: 64px;
+  height: 64px;
+  background-color: #fef3c7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.icon-warning i {
+  line-height: 1;
+}
+
+/* Teks konfirmasi */
+.teks-konfirmasi {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 24px;
+}
+
+.teks-detail {
+  font-size: 14px;
+  color: #6a7282;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Footer konfirmasi dengan tombol */
+.footer-konfirmasi {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 24px 24px;
+  width: 100%;
+}
+
+.tombol-batal-konfirmasi {
+  flex: 1;
+  padding: 12px 24px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  background-color: white;
+  color: #364153;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombol-batal-konfirmasi:hover {
+  background-color: #f9fafb;
+  border-color: #b4bcc8;
+}
+
+.tombol-batal-konfirmasi:active {
+  background-color: #f3f4f6;
+}
+
+.tombol-hapus-konfirmasi {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombol-hapus-konfirmasi:hover {
+  background-color: #bb2d3b;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+  transform: translateY(-1px);
+}
+
+.tombol-hapus-konfirmasi:active {
+  background-color: #a02d34;
+  transform: translateY(0);
+}
+
+/* ==================== NOTIFIKASI TOAST ==================== */
+/* Styling untuk notifikasi toast yang muncul di atas halaman */
+
+.notifikasi-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  min-width: 300px;
+  max-width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  animation: slideInRight 0.3s ease-out;
+  opacity: 0;
+  transform: translateX(400px);
+}
+
+/* Notifikasi dalam keadaan tampil */
+.notifikasi-toast.tampil {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Animasi slide in dari kanan */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animasi slide out ke kanan */
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+}
+
+/* Konten notifikasi */
+.konten-notifikasi {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+/* Pesan notifikasi */
+.pesan-notifikasi {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+/* Tipe notifikasi: Sukses */
+.notifikasi-sukses {
+  background-color: #dcfce7;
+  border: 1px solid #86efac;
+  color: #166534;
+}
+
+.notifikasi-sukses .konten-notifikasi::before {
+  content: '✓';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #16a34a;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Tipe notifikasi: Error */
+.notifikasi-error {
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+}
+
+.notifikasi-error .konten-notifikasi::before {
+  content: '✕';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #dc2626;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Tipe notifikasi: Info */
+.notifikasi-info {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1e40af;
+}
+
+.notifikasi-info .konten-notifikasi::before {
+  content: 'ⓘ';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #0284c7;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Tipe notifikasi: Loading */
+.notifikasi-loading {
+  background-color: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+.notifikasi-loading .konten-notifikasi::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f59e0b;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive notifikasi toast */
+@media (max-width: 768px) {
+  .notifikasi-toast {
+    min-width: 280px;
+    max-width: 90%;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+  }
+
+  .pesan-notifikasi {
+    font-size: 14px;
+  }
+}
+

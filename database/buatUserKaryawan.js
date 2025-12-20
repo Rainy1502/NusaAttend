@@ -1,12 +1,22 @@
 /**
- * Script untuk membuat user karyawan secara langsung ke MongoDB Atlas
- * Dijalankan untuk inisialisasi data karyawan
+ * Script untuk membuat user karyawan di MongoDB Atlas
  * 
- * Penggunaan:
- * node buatUserKaryawan.js
+ * Tujuan: Inisialisasi data karyawan test untuk admin dashboard
+ * 
+ * Data yang dimasukkan:
+ * - 8 karyawan dengan role = 'karyawan'
+ * - Email unik untuk setiap karyawan
+ * - Password di-hash otomatis sebelum disimpan
+ * - Jatah cuti tahunan = 12 hari (sesuai form modal)
+ * - Status aktif = true
+ * 
+ * Cara menjalankan:
+ * $ node database/buatUserKaryawan.js
+ * atau
+ * $ cd database && node buatUserKaryawan.js
  */
 
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -44,8 +54,8 @@ const skemaUser = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['employee', 'supervisor', 'admin'],
-      default: 'employee'
+      enum: ['karyawan', 'supervisor', 'admin'],
+      default: 'karyawan'
     },
     jatah_cuti_tahunan: {
       type: Number,
@@ -107,45 +117,55 @@ const buatUserKaryawan = async () => {
     // ==================== DATA USER KARYAWAN ====================
     /**
      * Data karyawan yang akan dimasukkan ke database
-     * Bisa ditambahkan lebih banyak karyawan sesuai kebutuhan
+     * Sesuai dengan form modal "Tambah Karyawan Baru" di admin dashboard
+     * 
+     * Field yang digunakan:
+     * - nama_lengkap: Nama lengkap karyawan
+     * - email: Email kerja (unique)
+     * - password: Password awal (akan di-hash)
+     * - jabatan: Posisi/jabatan di perusahaan
+     * - role: Selalu 'karyawan' untuk karyawan
+     * - jatah_cuti_tahunan: Jumlah cuti tahunan (default 12 hari)
+     * - sisa_cuti: Sisa cuti yang masih bisa diambil
+     * - adalah_aktif: Status aktif karyawan
      */
     const dataUserKaryawan = [
       {
-        nama_lengkap: 'Budi Santoso',
-        email: 'budi.santoso@nusaattend.com',
-        password: 'karyawan123', // Password akan di-hash otomatis
-        jabatan: 'Staff IT',
-        role: 'employee',
+        nama_lengkap: 'Rendra Pratama',
+        email: 'rendra.pratama@nusaattend.com',
+        password: 'KaryawanSecure123!',
+        jabatan: 'Junior Developer',
+        role: 'karyawan',
         jatah_cuti_tahunan: 12,
         sisa_cuti: 12,
         adalah_aktif: true
       },
       {
-        nama_lengkap: 'Siti Nurhaliza',
-        email: 'siti.nurhaliza@nusaattend.com',
-        password: 'karyawan123',
-        jabatan: 'Marketing Manager',
-        role: 'employee',
+        nama_lengkap: 'Linda Setiawan',
+        email: 'linda.setiawan@nusaattend.com',
+        password: 'KaryawanSecure123!',
+        jabatan: 'Content Creator',
+        role: 'karyawan',
         jatah_cuti_tahunan: 12,
         sisa_cuti: 12,
         adalah_aktif: true
       },
       {
-        nama_lengkap: 'Ahmad Wijaya',
-        email: 'ahmad.wijaya@nusaattend.com',
-        password: 'karyawan123',
-        jabatan: 'Finance Officer',
-        role: 'employee',
+        nama_lengkap: 'Arif Gunawan',
+        email: 'arif.gunawan@nusaattend.com',
+        password: 'KaryawanSecure123!',
+        jabatan: 'System Administrator',
+        role: 'karyawan',
         jatah_cuti_tahunan: 12,
         sisa_cuti: 12,
         adalah_aktif: true
       },
       {
-        nama_lengkap: 'Dewi Lestari',
-        email: 'dewi.lestari@nusaattend.com',
-        password: 'karyawan123',
-        jabatan: 'HR Specialist',
-        role: 'employee',
+        nama_lengkap: 'Maya Kusuma',
+        email: 'maya.kusuma@nusaattend.com',
+        password: 'KaryawanSecure123!',
+        jabatan: 'Business Analyst',
+        role: 'karyawan',
         jatah_cuti_tahunan: 12,
         sisa_cuti: 12,
         adalah_aktif: true
@@ -208,7 +228,11 @@ const buatUserKaryawan = async () => {
     console.log('=====================================\n');
 
     console.log('💾 Data telah disimpan ke MongoDB Atlas');
-    console.log('🌐 Silakan login di http://localhost:3000 menggunakan kredensial karyawan');
+    console.log('\n📧 Kredensial Login Karyawan:');
+    console.log('   Password: KaryawanSecure123!');
+    console.log('   (Ganti password saat login pertama kali)\n');
+    console.log('🌐 Akses http://localhost:3000 dan login sebagai salah satu karyawan di atas');
+    console.log('👨‍💼 Atau login sebagai Admin untuk mengelola karyawan di /admin/karyawan\n');
 
     // Tutup koneksi
     await mongoose.connection.close();
