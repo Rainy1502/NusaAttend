@@ -12,7 +12,7 @@ const User = require('../models/User');
 /**
  * Helper function untuk menghitung waktu relatif dari timestamp
  * 
- * @param {Date} timestamp - Timestamp yang akan dihitung
+ * @param {Date} timestamp - Timestamp (Date object) yang akan dihitung
  * @param {Object} options - Opsi untuk formatting
  * @param {string} options.justNowText - Text untuk "baru saja" (default: "Baru saja")
  * @param {string} options.minutePrefix - Prefix untuk menit (default: "")
