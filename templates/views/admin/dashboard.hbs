@@ -1,7 +1,6 @@
 <!-- ==================== HEADER DASHBOARD ADMIN ==================== -->
 <div class="dashboard-header">
     <h1 class="dashboard-title">Dashboard Admin Sistem</h1>
-    <p class="dashboard-subtitle">Kelola pengajuan dan data sistem NusaAttend</p>
 </div>
 
 <!-- ==================== KARTU INFORMASI ROLE ==================== -->
@@ -31,7 +30,7 @@
             <i class="fas fa-users"></i>
         </div>
         <div class="stat-content">
-            <p class="stat-number">24</p>
+            <p class="stat-number">{{totalKaryawan}}</p>
             <p class="stat-label">Total Karyawan</p>
         </div>
     </div>
@@ -42,7 +41,7 @@
             <i class="fas fa-clock"></i>
         </div>
         <div class="stat-content">
-            <p class="stat-number">3</p>
+            <p class="stat-number">{{totalPenanggungJawab}}</p>
             <p class="stat-label">Penanggung Jawab</p>
         </div>
     </div>
@@ -53,7 +52,7 @@
             <i class="fas fa-check-circle"></i>
         </div>
         <div class="stat-content">
-            <p class="stat-number">27</p>
+            <p class="stat-number">{{totalAkunAktif}}</p>
             <p class="stat-label">Akun Aktif</p>
         </div>
     </div>
@@ -64,7 +63,7 @@
             <i class="fas fa-activity"></i>
         </div>
         <div class="stat-content">
-            <p class="stat-number">18</p>
+            <p class="stat-number">{{totalAktivitasHariIni}}</p>
             <p class="stat-label">Aktivitas Hari Ini</p>
         </div>
     </div>
@@ -76,35 +75,26 @@
     <h2 class="section-title">Aktivitas Terbaru</h2>
 
     <div class="activity-list">
-        <!-- Item aktivitas 1 -->
+        {{#each aktivitasTerbaru}}
+        <!-- Item aktivitas dinamis -->
         <div class="activity-item">
             <div class="activity-dot"></div>
             <div class="activity-content">
-                <p class="activity-text"><strong>Akun karyawan baru dibuat</strong></p>
-                <p class="activity-person">Dewi Lestari - Marketing</p>
-                <p class="activity-time">2 jam lalu</p>
+                <p class="activity-text"><strong>{{this.deskripsi}}</strong></p>
+                <p class="activity-person">{{this.nama_pengguna}} - {{this.jabatan}}</p>
+                <p class="activity-time">{{this.waktu_relatif}}</p>
             </div>
         </div>
-
-        <!-- Item aktivitas 2 -->
+        {{/each}}
+        
+        {{#unless aktivitasTerbaru}}
+        <!-- Pesan jika tidak ada aktivitas -->
         <div class="activity-item">
-            <div class="activity-dot"></div>
             <div class="activity-content">
-                <p class="activity-text"><strong>Data karyawan diperbarui</strong></p>
-                <p class="activity-person">Andi Pratama - Staff IT</p>
-                <p class="activity-time">3 jam lalu</p>
+                <p class="activity-text">Tidak ada aktivitas terbaru</p>
             </div>
         </div>
-
-        <!-- Item aktivitas 3 -->
-        <div class="activity-item">
-            <div class="activity-dot"></div>
-            <div class="activity-content">
-                <p class="activity-text"><strong>Penanggung jawab ditambahkan</strong></p>
-                <p class="activity-person">Budi Santoso - Manager HRD</p>
-                <p class="activity-time">1 hari lalu</p>
-            </div>
-        </div>
+        {{/unless}}
     </div>
 </div>
 
