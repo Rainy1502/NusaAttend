@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const Pengguna = require('../models/Pengguna');
 
 /**
  * Controller untuk menangani operasi manajemen karyawan
@@ -24,7 +24,7 @@ const kontrolerKaryawan = {
       // Query semua user dengan role = 'karyawan'
       // select('-password') untuk tidak mengembalikan password
       // populate('penanggung_jawab_id') untuk menampilkan data supervisor lengkap
-      const dataKaryawan = await User.find({ role: 'karyawan' })
+      const dataKaryawan = await Pengguna.find({ role: 'karyawan' })
         .select('-password')
         .populate('penanggung_jawab_id', 'nama_lengkap email');
 

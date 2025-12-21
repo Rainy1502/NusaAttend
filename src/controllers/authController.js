@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const Pengguna = require('../models/Pengguna');
 
 /**
  * Controller untuk menghandle semua proses autentikasi (register, login, logout)
@@ -52,7 +52,7 @@ const kontrolerAuntenfikasi = {
       const { email, password } = req.body;
 
       // Cari user berdasarkan email dan include password field (default di-exclude)
-      const pengguna = await User.findOne({ email }).select('+password');
+      const pengguna = await Pengguna.findOne({ email }).select('+password');
       if (!pengguna) {
         return res.status(401).json({ error: 'Email atau password salah' });
       }

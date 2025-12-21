@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const Pengguna = require('../models/Pengguna');
 
 /**
  * Controller untuk menangani operasi manajemen penanggung jawab (supervisor)
@@ -32,13 +32,13 @@ const kontrolerPenanggungJawab = {
     try {
       // Query semua user dengan role = 'penanggung-jawab'
       // select('-password') untuk tidak mengembalikan password
-      const dataPenanggungJawab = await User.find({ role: 'penanggung-jawab' })
+      const dataPenanggungJawab = await Pengguna.find({ role: 'penanggung-jawab' })
         .select('-password');
 
       // Hitung jumlah karyawan untuk setiap penanggung jawab
       const dataPenanggungJawabDenganJumlah = await Promise.all(
         dataPenanggungJawab.map(async (pj) => {
-          const jumlahKaryawan = await User.countDocuments({
+          const jumlahKaryawan = await Pengguna.countDocuments({
             penanggung_jawab_id: pj._id,
             role: 'karyawan'
           });
@@ -68,7 +68,7 @@ const kontrolerPenanggungJawab = {
         total: dataPenanggungJawabDenganJumlah.length
       });
     } catch (error) {
-      console.error('❌ Error saat mengambil data penanggung jawab:', error);
+      console.error('❁EError saat mengambil data penanggung jawab:', error);
       res.status(500).json({
         success: false,
         message: 'Terjadi kesalahan saat mengambil data penanggung jawab',
@@ -101,7 +101,7 @@ const kontrolerPenanggungJawab = {
       }
 
       // Cari penanggung jawab berdasarkan ID dan role
-      const pj = await User.findOne({
+      const pj = await Pengguna.findOne({
         _id: id,
         role: 'penanggung-jawab'
       }).select('-password');
@@ -116,7 +116,7 @@ const kontrolerPenanggungJawab = {
       }
 
       // Hitung jumlah karyawan yang disupervisi
-      const jumlahKaryawan = await User.countDocuments({
+      const jumlahKaryawan = await Pengguna.countDocuments({
         penanggung_jawab_id: pj._id,
         role: 'karyawan'
       });
@@ -132,7 +132,7 @@ const kontrolerPenanggungJawab = {
         }
       });
     } catch (error) {
-      console.error('❌ Error saat mengambil data penanggung jawab by ID:', error);
+      console.error('❁EError saat mengambil data penanggung jawab by ID:', error);
       res.status(500).json({
         success: false,
         message: 'Terjadi kesalahan saat mengambil data penanggung jawab',
@@ -185,7 +185,7 @@ const kontrolerPenanggungJawab = {
       }
 
       // Cek apakah email sudah digunakan
-      const penanggungJawabExist = await User.findOne({ email: email.toLowerCase() });
+      const penanggungJawabExist = await Pengguna.findOne({ email: email.toLowerCase() });
       if (penanggungJawabExist) {
         return res.status(409).json({
           success: false,
@@ -195,7 +195,7 @@ const kontrolerPenanggungJawab = {
       }
 
       // Buat penanggung jawab baru
-      const penanggungJawabBaru = new User({
+      const penanggungJawabBaru = new Pengguna({
         nama_lengkap: nama_lengkap.trim(),
         email: email.toLowerCase().trim(),
         jabatan: jabatan.trim(),
@@ -217,7 +217,7 @@ const kontrolerPenanggungJawab = {
         data: hasilSimpan
       });
     } catch (error) {
-      console.error('❌ Error saat menambah supervisor:', error.message);
+      console.error('❁EError saat menambah supervisor:', error.message);
       
       // Handle duplikat email error dari Mongoose
       if (error.code === 11000) {
@@ -269,7 +269,7 @@ const kontrolerPenanggungJawab = {
       }
 
       // Cari penanggung jawab berdasarkan ID
-      const pj = await User.findOne({
+      const pj = await Pengguna.findOne({
         _id: id,
         role: 'penanggung-jawab'
       });
@@ -295,7 +295,7 @@ const kontrolerPenanggungJawab = {
         }
 
         // Cek apakah email sudah digunakan oleh user lain
-        const emailExist = await User.findOne({
+        const emailExist = await Pengguna.findOne({
           email: email.toLowerCase(),
           _id: { $ne: id } // Exclude penanggung jawab saat ini
         });
@@ -333,7 +333,7 @@ const kontrolerPenanggungJawab = {
         data: hasilUpdate
       });
     } catch (error) {
-      console.error('❌ Error saat mengubah data penanggung jawab:', error.message);
+      console.error('❁EError saat mengubah data penanggung jawab:', error.message);
 
       // Handle duplikat email error dari Mongoose
       if (error.code === 11000) {
@@ -376,7 +376,7 @@ const kontrolerPenanggungJawab = {
       }
 
       // Cari penanggung jawab
-      const pj = await User.findOne({
+      const pj = await Pengguna.findOne({
         _id: id,
         role: 'penanggung-jawab'
       });
@@ -391,7 +391,7 @@ const kontrolerPenanggungJawab = {
       }
 
       // Cek apakah ada karyawan yang di-supervisi
-      const jumlahKaryawan = await User.countDocuments({
+      const jumlahKaryawan = await Pengguna.countDocuments({
         penanggung_jawab_id: id,
         role: 'karyawan'
       });
@@ -405,7 +405,7 @@ const kontrolerPenanggungJawab = {
       }
 
       // Hapus penanggung jawab
-      await User.findByIdAndDelete(id);
+      await Pengguna.findByIdAndDelete(id);
 
       res.status(200).json({
         success: true,
@@ -413,7 +413,7 @@ const kontrolerPenanggungJawab = {
         data: null
       });
     } catch (error) {
-      console.error('❌ Error saat menghapus penanggung jawab:', error);
+      console.error('❁EError saat menghapus penanggung jawab:', error);
       res.status(500).json({
         success: false,
         message: 'Terjadi kesalahan saat menghapus penanggung jawab',

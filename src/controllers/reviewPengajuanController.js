@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const Pengguna = require('../models/Pengguna');
 
 /**
  * Controller untuk Review Pengajuan (Penanggung Jawab)

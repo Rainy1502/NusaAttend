@@ -14,10 +14,10 @@ async function fixDataSupervisor() {
     console.log('✅ Terhubung ke MongoDB');
 
     // Import User model
-    const User = require('../src/models/User');
+    const Pengguna = require('../src/models/Pengguna');
 
     // Cari semua supervisor yang tidak memiliki jabatan
-    const supervisorTanpaJabatan = await User.find({
+    const supervisorTanpaJabatan = await Pengguna.find({
       role: 'supervisor',
       $or: [
         { jabatan: { $exists: false } },
@@ -38,7 +38,7 @@ async function fixDataSupervisor() {
     console.log('✅ Semua data supervisor berhasil diupdate');
 
     // Tampilkan data supervisor setelah update
-    const allSupervisor = await User.find({ role: 'supervisor' })
+    const allSupervisor = await Pengguna.find({ role: 'supervisor' })
       .select('nama_lengkap email jabatan adalah_aktif createdAt');
     
     console.log('\n📋 Daftar supervisor setelah update:');

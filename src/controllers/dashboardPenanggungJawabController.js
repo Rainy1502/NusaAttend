@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const Pengguna = require('../models/Pengguna');
 
 /**
  * Controller untuk Dashboard Penanggung Jawab
@@ -40,19 +40,19 @@ exports.ambilDataDashboardPenanggungJawab = async (req, res) => {
      * Hitung total karyawan
      * Query User dengan role 'karyawan'
      */
-    const totalKaryawan = await User.countDocuments({ role: 'karyawan' });
+    const totalKaryawan = await Pengguna.countDocuments({ role: 'karyawan' });
 
     /**
      * Hitung total penanggung jawab
      * Query User dengan role 'penanggung-jawab'
      */
-    const totalPenanggungJawab = await User.countDocuments({ role: 'penanggung-jawab' });
+    const totalPenanggungJawab = await Pengguna.countDocuments({ role: 'penanggung-jawab' });
 
     /**
      * Hitung total akun aktif
      * Query User dengan adalah_aktif: true
      */
-    const totalAkunAktif = await User.countDocuments({ adalah_aktif: true });
+    const totalAkunAktif = await Pengguna.countDocuments({ adalah_aktif: true });
 
     /**
      * Hitung total aktivitas hari ini
@@ -69,7 +69,7 @@ exports.ambilDataDashboardPenanggungJawab = async (req, res) => {
     const hariIniAkhir = new Date();
     hariIniAkhir.setHours(23, 59, 59, 999); // Jam 23:59:59
 
-    const totalAktivitasHariIni = await User.countDocuments({
+    const totalAktivitasHariIni = await Pengguna.countDocuments({
       $or: [
         { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
         { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } }
@@ -85,7 +85,7 @@ exports.ambilDataDashboardPenanggungJawab = async (req, res) => {
      * Diurutkan dari yang paling baru
      * Select field yang diperlukan saja (tidak select password)
      */
-    const daftarUserTerbaru = await User.find()
+    const daftarUserTerbaru = await Pengguna.find()
       .select('nama_lengkap jabatan email role adalah_aktif createdAt updatedAt')
       .sort({ updatedAt: -1 }) // Terbaru dulu
       .limit(5)

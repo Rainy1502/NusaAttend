@@ -82,7 +82,7 @@ function renderTabelPenanggungJawab(daftarPenanggungJawab) {
 
   // Loop setiap supervisor
   daftarPenanggungJawab.forEach((supervisor) => {
-    const tanggalBergabung = formatTanggal(supervisor.createdAt);
+    const tanggalBergabung = formatTanggal(supervisor.dibuat_pada);
     const statusClass = supervisor.isAktif ? 'status-aktif' : 'status-nonaktif';
     const statusText = supervisor.isAktif ? 'aktif' : 'nonaktif';
     const jumlahKaryawan = supervisor.jumlahKaryawan || 0;

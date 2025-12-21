@@ -46,7 +46,7 @@ const skemaUser = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['karyawan', 'supervisor', 'admin'],
+      enum: ['karyawan', 'penanggung-jawab', 'admin'],
       default: 'admin'
     },
     jatah_cuti_tahunan: {
@@ -61,11 +61,11 @@ const skemaUser = new mongoose.Schema(
       type: Boolean,
       default: true
     },
-    createdAt: {
+    dibuat_pada: {
       type: Date,
       default: Date.now
     },
-    updatedAt: {
+    diperbarui_pada: {
       type: Date,
       default: Date.now
     }
@@ -92,7 +92,7 @@ skemaUser.pre('save', async function(next) {
 
 // ==================== INISIALISASI MODEL ====================
 
-const ModelUser = mongoose.model('User', skemaUser);
+const ModelUser = mongoose.model('User', skemaUser, 'pengguna');
 
 // ==================== FUNGSI UTAMA ====================
 
