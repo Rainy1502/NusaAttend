@@ -37,6 +37,13 @@ const rutDashboardAdmin = require('./routes/dashboardAdmin');
  * Menangani pengambilan data ringkasan dan aktivitas terbaru tim (read-only)
  */
 const rutDashboardPenanggungJawab = require('./routes/dashboardPenanggungJawab');
+
+/**
+ * [FITUR BARU - Review Pengajuan]
+ * Router untuk API Review Pengajuan (Penanggung Jawab)
+ * Menangani pengambilan daftar pengajuan yang menunggu review (read-only)
+ */
+const rutReviewPengajuan = require('./routes/reviewPengajuan');
 // const rutPengajuan = require('./routes/pengajuan'); // Di-backup
 // const rutAbsensi = require('./routes/absensi');     // Di-backup
 // const rutAdmin = require('./routes/admin');         // Di-backup
@@ -228,6 +235,15 @@ app.use('/api/admin', middlewareAuntenfikasi, rutDashboardAdmin);
  * Sifat: Read-only (pengambilan data ringkasan dan aktivitas tim)
  */
 app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutDashboardPenanggungJawab);
+
+/**
+ * [FITUR BARU - Review Pengajuan]
+ * Daftarkan router review pengajuan dengan middleware autentikasi
+ * Endpoint: /api/penanggung-jawab/review-pengajuan
+ * Handler: reviewPengajuanController.js
+ * Sifat: Read-only (pengambilan daftar pengajuan yang menunggu review)
+ */
+app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutReviewPengajuan);
 
 // app.use('/api/pengajuan', middlewareAuntenfikasi, rutPengajuan); // Di-backup
 // app.use('/api/absensi', middlewareAuntenfikasi, rutAbsensi);     // Di-backup

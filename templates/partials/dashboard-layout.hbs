@@ -89,14 +89,49 @@
 
         <!-- Tombol Logout di Footer Sidebar -->
         <div class="sidebar-footer">
-            <form method="POST" action="/logout">
-                <button type="submit" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Keluar</span>
-                </button>
-            </form>
+            <!-- Tombol logout yang trigger modal konfirmasi -->
+            <button type="button" class="logout-btn" id="tombolKeluarDashboard" title="Keluar dari Akun">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Keluar</span>
+            </button>
         </div>
     </aside>
+
+    <!-- ==================== MODAL KONFIRMASI LOGOUT ==================== -->
+    <!-- Modal pop-up untuk konfirmasi sebelum logout -->
+    <div class="lapisanOverlayLogout" id="lapisanOverlayLogout">
+        <div class="modalKonfirmasiLogout">
+            <!-- Header modal dengan icon warning -->
+            <div class="headerModalLogout">
+                <div class="iconWarningLogout">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+            </div>
+
+            <!-- Content modal -->
+            <div class="contentModalLogout">
+                <h2 class="judulModalLogout">Konfirmasi Logout</h2>
+                <p class="deskripsiModalLogout">Apakah Anda yakin ingin keluar dari Akun?</p>
+            </div>
+
+            <!-- Footer modal dengan tombol aksi -->
+            <div class="footerModalLogout">
+                <!-- Tombol Batal -->
+                <button type="button" class="tombolBatalLogout" id="tombolBatalLogout">
+                    Batal
+                </button>
+
+                <!-- Form logout yang akan disubmit -->
+                <form method="POST" action="/logout" id="formLogout" style="display: none;">
+                </form>
+
+                <!-- Tombol Keluar -->
+                <button type="button" class="tombolKonfirmasiLogout" id="tombolKonfirmasiLogout">
+                    Keluar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== KONTEN UTAMA ==================== -->
     <main class="main-content">
