@@ -517,7 +517,7 @@ app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
     });
   } else if (role === 'penanggung-jawab') {
     // Penanggung jawab melihat pengajuan untuk direview
-    res.render('supervisor/pengajuan', { 
+    res.render('penanggung-jawab/review-pengajuan', { 
       title: 'Review Pengajuan - NusaAttend',
       user: req.session.user,
       layout: 'dashboard-layout',
@@ -777,7 +777,7 @@ app.get('/supervisor/laporan', middlewareAuntenfikasi, (req, res) => {
     });
   }
   
-  res.render('supervisor/laporan', { 
+  res.render('penanggung-jawab/laporan', { 
     title: 'Laporan Tim - NusaAttend',
     user: req.session.user,
     layout: 'dashboard-layout',
@@ -799,7 +799,7 @@ app.get('/pengajuan/:id', middlewareAuntenfikasi, (req, res) => {
       halaman: 'pengajuan'
     });
   } else if (role === 'penanggung-jawab') {
-    res.render('supervisor/detail-pengajuan', { 
+    res.render('penanggung-jawab/detail-pengajuan', { 
       title: 'Detail Review Pengajuan - NusaAttend',
       user: req.session.user,
       layout: 'dashboard-layout',

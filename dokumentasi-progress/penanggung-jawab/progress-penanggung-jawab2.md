@@ -9,13 +9,14 @@
 
 ## 📌 Ringkasan Periode (21 Desember - Lanjutan)
 
-Sesi ini fokus pada implementasi fitur Review Pengajuan dan penambahan modal konfirmasi logout:
+Sesi ini fokus pada implementasi fitur Review Pengajuan, penambahan modal konfirmasi logout, dan refactoring struktur folder:
 
 1. ✅ Implementasi Frontend Halaman Review Pengajuan (Handlebars + CSS)
 2. ✅ Implementasi Backend API Review Pengajuan (Read-only)
 3. ✅ Integrasi API ke app.js dengan middleware autentikasi
 4. ✅ Penambahan Modal Konfirmasi Logout di Dashboard
 5. ✅ CSS Styling dan JavaScript Handler untuk Modal
+6. ✅ Refactoring Struktur Folder (supervisor → penanggung-jawab)
 
 ---
 
@@ -24,8 +25,7 @@ Sesi ini fokus pada implementasi fitur Review Pengajuan dan penambahan modal kon
 ### Fase 5: Frontend Halaman Review Pengajuan
 **Status:** ✅ Selesai  
 **File Dibuat:** 
-- `templates/views/supervisor/pengajuan.hbs` (121 lines)
-- `templates/views/penanggung-jawab/review-pengajuan.hbs` (121 lines - backup)
+- `templates/views/penanggung-jawab/review-pengajuan.hbs` (113 lines)
 
 **Implementasi:**
 - ✅ Header dengan title "Review Pengajuan" dan deskripsi
@@ -154,14 +154,14 @@ Sesi ini fokus pada implementasi fitur Review Pengajuan dan penambahan modal kon
 
 | File | Status | Keterangan |
 |------|--------|-----------|
-| `templates/views/supervisor/pengajuan.hbs` | ✅ CREATED | Review pengajuan page (121 lines) |
-| `templates/views/penanggung-jawab/review-pengajuan.hbs` | ✅ CREATED | Backup halaman review pengajuan |
+| `templates/views/penanggung-jawab/review-pengajuan.hbs` | ✅ CREATED | Review pengajuan page (113 lines) |
 | `src/controllers/reviewPengajuanController.js` | ✅ CREATED | Backend controller read-only |
 | `src/routes/reviewPengajuan.js` | ✅ CREATED | API routes definition |
-| `src/app.js` | ✅ UPDATED | Added import + route registration untuk review pengajuan |
+| `src/app.js` | ✅ UPDATED | Route paths diubah dari supervisor/* → penanggung-jawab/* |
 | `templates/partials/dashboard-layout.hbs` | ✅ UPDATED | Changed logout button + added modal HTML |
-| `public/css/styles.css` | ✅ UPDATED | +~220 lines (tabel + modal styling) |
+| `public/css/styles.css` | ✅ UPDATED | +~330 lines (tabel + modal styling) |
 | `public/js/app.js` | ✅ UPDATED | Added `initializeModalLogout()` function |
+| `templates/views/supervisor/` | ❌ DELETED | Folder dihapus, semua file pindah ke penanggung-jawab |
 
 ---
 
@@ -292,6 +292,21 @@ Sesi ini fokus pada implementasi fitur Review Pengajuan dan penambahan modal kon
 - Lazy initialization untuk modal
 - Minimal JavaScript footprint
 
+### Refactoring Folder Structure
+**Perubahan Struktur:**
+- ❌ Dihapus: `templates/views/supervisor/` folder
+- ✅ Dipindah: Semua file supervisor → `templates/views/penanggung-jawab/`
+- ✅ Updated: Route paths di app.js (3 routes)
+  - `supervisor/pengajuan` → `penanggung-jawab/review-pengajuan`
+  - `supervisor/laporan` → `penanggung-jawab/laporan` (TBD)
+  - `supervisor/detail-pengajuan` → `penanggung-jawab/detail-pengajuan` (TBD)
+
+**Alasan:**
+- Supervisor adalah role/peran, bukan folder struktur yang benar
+- Penanggung-jawab adalah role yang ada di sistem NusaAttend
+- Folder structure harus consistent dengan role naming di User model
+- Menghindari confusion antara role supervisor vs penanggung-jawab
+
 ---
 
 ## 🚀 Next Phase (Fase 3)
@@ -334,5 +349,15 @@ Sesi ini fokus pada implementasi fitur Review Pengajuan dan penambahan modal kon
 ---
 
 **Dibuat pada:** 21 Desember 2025  
-**Checkpoint Status:** ✅ STABLE & TESTED  
-**Siap untuk:** Git commit dan advance ke checkpoint 3
+**Checkpoint Status:** ✅ STABLE & REFACTORED  
+**Struktur Folder Final:**
+```
+templates/views/
+├── admin/
+├── employee/
+├── penanggung-jawab/
+│   ├── dashboard.hbs
+│   └── review-pengajuan.hbs
+└── partials/
+```
+**Siap untuk:** Git commit dan advance ke checkpoint 3 (Employee Role)
