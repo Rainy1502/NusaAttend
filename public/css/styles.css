@@ -805,6 +805,9 @@ footer a:hover {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .menu-item i {
@@ -853,6 +856,40 @@ footer a:hover {
 
 .logout-btn i {
   font-size: 20px;
+}
+
+/* ==================== STYLING MENU ITEM PENANGGUNG JAWAB ==================== */
+
+/* Menu item active state untuk Penanggung Jawab */
+.menu-item-active {
+  background-color: #4f39f6;
+  color: white;
+  box-shadow: 0 2px 8px rgba(79, 57, 246, 0.3);
+}
+
+.menu-item-active i {
+  color: white;
+}
+
+/* Badge untuk indikator notifikasi */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Badge alert (orange) untuk keberatan */
+.badge-alert {
+  background-color: #ff6900;
+  color: white;
+  min-width: 20px;
+  height: 20px;
 }
 
 /* ==================== KONTEN UTAMA DASHBOARD ==================== */
@@ -5038,6 +5075,344 @@ select.input-form {
   font-weight: 400;
   margin-top: 0.25rem;
   opacity: 0.85;
+}
+
+/* ==================== DASHBOARD PENANGGUNG JAWAB ==================== */
+/* Styling untuk halaman dashboard penanggung jawab (supervisor) */
+
+/* Header dashboard penanggung jawab */
+.headerDashboardPenanggungJawab {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+  padding: 0 32px;
+}
+
+.judulDashboardPenanggungJawab {
+  font-size: 28px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0;
+  line-height: 36px;
+}
+
+.deskripsiDashboardPenanggungJawab {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Grid statistik ringkasan dashboard penanggung jawab */
+.gridStatistikPenanggungJawab {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+  padding: 0 32px;
+}
+
+/* Kartu statistik individual */
+.kartuStatistikPenanggungJawab {
+  background: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.kartuStatistikPenanggungJawab:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Icon container untuk statistik */
+.iconContainerPenanggungJawab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  font-size: 24px;
+}
+
+.warningColor {
+  background-color: #fef9c2;
+  color: #ca8a04;
+}
+
+.successColor {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.dangerColor {
+  background-color: #ffe2e2;
+  color: #dc3545;
+}
+
+.infoColor {
+  background-color: #dbeafe;
+  color: #0c63e4;
+}
+
+/* Konten statistik */
+.contentStatistikPenanggungJawab {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.angkaStatistik {
+  font-size: 24px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0;
+  line-height: 32px;
+}
+
+.labelStatistik {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Container pengajuan mendesak */
+.containerPengajuanMendesak {
+  background: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 1px;
+  margin-bottom: 32px;
+  margin-left: 32px;
+  margin-right: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Header section pengajuan mendesak */
+.headerSectionPengajuan {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 24px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.iconSectionPengajuan {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  color: #101828;
+}
+
+.judulSectionPengajuan {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Daftar pengajuan mendesak */
+.daftarPengajuanMendesak {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Item pengajuan individual */
+.itemPengajuanMendesak {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.itemPengajuanMendesak:last-child {
+  border-bottom: none;
+}
+
+/* Info karyawan dan pengajuan */
+.infoKaryawanPengajuan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.headerInfoPengajuan {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.namaKaryawanPengajuan {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Badge status mendesak */
+.badgeStatusMendesak {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background-color: #ffe2e2;
+  color: #9f0712;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.detailPengajuanJenis {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 20px;
+}
+
+.detailPengajuanWaktu {
+  font-size: 14px;
+  color: #6a7282;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Tombol review sekarang */
+.tombolReviewSekarang {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 24px;
+  background-color: #4f39f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tombolReviewSekarang:hover {
+  background-color: #3d2ae3;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.tombolReviewSekarang:active {
+  transform: translateY(0);
+}
+
+/* Pesan kosong pengajuan */
+.pesanKosongPengajuan {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.pesanKosongPengajuan p {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+}
+
+/* Grid informasi kehadiran dan statistik */
+.gridInformasiKehadiran {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-left: 32px;
+  margin-right: 32px;
+  margin-bottom: 32px;
+}
+
+/* Kartu kehadiran dan statistik */
+.kartuKehadiranHariIni,
+.kartuStatistikBulanIni {
+  background: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.kartuKehadiranHariIni:hover,
+.kartuStatistikBulanIni:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.judulKartuKehadiran {
+  font-size: 18px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 16px 0;
+  line-height: 27px;
+}
+
+/* Daftar status kehadiran */
+.daftarStatusKehadiran,
+.daftarStatistikBulan {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.itemStatusKehadiran,
+.itemStatistikBulan {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 24px;
+}
+
+.labelStatusKehadiran,
+.labelStatistikBulan {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+.nilaiStatusKehadiran,
+.nilaiStatistikBulan {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 24px;
+}
+
+.hadir {
+  color: #00a63e;
+}
+
+.izin {
+  color: #155dfc;
+}
+
+.belumAbsen {
+  color: #f54900;
 }
 
 /* Kartu catatan log keberatan */

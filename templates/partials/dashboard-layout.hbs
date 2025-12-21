@@ -48,17 +48,23 @@
                 </a>
             {{else if (eq user.role 'penanggung-jawab')}}
                 <!-- Menu untuk Penanggung Jawab -->
+                <!-- Didasarkan pada Figma Design: node-id 4:6728 -->
                 <a href="/dashboard" class="menu-item {{isActive 'dashboard' halaman}}">
-                    <i class="fas fa-th"></i>
+                    <i class="fas fa-chart-line"></i>
                     <span>Dashboard</span>
                 </a>
                 <a href="/pengajuan" class="menu-item {{isActive 'pengajuan' halaman}}">
-                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-file-invoice"></i>
                     <span>Review Pengajuan</span>
                 </a>
-                <a href="/supervisor/laporan" class="menu-item {{isActive 'laporan' halaman}}">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Laporan Tim</span>
+                <a href="/keberatan" class="menu-item {{isActive 'keberatan' halaman}}">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Tinjauan Keberatan</span>
+                    {{#if totalKeberatan}}<span class="badge badge-alert">{{totalKeberatan}}</span>{{/if}}
+                </a>
+                <a href="/rekap-kehadiran" class="menu-item {{isActive 'rekap-kehadiran' halaman}}">
+                    <i class="fas fa-users"></i>
+                    <span>Rekap Kehadiran</span>
                 </a>
             {{else}}
                 <!-- Menu untuk Karyawan -->
