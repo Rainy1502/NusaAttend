@@ -1,4 +1,5 @@
-const Pengguna = require('../models/Pengguna');
+const Pengguna = require("../models/Pengguna");
+const jwt = require("jsonwebtoken");
 
 /**
  * Controller untuk menghandle semua proses autentikasi (register, login, logout)
@@ -15,7 +16,7 @@ const kontrolerAuntenfikasi = {
       // Cek apakah email sudah terdaftar di database
       const penggunaExisting = await User.findOne({ email });
       if (penggunaExisting) {
-        return res.status(400).json({ error: 'Email sudah terdaftar' });
+        return res.status(400).json({ error: "Email sudah terdaftar" });
       }
 
       // Buat user baru dengan data dari request body
@@ -23,7 +24,7 @@ const kontrolerAuntenfikasi = {
         nama_lengkap,
         email,
         jabatan,
-        password
+        password,
       });
 
       // Simpan user ke database (password akan di-hash otomatis via pre-save hook)
@@ -34,34 +35,46 @@ const kontrolerAuntenfikasi = {
 
       res.status(201).json({
         success: true,
-        message: 'Registrasi berhasil',
-        user: responseUser
+        message: "Registrasi berhasil",
+        user: responseUser,
       });
     } catch (error) {
-      console.error('Kesalahan registrasi:', error);
+      console.error("Kesalahan registrasi:", error);
       res.status(500).json({ error: error.message });
     }
   },
 
   /**
    * Fungsi login pengguna
-   * Validasi email dan password, buat session, return token jika API request
+   * Validasi email dan password, buat session dengan socket token, return token jika API request
    */
   async masuk(req, res) {
     try {
       const { email, password } = req.body;
 
       // Cari user berdasarkan email dan include password field (default di-exclude)
-      const pengguna = await Pengguna.findOne({ email }).select('+password');
+      const pengguna = await Pengguna.findOne({ email }).select("+password");
       if (!pengguna) {
-        return res.status(401).json({ error: 'Email atau password salah' });
+        return res.status(401).json({ error: "Email atau password salah" });
       }
 
       // Validasi password dengan membandingkan input password dengan hashed password
       const isPasswordValid = await pengguna.bandingkanPassword(password);
       if (!isPasswordValid) {
-        return res.status(401).json({ error: 'Email atau password salah' });
+        return res.status(401).json({ error: "Email atau password salah" });
       }
+
+      // ✅ GENERATE SOCKET TOKEN (24 jam validity)
+      const socketToken = jwt.sign(
+        {
+          id: pengguna._id,
+          email: pengguna.email,
+          role: pengguna.role,
+          socketAuth: true,
+        },
+        process.env.JWT_SECRET || "your_jwt_secret",
+        { expiresIn: "24h" }
+      );
 
       // Buat session untuk pengguna
       req.session.userId = pengguna._id;
@@ -71,35 +84,40 @@ const kontrolerAuntenfikasi = {
         email: pengguna.email,
         jabatan: pengguna.jabatan,
         role: pengguna.role,
-        sisa_cuti: pengguna.sisa_cuti
+        sisa_cuti: pengguna.sisa_cuti,
       };
 
-      // Jika request dari API (JSON), return token JWT
-      if (req.accepts('json')) {
-        const token = require('jsonwebtoken').sign(
-          { id: pengguna._id, email: pengguna.email },
-          process.env.JWT_SECRET || 'your_jwt_secret',
-          { expiresIn: '24h' }
-        );
+      // ✅ SIMPAN SOCKET TOKEN DI SESSION (untuk akses di template)
+      req.session.socketToken = socketToken;
 
+      // Jika request dari API (JSON), return token JWT
+      if (req.accepts("json")) {
         return res.json({
           success: true,
-          message: 'Login berhasil',
-          token,
-          user: req.session.user
+          message: "Login berhasil",
+          token: socketToken,
+          user: req.session.user,
         });
       }
 
-      // Jika request dari form HTML, redirect ke dashboard sesuai role
-      const urlDashboard = pengguna.role === 'admin' 
-        ? '/admin/dashboard' 
-        : pengguna.role === 'penanggung-jawab' 
-        ? '/supervisor/dashboard' 
-        : '/karyawan/dashboard';
+      // Jika request dari form HTML, save session kemudian redirect ke dashboard sesuai role
+      req.session.save((err) => {
+        if (err) {
+          console.error("Session save error:", err);
+          return res.status(500).json({ error: "Gagal menyimpan session" });
+        }
 
-      res.redirect(urlDashboard);
+        const urlDashboard =
+          pengguna.role === "admin"
+            ? "/admin/dashboard"
+            : pengguna.role === "penanggung-jawab"
+            ? "/supervisor/dashboard"
+            : "/karyawan/dashboard";
+
+        res.redirect(urlDashboard);
+      });
     } catch (error) {
-      console.error('Kesalahan login:', error);
+      console.error("Kesalahan login:", error);
       res.status(500).json({ error: error.message });
     }
   },
@@ -111,18 +129,18 @@ const kontrolerAuntenfikasi = {
   keluar(req, res) {
     req.session.destroy((err) => {
       if (err) {
-        return res.status(500).json({ error: 'Logout gagal' });
+        return res.status(500).json({ error: "Logout gagal" });
       }
-      
+
       // Jika request minta JSON, return JSON response
-      if (req.accepts('json')) {
-        return res.json({ success: true, message: 'Logout berhasil' });
+      if (req.accepts("json")) {
+        return res.json({ success: true, message: "Logout berhasil" });
       }
-      
+
       // Jika request minta HTML, redirect ke halaman login
-      res.redirect('/login');
+      res.redirect("/login");
     });
-  }
+  },
 };
 
 module.exports = kontrolerAuntenfikasi;
