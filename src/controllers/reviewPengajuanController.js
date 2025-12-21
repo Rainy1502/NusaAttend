@@ -1,5 +1,3 @@
-const User = require('../models/User');
-
 /**
  * Controller untuk Review Pengajuan (Penanggung Jawab)
  * Mengelola pengambilan data daftar pengajuan yang menunggu review
