@@ -1,0 +1,142 @@
+{{!-- ==================== HALAMAN RIWAYAT PENGAJUAN (KARYAWAN) ==================== --}}
+{{!-- 
+    Halaman ini menampilkan daftar riwayat pengajuan surat izin yang telah diajukan oleh karyawan.
+    Bersifat informasional dan arsip administratif - tidak ada aksi pengeditan atau pembatalan.
+    Data ditampilkan dalam tabel dengan status visual yang jelas.
+--}}
+
+<div class="halaman-riwayat-pengajuan">
+    {{!-- ==================== HEADER HALAMAN ==================== --}}
+    <div class="kepala-halaman">
+        <div class="info-kepala">
+            {{!-- Judul halaman --}}
+            <h1 class="judul-halaman">Riwayat Pengajuan</h1>
+            {{!-- Deskripsi singkat tujuan halaman --}}
+            <p class="deskripsi-halaman">Semua pengajuan surat izin yang pernah Anda ajukan</p>
+        </div>
+    </div>
+
+    {{!-- ==================== KONTAINER TABEL PENGAJUAN ==================== --}}
+    <div class="kontainer-tabel-pengajuan">
+        {{!-- Header tabel dengan judul dan ikon --}}
+        <div class="header-tabel-pengajuan">
+            <div class="wrapper-judul-header">
+                <i class="fas fa-list-ul ikon-header"></i>
+                <h2 class="judul-tabel">Daftar Pengajuan</h2>
+            </div>
+        </div>
+
+        {{!-- Tabel riwayat pengajuan --}}
+        <div class="wrapper-tabel">
+            <table class="tabel-riwayat">
+                {{!-- Header kolom tabel --}}
+                <thead class="kepala-tabel">
+                    <tr class="baris-header">
+                        <th class="sel-header kolom-jenis-izin">Jenis Izin</th>
+                        <th class="sel-header kolom-periode">Periode</th>
+                        <th class="sel-header kolom-durasi">Durasi</th>
+                        <th class="sel-header kolom-tanggal-pengajuan">Tanggal Pengajuan</th>
+                        <th class="sel-header kolom-status">Status</th>
+                        <th class="sel-header kolom-aksi">Aksi</th>
+                    </tr>
+                </thead>
+
+                {{!-- Badan tabel - daftar pengajuan --}}
+                <tbody class="badan-tabel">
+                    {{#if riwayatPengajuan}}
+                        {{#each riwayatPengajuan}}
+                            {{!-- Baris tabel untuk setiap pengajuan --}}
+                            <tr class="baris-tabel {{#eq statusPengajuan 'Ditolak'}}baris-tabel-multi-aksi{{/eq}}">
+                                {{!-- Kolom Jenis Izin --}}
+                                <td class="sel-tabel sel-jenis-izin">
+                                    <div class="kontainer-jenis-izin">
+                                        <i class="fas {{iconJenisIzin}} ikon-jenis-izin"></i>
+                                        <span class="teks-jenis-izin">{{jenisIzin}}</span>
+                                    </div>
+                                </td>
+
+                                {{!-- Kolom Periode --}}
+                                <td class="sel-tabel sel-periode">
+                                    <span class="teks-periode">{{periode}}</span>
+                                </td>
+
+                                {{!-- Kolom Durasi --}}
+                                <td class="sel-tabel sel-durasi">
+                                    <span class="teks-durasi">{{durasi}}</span>
+                                </td>
+
+                                {{!-- Kolom Tanggal Pengajuan --}}
+                                <td class="sel-tabel sel-tanggal-pengajuan">
+                                    <span class="teks-tanggal-pengajuan">{{tanggalPengajuan}}</span>
+                                </td>
+
+                                {{!-- Kolom Status Pengajuan --}}
+                                <td class="sel-tabel sel-status">
+                                    {{!-- Badge status dengan warna dinamis berdasarkan status --}}
+                                    <div class="lencana-status {{#eq statusPengajuan 'Menunggu Persetujuan'}}lencana-menunggu{{/eq}} {{#eq statusPengajuan 'Disetujui'}}lencana-disetujui{{/eq}} {{#eq statusPengajuan 'Ditolak'}}lencana-ditolak{{/eq}}">
+                                        <span class="teks-lencana">{{statusPengajuan}}</span>
+                                    </div>
+                                </td>
+
+                                {{!-- Kolom Aksi --}}
+                                <td class="sel-tabel sel-aksi">
+                                    {{#eq statusPengajuan 'Ditolak'}}
+                                        {{!-- Untuk pengajuan yang ditolak: tampilkan Detail + Ajukan Keberatan --}}
+                                        <div class="kelompok-aksi-vertikal">
+                                            <button type="button" class="tombol-aksi tombol-detail" title="Lihat detail pengajuan">
+                                                <i class="fas fa-eye ikon-aksi"></i>
+                                                <span class="teks-tombol">Detail</span>
+                                            </button>
+                                            <button type="button" class="tombol-aksi tombol-keberatan" title="Ajukan keberatan terhadap penolakan">
+                                                <i class="fas fa-exclamation-circle ikon-aksi"></i>
+                                                <span class="teks-tombol">Ajukan Keberatan</span>
+                                            </button>
+                                        </div>
+                                    {{else}}
+                                        {{!-- Untuk pengajuan lainnya: hanya tampilkan Detail --}}
+                                        <div class="kelompok-aksi">
+                                            <button type="button" class="tombol-aksi tombol-detail" title="Lihat detail pengajuan">
+                                                <i class="fas fa-eye ikon-aksi"></i>
+                                                <span class="teks-tombol">Detail</span>
+                                            </button>
+                                        </div>
+                                    {{/eq}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                    {{else}}
+                        {{!-- Pesan ketika tidak ada pengajuan --}}
+                        <tr class="baris-tabel">
+                            <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                                <div>
+                                    <i class="fas fa-inbox" style="font-size: 48px; color: #ddd; margin-bottom: 16px; display: block;"></i>
+                                    <p style="margin: 0; font-size: 16px; color: #666;">Belum ada pengajuan surat izin</p>
+                                    <p style="margin: 8px 0 0 0; font-size: 14px; color: #999;">Mulai ajukan surat izin Anda di halaman <a href="/pengajuan/buat" style="color: #4f39f6; text-decoration: none;">Buat Surat Izin</a></p>
+                                </div>
+                            </td>
+                        </tr>
+                    {{/if}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{!-- ==================== SCRIPT LOKAL ==================== --}}
+<script>
+    {{!-- Fungsi untuk menangani klik tombol Detail --}}
+    document.querySelectorAll('.tombol-detail').forEach(function(tombol) {
+        tombol.addEventListener('click', function() {
+            // Placeholder: Implementasi detail modal akan ditangani oleh backend
+            console.log('Tombol Detail diklik');
+        });
+    });
+
+    {{!-- Fungsi untuk menangani klik tombol Ajukan Keberatan --}}
+    document.querySelectorAll('.tombol-keberatan').forEach(function(tombol) {
+        tombol.addEventListener('click', function() {
+            // Placeholder: Implementasi form keberatan akan ditangani oleh backend
+            console.log('Tombol Ajukan Keberatan diklik');
+        });
+    });
+</script>

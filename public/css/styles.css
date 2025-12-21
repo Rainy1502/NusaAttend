@@ -7553,9 +7553,13 @@ select.input-form {
   }
 }
 
-    .halaman-absensi-karyawan { padding: 20px; }
-    .judul-halaman { font-size: 24px; color: #333; margin-bottom: 5px; }
-    .deskripsi-halaman { color: #666; margin-bottom: 30px; }
+.halaman-absensi-karyawan { 
+  padding: 20px;
+  display: flow-root;
+  margin-bottom: 2rem;
+}
+.judul-halaman { font-size: 24px; color: #333; margin-bottom: 5px; }
+.deskripsi-halaman { color: #666; margin-bottom: 30px; }
 
     /* Kartu Utama Absensi*/
     .kartu-utama-absensi, .bagian-riwayat-absensi {
@@ -7827,5 +7831,528 @@ select.input-form {
     padding: 12px 24px;
     font-size: 14px;
     width: 100%;
+  }
+}
+
+/* ==================== HALAMAN RIWAYAT PENGAJUAN (KARYAWAN) ==================== */
+/* Styling untuk halaman yang menampilkan daftar riwayat pengajuan surat izin */
+
+.halaman-riwayat-pengajuan {
+  padding: 24px;
+  width: 100%;
+  background: transparent;
+}
+
+/* ==================== HEADER HALAMAN ==================== */
+/* Bagian judul dan deskripsi halaman */
+
+.kepala-halaman {
+  margin-bottom: 24px;
+}
+
+.info-kepala {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.judul-halaman {
+  font-size: 24px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  padding: 0;
+}
+
+.deskripsi-halaman {
+  font-size: 15px;
+  color: #4a5565;
+  margin: 0;
+  padding: 0;
+}
+
+/* ==================== KONTAINER TABEL ==================== */
+/* Styling untuk kartu tabel pengajuan */
+
+.kontainer-tabel-pengajuan {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* ==================== HEADER TABEL ==================== */
+/* Styling untuk bagian header dengan judul dan ikon */
+
+.header-tabel-pengajuan {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wrapper-judul-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ikon-header {
+  color: #4f39f6;
+  font-size: 18px;
+}
+
+.judul-tabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  padding: 0;
+}
+
+/* ==================== WRAPPER TABEL ==================== */
+/* Kontainer tabel dengan overflow handling */
+
+.wrapper-tabel {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 550px;
+}
+
+/* ==================== TABEL UTAMA ==================== */
+/* Styling untuk elemen tabel */
+
+.tabel-riwayat {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* Header tabel */
+.kepala-tabel {
+  background: #f9fafb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.baris-header {
+  height: 44px;
+}
+
+.sel-header {
+  padding: 10px 18px;
+  text-align: left;
+  font-weight: 600;
+  color: #364153;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Kolom spesifik header */
+.kolom-jenis-izin {
+  width: 200px;
+  padding-left: 32px !important;
+}
+
+.kolom-periode {
+  width: 210px;
+}
+
+.kolom-durasi {
+  width: 100px;
+}
+
+.kolom-tanggal-pengajuan {
+  width: 180px;
+}
+
+.kolom-status {
+  width: 210px;
+}
+
+.kolom-aksi {
+  width: 200px;
+}
+
+/* Badan tabel */
+.badan-tabel {
+  background: white;
+}
+
+.baris-tabel {
+  border-bottom: 1px solid #f3f4f6;
+  height: auto;
+}
+
+.baris-tabel:hover {
+  background: #f9fafb;
+}
+
+.sel-tabel {
+  padding: 14px 18px;
+  text-align: left;
+  color: #4a5565;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+/* ==================== SEL JENIS IZIN ==================== */
+/* Styling untuk kolom jenis izin dengan ikon */
+
+.sel-jenis-izin {
+  width: 200px;
+  padding: 14px 18px 14px 32px;
+}
+
+.kontainer-jenis-izin {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ikon-jenis-izin {
+  font-size: 18px;
+  color: #4f39f6;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.teks-jenis-izin {
+  font-weight: 500;
+  color: #101828;
+  white-space: nowrap;
+}
+
+/* ==================== SEL PERIODE ==================== */
+/* Styling untuk kolom periode */
+
+.sel-periode {
+  width: 210px;
+}
+
+.teks-periode {
+  color: #4a5565;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+/* ==================== SEL DURASI ==================== */
+/* Styling untuk kolom durasi */
+
+.sel-durasi {
+  width: 100px;
+}
+
+.teks-durasi {
+  color: #4a5565;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+/* ==================== SEL TANGGAL PENGAJUAN ==================== */
+/* Styling untuk kolom tanggal pengajuan */
+
+.sel-tanggal-pengajuan {
+  width: 180px;
+}
+
+.teks-tanggal-pengajuan {
+  color: #4a5565;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+/* ==================== SEL STATUS ==================== */
+/* Styling untuk kolom status dengan badge warna */
+
+.sel-status {
+  width: 210px;
+}
+
+.lencana-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.teks-lencana {
+  display: block;
+}
+
+/* Badge status: Menunggu Persetujuan (kuning) */
+.lencana-menunggu {
+  background: #fef9c2;
+  color: #894b00;
+}
+
+/* Badge status: Disetujui (hijau) */
+.lencana-disetujui {
+  background: #dcfce7;
+  color: #016630;
+}
+
+/* Badge status: Ditolak (merah) */
+.lencana-ditolak {
+  background: #ffe2e2;
+  color: #9f0712;
+}
+
+/* ==================== SEL AKSI ==================== */
+/* Styling untuk kolom aksi dengan tombol */
+
+.sel-aksi {
+  width: 200px;
+}
+
+.kelompok-aksi {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.kelompok-aksi-vertikal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.baris-tabel-multi-aksi {
+  height: auto;
+}
+
+/* ==================== TOMBOL AKSI ==================== */
+/* Styling untuk tombol aksi di tabel - simple link style */
+
+.tombol-aksi {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+/* Tombol Detail - Ungu */
+.tombol-detail {
+  color: #4f39f6;
+}
+
+.tombol-detail:hover {
+  opacity: 0.7;
+}
+
+.tombol-detail:active {
+  opacity: 0.9;
+}
+
+/* Tombol Keberatan - Merah */
+.tombol-keberatan {
+  color: #e7000b;
+}
+
+.tombol-keberatan:hover {
+  opacity: 0.7;
+}
+
+.tombol-keberatan:active {
+  opacity: 0.9;
+}
+
+.ikon-aksi {
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.teks-tombol {
+  white-space: nowrap;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+/* Penyesuaian untuk layar tablet dan mobile */
+
+@media (max-width: 1024px) {
+  .halaman-riwayat-pengajuan {
+    padding: 20px;
+  }
+
+  .kepala-halaman {
+    margin-bottom: 20px;
+  }
+
+  .judul-halaman {
+    font-size: 22px;
+  }
+
+  .deskripsi-halaman {
+    font-size: 14px;
+  }
+
+  .header-tabel-pengajuan {
+    padding: 16px 18px;
+  }
+
+  .judul-tabel {
+    font-size: 15px;
+  }
+
+  .sel-header {
+    font-size: 13px;
+    padding: 9px 16px;
+  }
+
+  .sel-tabel {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .tabel-riwayat {
+    font-size: 13px;
+  }
+
+  .lencana-status {
+    font-size: 12px;
+    padding: 3px 10px;
+  }
+
+  .tombol-aksi {
+    font-size: 13px;
+    gap: 5px;
+  }
+
+  .ikon-jenis-izin {
+    font-size: 16px;
+  }
+
+  .ikon-aksi {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .halaman-riwayat-pengajuan {
+    padding: 14px;
+  }
+
+  .kepala-halaman {
+    margin-bottom: 16px;
+  }
+
+  .info-kepala {
+    gap: 4px;
+  }
+
+  .judul-halaman {
+    font-size: 20px;
+  }
+
+  .deskripsi-halaman {
+    font-size: 13px;
+  }
+
+  .header-tabel-pengajuan {
+    padding: 14px 16px;
+  }
+
+  .wrapper-judul-header {
+    gap: 8px;
+  }
+
+  .ikon-header {
+    font-size: 16px;
+  }
+
+  .judul-tabel {
+    font-size: 14px;
+  }
+
+  .wrapper-tabel {
+    max-height: 400px;
+    overflow-x: auto;
+  }
+
+  .tabel-riwayat {
+    font-size: 12px;
+    min-width: 750px;
+  }
+
+  .baris-header {
+    height: 40px;
+  }
+
+  .sel-header {
+    font-size: 12px;
+    padding: 8px 14px;
+  }
+
+  .sel-tabel {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .kolom-jenis-izin {
+    width: 170px;
+  }
+
+  .kolom-periode {
+    width: 180px;
+  }
+
+  .kolom-durasi {
+    width: 90px;
+  }
+
+  .kolom-tanggal-pengajuan {
+    width: 160px;
+  }
+
+  .kolom-status {
+    width: 180px;
+  }
+
+  .kolom-aksi {
+    width: 170px;
+  }
+
+  .kontainer-jenis-izin {
+    gap: 6px;
+  }
+
+  .ikon-jenis-izin {
+    font-size: 15px;
+  }
+
+  .lencana-status {
+    font-size: 11px;
+    padding: 2px 8px;
+  }
+
+  .tombol-aksi {
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .ikon-aksi {
+    font-size: 13px;
+  }
+
+  .kelompok-aksi,
+  .kelompok-aksi-vertikal {
+    gap: 5px;
   }
 }

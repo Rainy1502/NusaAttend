@@ -59,6 +59,13 @@ const rutTandaTangan = require('./routes/tandaTangan');
  * Menangani CRUD pengajuan dengan validasi tanggal backend
 */
 const rutPengajuan = require('./routes/pengajuan');
+
+/**
+ * [FITUR BARU - Riwayat Pengajuan]
+ * Router untuk API Riwayat Pengajuan Karyawan
+ * Menangani pengambilan data riwayat pengajuan surat izin (READ-ONLY)
+*/
+const rutRiwayatPengajuan = require('./routes/riwayatPengajuan');
 // const rutAbsensi = require('./routes/absensi');     // Di-backup
 // const rutAdmin = require('./routes/admin');         // Di-backup
 // const rutChatbot = require('./routes/chatbot');     // Di-backup
@@ -128,8 +135,18 @@ app.engine('hbs', require('express-handlebars').engine({
       if (!str) return '';
       return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     },
-    // Bantu untuk cek kesamaan nilai
-    eq: function(a, b) {
+    // Bantu untuk cek kesamaan nilai (support inline dan block)
+    eq: function(a, b, options) {
+      // Jika digunakan sebagai block helper: {{#eq a b}}...{{/eq}}
+      if (options && options.fn) {
+        if (a === b) {
+          return options.fn(this);
+        } else if (options.inverse) {
+          return options.inverse(this);
+        }
+        return '';
+      }
+      // Jika digunakan sebagai inline helper: {{#if (eq a b)}}...{{/if}}
       return a === b;
     },
     // Bantu untuk kondisi OR (multiple conditions)
@@ -148,6 +165,25 @@ app.engine('hbs', require('express-handlebars').engine({
         return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
       }
       return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    },
+    // Bantu untuk switch-case logic dalam templates
+    switch: function(value, options) {
+      this._switch_value_ = value;
+      const html = options.fn(this);
+      delete this._switch_value_;
+      return html;
+    },
+    // Bantu untuk case dalam switch statement
+    case: function(value, options) {
+      if (value == this._switch_value_) {
+        return options.fn(this);
+      }
+    },
+    // Bantu untuk default case dalam switch statement
+    default: function(options) {
+      if (this._switch_value_ === undefined) {
+        return options.fn(this);
+      }
     }
   }
 }));
@@ -282,6 +318,17 @@ app.use('/api/karyawan', middlewareAuntenfikasi, rutTandaTangan);
  * - Durasi <= 365 hari (1 tahun)
 */
 app.use('/api/karyawan', middlewareAuntenfikasi, rutPengajuan);
+
+/**
+ * [FITUR BARU - Riwayat Pengajuan]
+ * Daftarkan router riwayat pengajuan dengan middleware autentikasi
+ * Endpoint: /api/pengguna/riwayat-pengajuan
+ * Handler: riwayatPengajuanController.js
+ * Sifat: READ-ONLY (hanya mengambil data riwayat, tidak mengubah apapun)
+ * Akses: Karyawan yang sudah ter-autentikasi
+ * Catatan: Endpoint ini bersifat informatif & administratif saja
+*/
+app.use('/api/pengguna', middlewareAuntenfikasi, rutRiwayatPengajuan);
 // app.use('/api/absensi', middlewareAuntenfikasi, rutAbsensi);     // Di-backup
 // app.use('/api/chatbot', rutChatbot);                             // Di-backup
 // app.use('/api/admin', middlewareAuntenfikasi, rutAdmin);         // Di-backup
@@ -540,7 +587,7 @@ app.get('/dashboard', async (req, res) => {
 // ==================== RUTE PENGAJUAN (BERBASIS ROLE) ====================
 
 // Halaman pengajuan - berbeda tampilan untuk admin, supervisor, dan karyawan
-app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
+app.get('/pengajuan', middlewareAuntenfikasi, async (req, res) => {
   const role = req.session.user.role;
   
   if (role === 'admin') {
@@ -561,12 +608,50 @@ app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
     });
   } else {
     // Karyawan melihat riwayat pengajuan mereka
-    res.render('employee/pengajuan', { 
-      title: 'Riwayat Pengajuan - NusaAttend',
-      user: req.session.user,
-      layout: 'dashboard-layout',
-      halaman: 'riwayat-pengajuan'
-    });
+    // Fetch data riwayat pengajuan dari controller
+    try {
+      const riwayatPengajuanController = require('./controllers/riwayatPengajuanController');
+      
+      // Buat mock request untuk memanggil controller
+      const mockRes = {
+        json: function(data) {
+          // Simpan data untuk dipass ke template
+          this.data = data;
+        },
+        status: function(code) {
+          this.statusCode = code;
+          return this;
+        }
+      };
+
+      // Panggil controller function
+      await riwayatPengajuanController.ambilRiwayatPengajuanPengguna(req, mockRes);
+
+      // Jika sukses, pass data ke view
+      let riwayatPengajuan = [];
+      if (mockRes.data && mockRes.data.success && mockRes.data.data) {
+        riwayatPengajuan = mockRes.data.data.riwayat_pengajuan || [];
+      }
+
+      res.render('karyawan/riwayat-pengajuan', { 
+        title: 'Riwayat Pengajuan - NusaAttend',
+        user: req.session.user,
+        layout: 'dashboard-layout',
+        halaman: 'riwayat-pengajuan',
+        riwayatPengajuan: riwayatPengajuan
+      });
+    } catch (error) {
+      console.error('Error dalam route riwayat pengajuan:', error);
+      
+      // Jika error, render dengan data kosong
+      res.render('karyawan/riwayat-pengajuan', { 
+        title: 'Riwayat Pengajuan - NusaAttend',
+        user: req.session.user,
+        layout: 'dashboard-layout',
+        halaman: 'riwayat-pengajuan',
+        riwayatPengajuan: []
+      });
+    }
   }
 });
 
