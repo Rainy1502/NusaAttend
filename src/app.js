@@ -6,6 +6,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 const MongoStore = require('connect-mongo');
 
+
 // ==================== IMPORT KONFIGURASI ====================
 const hubungkanDB = require('./config/database');
 const inisialisasiSocket = require('./config/socket');
@@ -17,51 +18,59 @@ const rutAdminKaryawan = require('./routes/adminKaryawan');
  * [REFACTOR AKADEMIK]
  * Mengubah import dari 'adminSupervisor' ke 'adminPenanggungJawab'
  * untuk konsistensi terminologi lintas sistem sesuai ketentuan dosen
- */
+*/
 const rutAdminPenanggungJawab = require('./routes/adminPenanggungJawab');
 /**
  * [FITUR BARU - Log Keberatan]
  * Router untuk API Keberatan Administratif
  * Menangani CRUD keberatan dan perubahan status
- */
+*/
 const rutAdminKeberatan = require('./routes/adminKeberatan');
 /**
  * [FITUR BARU - Dashboard Admin]
  * Router untuk API Dashboard Admin Sistem
  * Menangani pengambilan data ringkasan dan aktivitas terbaru (read-only)
- */
+*/
 const rutDashboardAdmin = require('./routes/dashboardAdmin');
 /**
  * [FITUR BARU - Dashboard Penanggung Jawab]
  * Router untuk API Dashboard Penanggung Jawab (Supervisor)
  * Menangani pengambilan data ringkasan dan aktivitas terbaru tim (read-only)
- */
+*/
 const rutDashboardPenanggungJawab = require('./routes/dashboardPenanggungJawab');
 
 /**
  * [FITUR BARU - Review Pengajuan]
  * Router untuk API Review Pengajuan (Penanggung Jawab)
  * Menangani pengambilan daftar pengajuan yang menunggu review (read-only)
- */
+*/
 const rutReviewPengajuan = require('./routes/reviewPengajuan');
 
 /**
  * [FITUR BARU - Tanda Tangan Administratif]
  * Router untuk API Tanda Tangan Digital Karyawan
  * Menangani penyimpanan dan pengambilan tanda tangan administratif (Base64)
- */
+*/
 const rutTandaTangan = require('./routes/tandaTangan');
 
 /**
  * [FITUR BARU - Pengajuan Surat Izin]
  * Router untuk API Pengajuan (Surat Izin) Karyawan
  * Menangani CRUD pengajuan dengan validasi tanggal backend
- */
+*/
 const rutPengajuan = require('./routes/pengajuan');
+
+/**
+ * [FITUR BARU - Riwayat Pengajuan]
+ * Router untuk API Riwayat Pengajuan Karyawan
+ * Menangani pengambilan data riwayat pengajuan surat izin (READ-ONLY)
+*/
+const rutRiwayatPengajuan = require('./routes/riwayatPengajuan');
 // const rutAbsensi = require('./routes/absensi');     // Di-backup
 // const rutAdmin = require('./routes/admin');         // Di-backup
 // const rutChatbot = require('./routes/chatbot');     // Di-backup
 
+const absensiRoute = require('./routes/absensi');
 // ==================== IMPORT MIDDLEWARE ====================
 const { penggantiKesalahan, penggantiTidakDitemukan } = require('./middleware/errorHandler');
 const middlewareAuntenfikasi = require('./middleware/auth');
@@ -126,8 +135,18 @@ app.engine('hbs', require('express-handlebars').engine({
       if (!str) return '';
       return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     },
-    // Bantu untuk cek kesamaan nilai
-    eq: function(a, b) {
+    // Bantu untuk cek kesamaan nilai (support inline dan block)
+    eq: function(a, b, options) {
+      // Jika digunakan sebagai block helper: {{#eq a b}}...{{/eq}}
+      if (options && options.fn) {
+        if (a === b) {
+          return options.fn(this);
+        } else if (options.inverse) {
+          return options.inverse(this);
+        }
+        return '';
+      }
+      // Jika digunakan sebagai inline helper: {{#if (eq a b)}}...{{/if}}
       return a === b;
     },
     // Bantu untuk kondisi OR (multiple conditions)
@@ -146,6 +165,25 @@ app.engine('hbs', require('express-handlebars').engine({
         return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
       }
       return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    },
+    // Bantu untuk switch-case logic dalam templates
+    switch: function(value, options) {
+      this._switch_value_ = value;
+      const html = options.fn(this);
+      delete this._switch_value_;
+      return html;
+    },
+    // Bantu untuk case dalam switch statement
+    case: function(value, options) {
+      if (value == this._switch_value_) {
+        return options.fn(this);
+      }
+    },
+    // Bantu untuk default case dalam switch statement
+    default: function(options) {
+      if (this._switch_value_ === undefined) {
+        return options.fn(this);
+      }
     }
   }
 }));
@@ -220,7 +258,7 @@ app.use('/api/admin', middlewareAuntenfikasi, rutAdminKaryawan);
  * [REFACTOR AKADEMIK]
  * Mengubah variabel dari rutAdminSupervisor ke rutAdminPenanggungJawab
  * untuk konsistensi terminologi lintas sistem sesuai ketentuan dosen
- */
+*/
 // Daftarkan router admin penanggung jawab dengan middleware autentikasi
 app.use('/api/admin', middlewareAuntenfikasi, rutAdminPenanggungJawab);
 
@@ -238,7 +276,7 @@ app.use('/api/admin', middlewareAuntenfikasi, rutAdminKeberatan);
  * Endpoint: /api/admin/dashboard
  * Handler: dashboardAdminController.js
  * Sifat: Read-only (pengambilan data ringkasan dan aktivitas)
- */
+*/
 app.use('/api/admin', middlewareAuntenfikasi, rutDashboardAdmin);
 
 /**
@@ -247,7 +285,7 @@ app.use('/api/admin', middlewareAuntenfikasi, rutDashboardAdmin);
  * Endpoint: /api/penanggung-jawab/dashboard
  * Handler: dashboardPenanggungJawabController.js
  * Sifat: Read-only (pengambilan data ringkasan dan aktivitas tim)
- */
+*/
 app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutDashboardPenanggungJawab);
 
 /**
@@ -256,7 +294,7 @@ app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutDashboardPenanggungJ
  * Endpoint: /api/penanggung-jawab/review-pengajuan
  * Handler: reviewPengajuanController.js
  * Sifat: Read-only (pengambilan daftar pengajuan yang menunggu review)
- */
+*/
 app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutReviewPengajuan);
 
 /**
@@ -265,7 +303,7 @@ app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutReviewPengajuan);
  * Endpoint: /api/karyawan/tanda-tangan
  * Handler: tandaTanganController.js
  * Sifat: Write-read (simpan tanda tangan administratif, ambil untuk review)
- */
+*/
 app.use('/api/karyawan', middlewareAuntenfikasi, rutTandaTangan);
 
 /**
@@ -278,8 +316,19 @@ app.use('/api/karyawan', middlewareAuntenfikasi, rutTandaTangan);
  * - Tanggal mulai >= hari ini
  * - Tanggal selesai >= tanggal mulai
  * - Durasi <= 365 hari (1 tahun)
- */
+*/
 app.use('/api/karyawan', middlewareAuntenfikasi, rutPengajuan);
+
+/**
+ * [FITUR BARU - Riwayat Pengajuan]
+ * Daftarkan router riwayat pengajuan dengan middleware autentikasi
+ * Endpoint: /api/pengguna/riwayat-pengajuan
+ * Handler: riwayatPengajuanController.js
+ * Sifat: READ-ONLY (hanya mengambil data riwayat, tidak mengubah apapun)
+ * Akses: Karyawan yang sudah ter-autentikasi
+ * Catatan: Endpoint ini bersifat informatif & administratif saja
+*/
+app.use('/api/pengguna', middlewareAuntenfikasi, rutRiwayatPengajuan);
 // app.use('/api/absensi', middlewareAuntenfikasi, rutAbsensi);     // Di-backup
 // app.use('/api/chatbot', rutChatbot);                             // Di-backup
 // app.use('/api/admin', middlewareAuntenfikasi, rutAdmin);         // Di-backup
@@ -295,42 +344,42 @@ app.get('/dashboard', async (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
-
+  
   const role = req.session.user.role;
   if (role === 'admin') {
     /**
      * [FITUR BARU - Data Dinamis]
      * Route dashboard admin sekarang fetch data dari API controller
      * Mengambil ringkasan & aktivitas terbaru dari database
-     */
-    try {
-      // Query data dashboard dari controller langsung (bypass API call)
-      const Pengguna = require('./models/Pengguna');
-      
-      // Hitung ringkasan
-      const totalKaryawan = await Pengguna.countDocuments({ role: 'karyawan' });
-      const totalPenanggungJawab = await Pengguna.countDocuments({ role: 'penanggung-jawab' });
-      const totalAkunAktif = await Pengguna.countDocuments({ adalah_aktif: true });
-      
-      // Hitung aktivitas hari ini
-      const hariIniMulai = new Date();
-      hariIniMulai.setHours(0, 0, 0, 0);
-      const hariIniAkhir = new Date();
-      hariIniAkhir.setHours(23, 59, 59, 999);
-      
-      const totalAktivitasHariIni = await Pengguna.countDocuments({
-        $or: [
-          { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
-          { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } }
+    */
+   try {
+     // Query data dashboard dari controller langsung (bypass API call)
+     const Pengguna = require('./models/Pengguna');
+     
+     // Hitung ringkasan
+     const totalKaryawan = await Pengguna.countDocuments({ role: 'karyawan' });
+     const totalPenanggungJawab = await Pengguna.countDocuments({ role: 'penanggung-jawab' });
+     const totalAkunAktif = await Pengguna.countDocuments({ adalah_aktif: true });
+     
+     // Hitung aktivitas hari ini
+     const hariIniMulai = new Date();
+     hariIniMulai.setHours(0, 0, 0, 0);
+     const hariIniAkhir = new Date();
+     hariIniAkhir.setHours(23, 59, 59, 999);
+     
+     const totalAktivitasHariIni = await Pengguna.countDocuments({
+       $or: [
+         { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
+         { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } }
         ]
       });
       
       // Ambil 5 aktivitas terbaru
       const daftarUserTerbaru = await Pengguna.find()
-        .select('nama_lengkap jabatan email role adalah_aktif createdAt updatedAt')
-        .sort({ updatedAt: -1 })
-        .limit(5)
-        .lean();
+      .select('nama_lengkap jabatan email role adalah_aktif createdAt updatedAt')
+      .sort({ updatedAt: -1 })
+      .limit(5)
+      .lean();
       
       // Transform ke format aktivitas
       const aktivitasTerbaru = daftarUserTerbaru.map(user => {
@@ -403,35 +452,35 @@ app.get('/dashboard', async (req, res) => {
      * [DASHBOARD PENANGGUNG JAWAB - Data Dinamis]
      * Route dashboard penanggung jawab sekarang fetch data dari model User
      * Mengambil ringkasan & aktivitas terbaru dari database
-     */
-    try {
-      // Query data dashboard dari User model (sama seperti admin, tapi untuk semua user)
-      const Pengguna = require('./models/Pengguna');
-      
-      // Hitung ringkasan
-      const totalKaryawan = await Pengguna.countDocuments({ role: 'karyawan' });
-      const totalPenanggungJawab = await Pengguna.countDocuments({ role: 'penanggung-jawab' });
-      const totalAkunAktif = await Pengguna.countDocuments({ adalah_aktif: true });
-      
-      // Hitung aktivitas hari ini
-      const hariIniMulai = new Date();
-      hariIniMulai.setHours(0, 0, 0, 0);
-      const hariIniAkhir = new Date();
-      hariIniAkhir.setHours(23, 59, 59, 999);
-      
-      const totalAktivitasHariIni = await Pengguna.countDocuments({
-        $or: [
-          { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
-          { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } }
+    */
+   try {
+     // Query data dashboard dari User model (sama seperti admin, tapi untuk semua user)
+     const Pengguna = require('./models/Pengguna');
+     
+     // Hitung ringkasan
+     const totalKaryawan = await Pengguna.countDocuments({ role: 'karyawan' });
+     const totalPenanggungJawab = await Pengguna.countDocuments({ role: 'penanggung-jawab' });
+     const totalAkunAktif = await Pengguna.countDocuments({ adalah_aktif: true });
+     
+     // Hitung aktivitas hari ini
+     const hariIniMulai = new Date();
+     hariIniMulai.setHours(0, 0, 0, 0);
+     const hariIniAkhir = new Date();
+     hariIniAkhir.setHours(23, 59, 59, 999);
+     
+     const totalAktivitasHariIni = await Pengguna.countDocuments({
+       $or: [
+         { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
+         { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } }
         ]
       });
       
       // Ambil 5 aktivitas terbaru
       const daftarUserTerbaru = await Pengguna.find()
-        .select('nama_lengkap jabatan email role adalah_aktif createdAt updatedAt')
-        .sort({ updatedAt: -1 })
-        .limit(5)
-        .lean();
+      .select('nama_lengkap jabatan email role adalah_aktif createdAt updatedAt')
+      .sort({ updatedAt: -1 })
+      .limit(5)
+      .lean();
       
       // Transform ke format pengajuan mendesak untuk dashboard penanggung jawab
       const pengajuanMendesak = daftarUserTerbaru.map(user => {
@@ -538,7 +587,7 @@ app.get('/dashboard', async (req, res) => {
 // ==================== RUTE PENGAJUAN (BERBASIS ROLE) ====================
 
 // Halaman pengajuan - berbeda tampilan untuk admin, supervisor, dan karyawan
-app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
+app.get('/pengajuan', middlewareAuntenfikasi, async (req, res) => {
   const role = req.session.user.role;
   
   if (role === 'admin') {
@@ -559,12 +608,50 @@ app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
     });
   } else {
     // Karyawan melihat riwayat pengajuan mereka
-    res.render('employee/pengajuan', { 
-      title: 'Riwayat Pengajuan - NusaAttend',
-      user: req.session.user,
-      layout: 'dashboard-layout',
-      halaman: 'riwayat-pengajuan'
-    });
+    // Fetch data riwayat pengajuan dari controller
+    try {
+      const riwayatPengajuanController = require('./controllers/riwayatPengajuanController');
+      
+      // Buat mock request untuk memanggil controller
+      const mockRes = {
+        json: function(data) {
+          // Simpan data untuk dipass ke template
+          this.data = data;
+        },
+        status: function(code) {
+          this.statusCode = code;
+          return this;
+        }
+      };
+
+      // Panggil controller function
+      await riwayatPengajuanController.ambilRiwayatPengajuanPengguna(req, mockRes);
+
+      // Jika sukses, pass data ke view
+      let riwayatPengajuan = [];
+      if (mockRes.data && mockRes.data.success && mockRes.data.data) {
+        riwayatPengajuan = mockRes.data.data.riwayat_pengajuan || [];
+      }
+
+      res.render('karyawan/riwayat-pengajuan', { 
+        title: 'Riwayat Pengajuan - NusaAttend',
+        user: req.session.user,
+        layout: 'dashboard-layout',
+        halaman: 'riwayat-pengajuan',
+        riwayatPengajuan: riwayatPengajuan
+      });
+    } catch (error) {
+      console.error('Error dalam route riwayat pengajuan:', error);
+      
+      // Jika error, render dengan data kosong
+      res.render('karyawan/riwayat-pengajuan', { 
+        title: 'Riwayat Pengajuan - NusaAttend',
+        user: req.session.user,
+        layout: 'dashboard-layout',
+        halaman: 'riwayat-pengajuan',
+        riwayatPengajuan: []
+      });
+    }
   }
 });
 
@@ -590,33 +677,17 @@ app.get('/pengajuan/buat', middlewareAuntenfikasi, (req, res) => {
   });
 });
 
-// Halaman absensi
-app.get('/absensi', middlewareAuntenfikasi, (req, res) => {
-  const role = req.session.user.role;
-  
-  // Hanya karyawan yang bisa mengakses absensi
-  if (role !== 'karyawan') {
-    return res.status(403).render('publik/404', {
-      title: 'Akses Ditolak - NusaAttend',
-      message: 'Anda tidak memiliki akses ke halaman absensi.'
-    });
-  }
-  
-  res.render('employee/absensi', { 
-    title: 'Absensi - NusaAttend',
-    user: req.session.user,
-    layout: 'dashboard-layout',
-    halaman: 'absensi'
-  });
-});
 
+
+// Rute Absensi
+app.use('/absensi', absensiRoute);
 
 // ==================== RUTE ADMIN ====================
+
 
 // Halaman manajemen karyawan
 app.get('/admin/karyawan', middlewareAuntenfikasi, (req, res) => {
   const role = req.session.user.role;
-  
   // Hanya admin yang bisa mengakses manajemen karyawan
   if (role !== 'admin') {
     return res.status(403).render('publik/404', {
@@ -640,7 +711,7 @@ app.get('/admin/karyawan', middlewareAuntenfikasi, (req, res) => {
  * Route untuk halaman manajemen penanggung jawab (supervisor)
  * Path: '/admin/penanggung-jawab'
  * Template: 'admin/manajemen-penanggung-jawab.hbs'
- */
+*/
 app.get('/admin/penanggung-jawab', middlewareAuntenfikasi, async (req, res) => {
   const role = req.session.user.role;
   
@@ -720,16 +791,16 @@ app.get('/admin/laporan', middlewareAuntenfikasi, (req, res) => {
  * Path: '/admin/log-keberatan'
  * Template: 'admin/log-keberatan.hbs'
  * Fitur: Admin dapat memonitor semua keberatan yang diajukan (view-only)
- */
+*/
 app.get('/admin/log-keberatan', middlewareAuntenfikasi, async (req, res) => {
   const role = req.session.user.role;
   
   /**
    * Validasi akses: Hanya admin yang bisa melihat log keberatan
-   */
-  if (role !== 'admin') {
-    return res.status(403).render('publik/404', {
-      title: 'Akses Ditolak - NusaAttend',
+  */
+ if (role !== 'admin') {
+   return res.status(403).render('publik/404', {
+     title: 'Akses Ditolak - NusaAttend',
       message: 'Anda tidak memiliki akses ke halaman log keberatan.'
     });
   }
@@ -741,14 +812,14 @@ app.get('/admin/log-keberatan', middlewareAuntenfikasi, async (req, res) => {
      */
     const Keberatan = require('./models/Keberatan');
     const daftarKeberatan = await Keberatan.find()
-      .populate('pengaju', 'nama_lengkap jabatan')
-      .populate('penanggung_jawab', 'nama_lengkap')
+    .populate('pengaju', 'nama_lengkap jabatan')
+    .populate('penanggung_jawab', 'nama_lengkap')
       .sort({ tanggal_pengajuan: -1 })
       .lean();
-
-    /**
-     * Transform data untuk frontend
-     * Normalize nama field dari database ke template variable
+      
+      /**
+       * Transform data untuk frontend
+       * Normalize nama field dari database ke template variable
      */
     const keberatanFormatted = daftarKeberatan.map(keberatan => ({
       _id: keberatan._id,
@@ -763,26 +834,26 @@ app.get('/admin/log-keberatan', middlewareAuntenfikasi, async (req, res) => {
       tanggalDisetujui: keberatan.tanggal_pembaruan?.toLocaleDateString('id-ID'),
       tanggalDitolak: keberatan.tanggal_pembaruan?.toLocaleDateString('id-ID')
     }));
-
+    
     /**
      * Hitung statistik keberatan per status
-     */
-    const statistik = {
-      jumlahTotalKeberatan: daftarKeberatan.length,
-      jumlahMenunggu: daftarKeberatan.filter(k => k.status_keberatan === 'menunggu').length,
-      jumlahDisetujui: daftarKeberatan.filter(k => k.status_keberatan === 'selesai').length,
-      jumlahDitolak: 0 // Dapat diupdate jika ada field status detail (disetujui/ditolak)
+    */
+   const statistik = {
+     jumlahTotalKeberatan: daftarKeberatan.length,
+     jumlahMenunggu: daftarKeberatan.filter(k => k.status_keberatan === 'menunggu').length,
+     jumlahDisetujui: daftarKeberatan.filter(k => k.status_keberatan === 'selesai').length,
+     jumlahDitolak: 0 // Dapat diupdate jika ada field status detail (disetujui/ditolak)
     };
-
+    
     /**
      * Render halaman log keberatan dengan data
-     */
-    res.render('admin/log-keberatan', { 
-      title: 'Log Keberatan Administratif - NusaAttend',
-      user: req.session.user,
-      layout: 'dashboard-layout',
-      halaman: 'log-keberatan',
-      daftarKeberatan: keberatanFormatted,
+    */
+   res.render('admin/log-keberatan', { 
+     title: 'Log Keberatan Administratif - NusaAttend',
+     user: req.session.user,
+     layout: 'dashboard-layout',
+     halaman: 'log-keberatan',
+     daftarKeberatan: keberatanFormatted,
       jumlahTotalKeberatan: statistik.jumlahTotalKeberatan,
       jumlahMenunggu: statistik.jumlahMenunggu,
       jumlahDisetujui: statistik.jumlahDisetujui,

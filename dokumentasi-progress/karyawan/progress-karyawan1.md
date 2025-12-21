@@ -1,7 +1,7 @@
 # 📋 Progress Checkpoint - Karyawan 1
 **Tanggal:** 21 Desember 2025  
 **Status:** ✅ Selesai  
-**Pembuat:** GitHub Copilot  
+**Pembuat:** Rainy
 **Periode:** Implementasi Fitur Surat Izin (STEP 1-4) - Multi-step Form dengan Canvas Signature & Completion Page  
 
 ---

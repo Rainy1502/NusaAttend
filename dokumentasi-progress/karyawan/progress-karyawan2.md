@@ -1,7 +1,7 @@
 # 📋 Progress Checkpoint 2 - Karyawan
 **Tanggal:** 21 Desember 2025  
 **Status:** ✅ Selesai  
-**Pembuat:** GitHub Copilot  
+**Pembuat:** Rainy   
 **Referensi:** Progress Karyawan 1 (Checkpoint 1)  
 **Periode:** Refactoring Model, Standarisasi Penamaan Indonesian, Backend Integration & Bug Fixes  
 
