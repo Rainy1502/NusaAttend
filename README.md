@@ -1,19 +1,13 @@
 # NusaAttend - Portal Administrasi Kehadiran Tim
 
-<<<<<<< HEAD
 **Status Project**: � Admin Section Complete & Production Ready - Phase 1: Login & Admin Dashboard  
 **Last Updated**: December 21, 2025
-=======
-**Status Project**: 🚧 Work In Progress - Phase 2: Frontend Integration & Dashboard  
-**Last Updated**: December 20, 2025
->>>>>>> a20babb469bed5af3b62856f389b72027b84a1f6
 
 NusaAttend adalah portal administrasi internal berbasis website yang dirancang untuk membantu tim atau organisasi skala kecil hingga menengah dalam mengelola pengajuan administrasi kehadiran secara terpusat, terstruktur, dan real-time.
 
 ## 📋 Fitur yang Sudah Diimplementasi
 
 - ✅ **Login Page**: Login dengan email dan password
-<<<<<<< HEAD
 - ✅ **Session Management**: Session-based authentication dengan Express Session
 - ✅ **Password Hashing**: Secure password dengan Bcrypt
 - ✅ **Admin Dashboard**: Dashboard admin dengan real-time statistics dan activity log
@@ -23,14 +17,6 @@ NusaAttend adalah portal administrasi internal berbasis website yang dirancang u
 - ✅ **Role-Based Access Control**: Akses terbatas berdasarkan role (admin, supervisor, karyawan)
 - ✅ **Frontend Standardization**: Semua halaman admin memiliki styling yang konsisten
 - ✅ **Real-time Data**: Database queries untuk statistik dan monitoring aktual
-=======
-- ✅ **Admin Dashboard**: Dashboard admin dengan role-based access
-- ✅ **Employee Dashboard (Karyawan)**: Dashboard karyawan dengan statistik & pengajuan terbaru
-- ✅ **Global Footer**: Footer terintegrasi di semua halaman
-- ✅ **Session Management**: Session-based authentication dengan MongoDB store
-- ✅ **Password Hashing**: Secure password dengan Bcrypt
-- ✅ **Responsive Design**: Desktop, tablet, dan mobile layouts
->>>>>>> a20babb469bed5af3b62856f389b72027b84a1f6
 
 ## 🔜 Fitur yang Akan Datang (Next Phase)
 
@@ -95,7 +81,6 @@ NusaAttend/
 │   ├── main.hbs                    # Layout template (untuk halaman umum)
 │   ├── dashboard-layout.hbs        # ✅ Dashboard layout (sidebar + main content)
 │   ├── views/
-<<<<<<< HEAD
 │   │   ├── login.hbs               # ✅ Login page
 │   │   ├── register.hbs            # Register page (belum dimodifikasi)
 │   │   └── admin/
@@ -103,16 +88,6 @@ NusaAttend/
 │   │       ├── log-keberatan.hbs   # ✅ Keberatan monitoring
 │   │       ├── manajemen-karyawan.hbs      # ✅ Employee management
 │   │       └── manajemen-penanggung-jawab.hbs  # ✅ Supervisor management
-=======
-│   │   ├── publik/                 # ✅ Public pages (no auth required)
-│   │   │   ├── home.hbs            # Landing page
-│   │   │   ├── login.hbs           # ✅ Login page with global footer & back button
-│   │   │   └── 404.hbs             # 404 error page
-│   │   ├── admin/
-│   │   │   └── dashboard.hbs       # ✅ Admin dashboard
-│   │   └── karyawan/
-│   │       └── dashboard.hbs       # ✅ Employee dashboard dengan statistik & pengajuan terbaru
->>>>>>> a20babb469bed5af3b62856f389b72027b84a1f6
 │   └── partials/
 │       ├── header.hbs              # Header component
 │       ├── footer.hbs              # ✅ Global footer component
@@ -125,12 +100,7 @@ NusaAttend/
 │   └── REFACTORING_REPORT.md       # Code audit & refactoring report
 │
 ├── backup/                         # 🔐 Backup folder (referensi & tidak dipakai)
-<<<<<<< HEAD
 │   └── (archived deprecated files)
-=======
-│   ├── src/                        # Reference files untuk fitur mendatang
-│   └── templates/views/            # Reference templates
->>>>>>> a20babb469bed5af3b62856f389b72027b84a1f6
 │
 ├── dokumentasi-progress/           # Documentation & progress tracking
 ├── package.json
@@ -140,7 +110,6 @@ NusaAttend/
 
 ## 🎯 File yang AKTIF di Project
 
-<<<<<<< HEAD
 ✅ **Sudah dimodifikasi & digunakan untuk login, dashboard, dan admin features:**
 
 **Controllers (5 Active):**
@@ -177,27 +146,6 @@ NusaAttend/
 - `templates/dashboard-layout.hbs` - Dashboard layout dengan sidebar
 - `templates/partials/footer.hbs` - Dashboard footer
 - `public/css/styles.css` - All CSS (5000+ lines, unified styling)
-=======
-✅ **Sudah dimodifikasi & digunakan untuk login, dashboard admin, dan dashboard karyawan:**
-
-- `src/app.js` - Main application setup dengan routing publik & protected
-- `src/controllers/authController.js` - Login & authentication logic
-- `src/routes/auth.js` - Auth routing
-- `src/models/User.js` - User model dengan role & statistik
-- `src/middleware/auth.js` - Auth middleware untuk protected routes
-- `src/middleware/errorHandler.js` - Error handling dengan 404 publik
-- `src/config/database.js` - MongoDB connection
-- `src/config/socket.js` - Socket.io setup
-- `templates/views/publik/login.hbs` - ✅ Login page dengan back button & global footer
-- `templates/views/publik/home.hbs` - Landing page
-- `templates/views/publik/404.hbs` - Error page
-- `templates/views/admin/dashboard.hbs` - Admin dashboard
-- `templates/views/karyawan/dashboard.hbs` - ✅ Employee dashboard (statistik, pengajuan terbaru)
-- `templates/dashboard-layout.hbs` - Dashboard layout dengan sidebar
-- `templates/partials/footer.hbs` - ✅ Global footer untuk semua halaman
-- `public/css/styles.css` - ✅ All CSS (2774 lines) termasuk dashboard styling
-- `public/js/` - Client-side scripts
->>>>>>> a20babb469bed5af3b62856f389b72027b84a1f6
 
 ## 🏗️ Tentang Views & Folder Organization
 
