@@ -6231,3 +6231,1396 @@ select.input-form {
   }
 }
 
+/* ==================== HALAMAN SURAT IZIN (KARYAWAN) ==================== */
+/* Styling untuk halaman pembuatan surat izin (Step 1 - Isi Form) */
+
+/**
+ * Container utama halaman surat izin
+ * Mengatur layout dan spacing konten halaman
+ */
+.containerHalamanSuratIzin {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  padding: 32px 32px 32px 32px;
+  background-color: #f9fafb;
+}
+
+/**
+ * Container stepper/progress indicator
+ * Menampilkan tahapan proses pembuatan surat izin (Step 1-4)
+ */
+.containerStepperSuratIzin {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/**
+ * Item individual stepper
+ * Setiap tahapan dalam proses surat izin
+ */
+.itemStepperSuratIzin {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/**
+ * Badge nomor stepper (1, 2, 3, 4)
+ * Menampilkan nomor tahapan dalam lingkaran
+ */
+.badgeStepperNomor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  font-weight: 600;
+  font-size: 16px;
+  color: #6a7282;
+}
+
+/**
+ * Badge stepper aktif (Step 1 saat ini)
+ * Styling khusus untuk tahapan yang sedang dikerjakan
+ */
+.badgeStepperAktif {
+  background-color: #4f39f6;
+  color: #ffffff;
+}
+
+/**
+ * Label teks stepper
+ * Deskripsi setiap tahapan proses
+ */
+.labelStepperSuratIzin {
+  font-size: 14px;
+  color: #6a7282;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/**
+ * Divider stepper
+ * Garis pemisah antar tahapan
+ */
+.dividerStepperSuratIzin {
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+/**
+ * Icon divider stepper
+ * Ikon panah atau garis yang menghubungkan tahapan
+ */
+.iconDividerStepper {
+  width: 16px;
+  height: 16px;
+  color: #d1d5dc;
+}
+
+/**
+ * Kartu form surat izin
+ * Container utama untuk form pengisian surat izin
+ */
+.kartuFormSuratIzin {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 33px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/**
+ * Header form surat izin
+ * Berisi icon dan judul halaman form
+ */
+.headerFormSuratIzin {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+/**
+ * Icon header form
+ * Icon yang merepresentasikan form/surat
+ */
+.iconHeaderForm {
+  font-size: 24px;
+  color: #101828;
+  width: 24px;
+  height: 24px;
+}
+
+/**
+ * Judul header form
+ * Judul halaman "Buat Surat Izin Baru"
+ */
+.judulHeaderForm {
+  font-size: 16px;
+  font-weight: 500;
+  color: #101828;
+  margin: 0;
+  padding: 0;
+  line-height: 24px;
+}
+
+/**
+ * Form surat izin
+ * Container untuk semua field form
+ */
+.formSuratIzin {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+/**
+ * Grup field form surat izin
+ * Container untuk label + input field
+ */
+.grupFieldFormSuratIzin {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/**
+ * Label field form
+ * Deskripsi/label untuk setiap input field
+ */
+.labelFieldForm {
+  font-size: 16px;
+  font-weight: 500;
+  color: #364153;
+  line-height: 24px;
+}
+
+/**
+ * Asterisk required
+ * Tanda (*) untuk field yang wajib diisi
+ */
+.asteriskRequired {
+  color: #e7000b;
+  font-weight: 600;
+}
+
+/**
+ * Input field read-only (Nama Lengkap, Jabatan)
+ * Container untuk input yang tidak bisa diubah
+ */
+.inputFieldReadOnly {
+  display: flex;
+  width: 100%;
+  height: 50px;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f9fafb;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/**
+ * Text input read-only
+ * Styling untuk text input yang disabled/readonly
+ */
+.textInputReadOnly {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 16px;
+  color: #0a0a0a;
+  font-family: inherit;
+  cursor: not-allowed;
+}
+
+.textInputReadOnly:disabled {
+  cursor: not-allowed;
+  color: #0a0a0a;
+}
+
+/**
+ * Select field form
+ * Dropdown untuk memilih jenis izin
+ */
+.selectFieldForm {
+  width: 100%;
+  height: 49px;
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #0a0a0a;
+  background-color: #ffffff;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.selectFieldForm:focus {
+  outline: none;
+  border-color: #4f39f6;
+  box-shadow: 0 0 0 3px rgba(79, 57, 246, 0.1);
+}
+
+.selectFieldForm:hover {
+  border-color: #b4b8c4;
+}
+
+/**
+ * Input field form
+ * Styling untuk input text, date, dan field reguler lainnya
+ */
+.inputFieldForm {
+  width: 100%;
+  height: 50px;
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #0a0a0a;
+  background-color: #ffffff;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.inputFieldForm:focus {
+  outline: none;
+  border-color: #4f39f6;
+  box-shadow: 0 0 0 3px rgba(79, 57, 246, 0.1);
+}
+
+.inputFieldForm:hover {
+  border-color: #b4b8c4;
+}
+
+/**
+ * Container tanggal surat izin
+ * Layout 2 kolom untuk Tanggal Mulai dan Tanggal Selesai
+ */
+.containerTanggalSuratIzin {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+/**
+ * Textarea field form
+ * Area teks untuk alasan pengajuan izin
+ */
+.textareaFieldForm {
+  width: 100%;
+  min-height: 122px;
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #0a0a0a;
+  background-color: #ffffff;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.textareaFieldForm::placeholder {
+  color: rgba(10, 10, 10, 0.5);
+}
+
+.textareaFieldForm:focus {
+  outline: none;
+  border-color: #4f39f6;
+  box-shadow: 0 0 0 3px rgba(79, 57, 246, 0.1);
+}
+
+.textareaFieldForm:hover {
+  border-color: #b4b8c4;
+}
+
+/**
+ * Tombol Lanjut ke Preview
+ * Tombol aksi utama untuk melanjutkan ke step berikutnya (dummy UI)
+ */
+.tombolLanjutPreview {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 10px;
+  background-color: #d1d5dc;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tombolLanjutPreview:hover {
+  background-color: #b9bcc4;
+  transform: translateY(-1px);
+}
+
+.tombolLanjutPreview:active {
+  background-color: #a4a8b0;
+  transform: translateY(0);
+}
+
+.tombolLanjutPreview:disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/**
+ * Validasi form
+ * Styling untuk form yang sudah divalidasi (jika ada error)
+ */
+.formSuratIzin.wasValidated .inputFieldForm:invalid,
+.formSuratIzin.wasValidated .selectFieldForm:invalid,
+.formSuratIzin.wasValidated .textareaFieldForm:invalid {
+  border-color: #e7000b;
+  box-shadow: 0 0 0 3px rgba(231, 0, 11, 0.1);
+}
+
+/* ==================== STEP 1: ISI FORM SURAT IZIN ==================== */
+/**
+ * Styling untuk kontainer STEP 1 (form pengajuan)
+ * Merupakan tampilan awal halaman surat izin
+ */
+.stepSatuIsiForm {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ==================== STEP 2: PREVIEW SURAT IZIN ==================== */
+/**
+ * Styling untuk kontainer STEP 2 (preview surat)
+ * Menampilkan preview surat dengan data dari form STEP 1
+ */
+.stepDuaPratinjau {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/**
+ * Kontainer kartu preview surat izin
+ * Menampilkan letter/surat dalam format cetak
+ */
+.containerPratinjauSurat {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #ffffff;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/**
+ * Header preview surat
+ * Judul dan label preview
+ */
+.headerPratinjauSurat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f1f2;
+}
+
+.judulHeaderPreview {
+  font-size: 18px;
+  font-weight: 600;
+  color: #364153;
+  margin: 0;
+}
+
+/**
+ * Konten surat izin utama
+ * Styling untuk isi surat yang akan dicetak
+ */
+.kontenSuratIzin {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4a5565;
+}
+
+/**
+ * Bagian judul surat
+ * Judul utama surat (SURAT CUTI TAHUNAN, dll) dan subtitle
+ */
+.bagianJudulSurat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.judulSuratUtama {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.subtitleSurat {
+  font-size: 13px;
+  color: #718096;
+  margin: 0;
+  font-weight: 500;
+}
+
+/**
+ * Bagian isi surat
+ * Konten utama surat izin dengan data diri, pernyataan, dan alasan
+ */
+.bagianIsiSurat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.textIsiBaku {
+  font-size: 14px;
+  color: #364153;
+  margin: 0;
+  font-weight: 500;
+}
+
+.textPernyataan {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/**
+ * Kotak data diri pengaju
+ * Menampilkan nama dan jabatan dalam format terstruktur
+ */
+.dataDiriPengaju {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0;
+  padding: 8px 0;
+}
+
+.textDataDiri {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+}
+
+.textDataDiri strong {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+/**
+ * Kotak alasan pengajuan izin
+ * Background putih gelap dengan border untuk highlight
+ */
+.kontenAlasanSurat {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 8px 0;
+}
+
+#alasanPreview {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/**
+ * Teks penutup standar surat
+ * Closing statement surat izin
+ */
+.textPenutupBaku {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 12px 0 0 0;
+  line-height: 1.6;
+}
+
+/**
+ * Bagian tanda tangan surat
+ * Area untuk signature karyawan
+ */
+.bagianTandaTangan {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 16px;
+  text-align: right;
+}
+
+.textHormatSaya {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+}
+
+/**
+ * Area untuk tanda tangan
+ * Placeholder untuk signature (akan diisi di STEP 3)
+ */
+.areaTandaTangan {
+  height: 40px;
+  border-bottom: 1px solid #cbd5e0;
+  margin: 4px 0;
+}
+
+.textNamaPenandatangan {
+  font-size: 14px;
+  color: #2d3748;
+  margin: 0;
+  font-weight: 600;
+}
+
+/**
+ * Bagian tanggal pengajuan
+ * Tanggal surat dibuat
+ */
+.bagianTanggalPengajuan {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.textTanggalPengajuan {
+  font-size: 13px;
+  color: #718096;
+  margin: 0;
+}
+
+/**
+ * Kontainer tombol preview
+ * Tombol navigasi untuk kembali atau lanjut
+ */
+.containerTombolPreview {
+  display: flex;
+  gap: 12px;
+  justify-content: stretch;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/**
+ * Tombol Kembali
+ * Outline button untuk kembali ke form edit
+ */
+.tombolKembaliKeForm {
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5565;
+  background: transparent;
+  border: 1.5px solid #cbd5e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+}
+
+.tombolKembaliKeForm:hover {
+  background: #f7fafc;
+  border-color: #a0aec0;
+  color: #2d3748;
+}
+
+.tombolKembaliKeForm:active {
+  background: #edf2f7;
+  border-color: #a0aec0;
+}
+
+/**
+ * Tombol Lanjut ke Tanda Tangan
+ * Primary button dengan warna brand color untuk navigasi
+ */
+.tombolLanjutTandaTangan {
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #4f39f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+}
+
+.tombolLanjutTandaTangan:hover {
+  background: #3f2fbf;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+}
+
+.tombolLanjutTandaTangan:active {
+  background: #3425a0;
+  box-shadow: 0 2px 6px rgba(79, 57, 246, 0.3);
+}
+
+/* ==================== STEP 3: TANDA TANGAN DIGITAL ==================== */
+/**
+ * Styling untuk kontainer STEP 3 (tanda tangan digital)
+ * Menampilkan canvas untuk user menggambar tanda tangan
+ */
+.stepTigaTandaTangan {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/**
+ * Kontainer kartu tanda tangan digital
+ * Menampilkan header, instruksi, canvas, dan tombol aksi
+ */
+.containerTandaTanganDigital {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #ffffff;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/**
+ * Header tanda tangan digital
+ * Judul dan label instruksi
+ */
+.headerTandaTanganDigital {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f1f2;
+}
+
+.judulHeaderTandaTangan {
+  font-size: 18px;
+  font-weight: 600;
+  color: #364153;
+  margin: 0;
+}
+
+/**
+ * Instruksi untuk user
+ * Keterangan singkat tentang cara menggunakan canvas
+ */
+.instruksiTandaTangan {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.textInstruksi {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+}
+
+/**
+ * Kontainer canvas tanda tangan
+ * Wrapper untuk canvas element dengan border styling
+ */
+.containerCanvasTandaTangan {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 2px solid #d1d5dc;
+  border-radius: 10px;
+  padding: 18px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/**
+ * Canvas element untuk menggambar tanda tangan
+ * Responsive width, fixed height untuk drawing area
+ * Background putih untuk kontras dengan garis tanda tangan
+ */
+.kanvasTandaTangan {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #ffffff;
+  border: none;
+  cursor: crosshair;
+  border-radius: 4px;
+}
+
+/**
+ * Kontainer tombol untuk kontrol tanda tangan
+ * 3 tombol: Kembali, Hapus, Kirim
+ */
+.containerTombolTandaTangan {
+  display: flex;
+  gap: 12px;
+  justify-content: stretch;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/**
+ * Tombol Kembali dari Tanda Tangan
+ * Outline button untuk kembali ke preview
+ */
+.tombolKembaliDariTandaTangan {
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5565;
+  background: transparent;
+  border: 1.5px solid #cbd5e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+}
+
+.tombolKembaliDariTandaTangan:hover {
+  background: #f7fafc;
+  border-color: #a0aec0;
+  color: #2d3748;
+}
+
+.tombolKembaliDariTandaTangan:active {
+  background: #edf2f7;
+  border-color: #a0aec0;
+}
+
+/**
+ * Tombol Hapus Tanda Tangan
+ * Secondary button untuk clear canvas tanpa navigasi
+ */
+.tombolHapusTandaTangan {
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5565;
+  background: transparent;
+  border: 1.5px solid #cbd5e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+}
+
+.tombolHapusTandaTangan:hover {
+  background: #f7fafc;
+  border-color: #a0aec0;
+  color: #2d3748;
+}
+
+.tombolHapusTandaTangan:active {
+  background: #edf2f7;
+  border-color: #a0aec0;
+}
+
+/**
+ * Tombol Kirim Pengajuan
+ * Primary button dengan warna brand untuk submit
+ */
+.tombolKirimPengajuan {
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #4f39f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+}
+
+.tombolKirimPengajuan:hover {
+  background: #3f2fbf;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+}
+
+.tombolKirimPengajuan:active {
+  background: #3425a0;
+  box-shadow: 0 2px 6px rgba(79, 57, 246, 0.3);
+}
+
+/**
+ * Animasi fade in untuk transisi antar step
+ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/**
+ * Icon checkmark untuk stepper (step selesai)
+ */
+.iconCheckmarkStepper {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==================== STEP 4: SELESAI / KONFIRMASI PENGAJUAN ==================== */
+
+/**
+ * Kontainer STEP 4 (Selesai)
+ * Menampilkan pesan keberhasilan, detail ringkasan, dan tombol buat surat baru
+ */
+.stepEmpatSelesai {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/**
+ * Kontainer utama untuk konten STEP 4 selesai
+ * Card layout dengan centered content dan icon success
+ */
+.containerSelesaiPengajuan {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  padding: 40px 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/**
+ * Icon container untuk success check
+ * Background hijau terang dengan icon centered
+ */
+.iconContainerSelesai {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: #dcfce7;
+  border-radius: 50%;
+  margin-bottom: 12px;
+}
+
+/**
+ * Icon check mark untuk success state
+ * Warna hijau gelap untuk kontras visual
+ */
+.iconCheckSelesai {
+  font-size: 32px;
+  color: #00c950;
+  line-height: 1;
+}
+
+/**
+ * Judul pesan keberhasilan utama
+ * Large heading dengan warna gelap
+ */
+.judulSelesai {
+  font-size: 24px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+/**
+ * Penjelasan singkat tentang status pengajuan
+ * Deskriptif, profesional, dan tidak menjanjikan hasil
+ */
+.penjelasanSelesai {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+/**
+ * Box untuk ringkasan detail pengajuan
+ * Background biru muda dengan border untuk visual hierarchy
+ */
+.boxDetailPengajuan {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #eef2ff;
+  border: 1px solid #c6d2ff;
+  border-radius: 10px;
+  padding: 18px;
+  width: 100%;
+  max-width: 600px;
+}
+
+/**
+ * Judul detail pengajuan di dalam box
+ * Warna brand purple gelap untuk konsistensi
+ */
+.judulDetailPengajuan {
+  font-size: 16px;
+  font-weight: 600;
+  color: #312c85;
+  margin: 0;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+/**
+ * Item individual dalam detail pengajuan
+ * Layout horizontal dengan label dan value
+ */
+.itemDetailPengajuan {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  text-align: left;
+}
+
+/**
+ * Label untuk item detail (Jenis, Periode, Status)
+ * Bold untuk visual emphasis
+ */
+.labelDetailPengajuan {
+  font-weight: 600;
+  color: #312c85;
+  min-width: 70px;
+}
+
+/**
+ * Nilai untuk item detail pengajuan
+ * Warna purple untuk konsistensi visual
+ */
+.nilaiDetailPengajuan {
+  color: #432dd7;
+  word-break: break-word;
+}
+
+/**
+ * Tombol Buat Surat Baru
+ * Primary button untuk reset form dan kembali ke STEP 1
+ */
+.tombolBuatSuratBaru {
+  padding: 12px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #4f39f6;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tombolBuatSuratBaru:hover {
+  background: #3f2fbf;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+}
+
+.tombolBuatSuratBaru:active {
+  background: #3628a4;
+  box-shadow: 0 2px 6px rgba(79, 57, 246, 0.2);
+}
+
+/* ==================== RESPONSIVE DESIGN UNTUK SURAT IZIN ==================== */
+
+/**
+ * Tablet (max-width: 1024px)
+ * Penyesuaian layout untuk layar tablet
+ */
+@media (max-width: 1024px) {
+  .containerHalamanSuratIzin {
+    padding: 24px 24px 24px 24px;
+    gap: 24px;
+  }
+
+  .kartuFormSuratIzin {
+    padding: 24px;
+    gap: 20px;
+  }
+
+  .containerPratinjauSurat {
+    padding: 24px;
+    gap: 20px;
+  }
+
+  .containerStepperSuratIzin {
+    gap: 12px;
+  }
+
+  .itemStepperSuratIzin {
+    gap: 6px;
+  }
+
+  .badgeStepperNomor {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .labelStepperSuratIzin {
+    font-size: 12px;
+  }
+
+  .containerTanggalSuratIzin {
+    gap: 12px;
+  }
+
+  .judulSuratUtama {
+    font-size: 16px;
+  }
+
+  .kontenSuratIzin {
+    font-size: 13px;
+  }
+
+  .containerTombolPreview {
+    gap: 10px;
+  }
+
+  .tombolKembaliKeForm,
+  .tombolLanjutTandaTangan {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  /* STEP 3: Tanda Tangan Responsive Tablet */
+  .containerTandaTanganDigital {
+    padding: 24px;
+    gap: 20px;
+  }
+
+  .judulHeaderTandaTangan {
+    font-size: 16px;
+  }
+
+  .textInstruksi {
+    font-size: 14px;
+  }
+
+  .containerCanvasTandaTangan {
+    padding: 16px;
+  }
+
+  .containerTombolTandaTangan {
+    gap: 10px;
+  }
+
+  .tombolKembaliDariTandaTangan,
+  .tombolHapusTandaTangan,
+  .tombolKirimPengajuan {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  /* STEP 4: Selesai Responsive Tablet */
+  .containerSelesaiPengajuan {
+    padding: 32px 24px;
+    gap: 20px;
+  }
+
+  .judulSelesai {
+    font-size: 22px;
+  }
+
+  .penjelasanSelesai {
+    font-size: 15px;
+  }
+
+  .boxDetailPengajuan {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .judulDetailPengajuan {
+    font-size: 15px;
+  }
+
+  .itemDetailPengajuan {
+    font-size: 13px;
+  }
+
+  .tombolBuatSuratBaru {
+    padding: 10px 32px;
+    font-size: 14px;
+  }
+}
+
+/**
+ * Mobile (max-width: 768px)
+ * Penyesuaian layout untuk layar mobile
+ */
+@media (max-width: 768px) {
+  .containerHalamanSuratIzin {
+    padding: 16px 16px 16px 16px;
+    gap: 20px;
+  }
+
+  .kartuFormSuratIzin {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .containerPratinjauSurat {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .containerStepperSuratIzin {
+    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .itemStepperSuratIzin {
+    width: 100%;
+    gap: 12px;
+  }
+
+  .dividerStepperSuratIzin {
+    display: none;
+  }
+
+  .badgeStepperNomor {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .labelStepperSuratIzin {
+    font-size: 14px;
+  }
+
+  .judulHeaderForm {
+    font-size: 14px;
+  }
+
+  .judulHeaderPreview {
+    font-size: 16px;
+  }
+
+  .containerTanggalSuratIzin {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .inputFieldForm,
+  .selectFieldForm,
+  .textareaFieldForm {
+    height: 44px;
+    font-size: 16px;
+    padding: 10px 14px;
+  }
+
+  .textareaFieldForm {
+    min-height: 100px;
+  }
+
+  .tombolLanjutPreview {
+    height: 44px;
+    font-size: 14px;
+  }
+
+  .labelFieldForm {
+    font-size: 14px;
+  }
+
+  /* STEP 2 Responsive */
+  .kontenSuratIzin {
+    font-size: 13px;
+  }
+
+  .judulSuratUtama {
+    font-size: 16px;
+  }
+
+  .subtitleSurat {
+    font-size: 12px;
+  }
+
+  .textIsiBaku,
+  .textPernyataan,
+  .textDataDiri,
+  .textPenutupBaku {
+    font-size: 13px;
+  }
+
+  .kontenAlasanSurat {
+    padding: 10px;
+  }
+
+  .containerTombolPreview {
+    gap: 8px;
+    flex-direction: column;
+  }
+
+  .tombolKembaliKeForm,
+  .tombolLanjutTandaTangan {
+    padding: 12px 16px;
+    font-size: 14px;
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .bagianTandaTangan {
+    text-align: center;
+  }
+
+  .bagianTanggalPengajuan {
+    justify-content: center;
+  }
+
+  /* STEP 3: Tanda Tangan Responsive Mobile */
+  .containerTandaTanganDigital {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .judulHeaderTandaTangan {
+    font-size: 16px;
+  }
+
+  .textInstruksi {
+    font-size: 14px;
+  }
+
+  .containerCanvasTandaTangan {
+    padding: 12px;
+  }
+
+  .containerTombolTandaTangan {
+    gap: 8px;
+    flex-direction: column;
+  }
+
+  .tombolKembaliDariTandaTangan,
+  .tombolHapusTandaTangan,
+  .tombolKirimPengajuan {
+    padding: 12px 16px;
+    font-size: 14px;
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* STEP 4: Selesai Responsive Mobile */
+  .containerSelesaiPengajuan {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .iconContainerSelesai {
+    width: 56px;
+    height: 56px;
+  }
+
+  .iconCheckSelesai {
+    font-size: 28px;
+  }
+
+  .judulSelesai {
+    font-size: 20px;
+  }
+
+  .penjelasanSelesai {
+    font-size: 14px;
+  }
+
+  .boxDetailPengajuan {
+    padding: 14px;
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  .judulDetailPengajuan {
+    font-size: 14px;
+  }
+
+  .itemDetailPengajuan {
+    font-size: 12px;
+  }
+
+  .tombolBuatSuratBaru {
+    padding: 12px 24px;
+    font-size: 14px;
+    width: 100%;
+  }
+}

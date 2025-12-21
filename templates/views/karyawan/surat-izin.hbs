@@ -1,0 +1,1062 @@
+<!-- ==================== HALAMAN SURAT IZIN (STEP 1 - ISI FORM) ==================== -->
+<!-- Halaman untuk karyawan membuat pengajuan surat izin (tahap awal: pengisian form) -->
+
+<!-- Container utama konten halaman -->
+<div class="containerHalamanSuratIzin">
+    
+    <!-- ==================== PROGRESS INDICATOR / STEPPER ==================== -->
+    <!-- Menampilkan progress tahapan surat izin (Step 1: Isi Form, Step 2: Preview, dll) -->
+    <div class="containerStepperSuratIzin">
+        <!-- Step 1: Isi Form (AKTIF/CURRENT) -->
+        <div class="itemStepperSuratIzin itemStepperAktif">
+            <div class="badgeStepperNomor badgeStepperAktif">
+                <span class="textBadgeStepperNomor">1</span>
+            </div>
+            <span class="labelStepperSuratIzin">Isi Form</span>
+        </div>
+        
+        <!-- Divider antar step -->
+        <div class="dividerStepperSuratIzin">
+            <svg class="iconDividerStepper" viewBox="0 0 16 16" fill="none">
+                <path d="M6 8H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        
+        <!-- Step 2: Preview Surat (TIDAK AKTIF) -->
+        <div class="itemStepperSuratIzin">
+            <div class="badgeStepperNomor">
+                <span class="textBadgeStepperNomor">2</span>
+            </div>
+            <span class="labelStepperSuratIzin">Preview Surat</span>
+        </div>
+        
+        <!-- Divider antar step -->
+        <div class="dividerStepperSuratIzin">
+            <svg class="iconDividerStepper" viewBox="0 0 16 16" fill="none">
+                <path d="M6 8H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        
+        <!-- Step 3: Tanda Tangan (TIDAK AKTIF) -->
+        <div class="itemStepperSuratIzin">
+            <div class="badgeStepperNomor">
+                <span class="textBadgeStepperNomor">3</span>
+            </div>
+            <span class="labelStepperSuratIzin">Tanda Tangan</span>
+        </div>
+        
+        <!-- Divider antar step -->
+        <div class="dividerStepperSuratIzin">
+            <svg class="iconDividerStepper" viewBox="0 0 16 16" fill="none">
+                <path d="M6 8H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        
+        <!-- Step 4: Selesai (TIDAK AKTIF) -->
+        <div class="itemStepperSuratIzin">
+            <div class="badgeStepperNomor">
+                <span class="textBadgeStepperNomor">4</span>
+            </div>
+            <span class="labelStepperSuratIzin">Selesai</span>
+        </div>
+    </div>
+    
+    <!-- ==================== STEP 1: FORM CONTAINER ==================== -->
+    <!-- Kartu form untuk pengisian surat izin (halaman pertama) -->
+    <div id="stepSatuIsiForm" class="stepSatuIsiForm">
+        <div class="kartuFormSuratIzin">
+            
+            <!-- Header form dengan icon dan judul -->
+            <div class="headerFormSuratIzin">
+                <i class="fas fa-file-alt iconHeaderForm"></i>
+                <h2 class="judulHeaderForm">Buat Surat Izin Baru</h2>
+            </div>
+        
+        <!-- ==================== ISI FORM SURAT IZIN ==================== -->
+        <!-- Form pengajuan izin dengan field-field yang diperlukan -->
+        <form id="formSuratIzin" class="formSuratIzin" name="formSuratIzin">
+            
+            <!-- Field: Nama Lengkap (Read-Only) -->
+            <div class="grupFieldFormSuratIzin">
+                <label for="inputNamaLengkap" class="labelFieldForm">Nama Lengkap</label>
+                <div class="inputFieldReadOnly">
+                    <input 
+                        type="text" 
+                        id="inputNamaLengkap" 
+                        name="inputNamaLengkap" 
+                        value="{{user.nama_lengkap}}" 
+                        class="textInputReadOnly" 
+                        readonly 
+                        disabled
+                        placeholder="Nama Lengkap"
+                    />
+                </div>
+            </div>
+            
+            <!-- Field: Jabatan (Read-Only) -->
+            <div class="grupFieldFormSuratIzin">
+                <label for="inputJabatan" class="labelFieldForm">Jabatan</label>
+                <div class="inputFieldReadOnly">
+                    <input 
+                        type="text" 
+                        id="inputJabatan" 
+                        name="inputJabatan" 
+                        value="{{user.jabatan}}" 
+                        class="textInputReadOnly" 
+                        readonly 
+                        disabled
+                        placeholder="Jabatan"
+                    />
+                </div>
+            </div>
+            
+            <!-- Field: Jenis Izin (Dropdown Required) -->
+            <div class="grupFieldFormSuratIzin">
+                <label for="selectJenisIzin" class="labelFieldForm">
+                    Jenis Izin <span class="asteriskRequired">*</span>
+                </label>
+                <select 
+                    id="selectJenisIzin" 
+                    name="selectJenisIzin" 
+                    class="selectFieldForm" 
+                    required
+                >
+                    <option value="">Pilih jenis izin</option>
+                    <option value="cuti-tahunan">Cuti Tahunan</option>
+                    <option value="izin-tidak-masuk">Izin Tidak Masuk Kerja</option>
+                    <option value="izin-sakit">Izin Sakit</option>
+                    <option value="wfh">Work From Home (WFH)</option>
+                </select>
+            </div>
+            
+            <!-- Container untuk tanggal (2 kolom) -->
+            <div class="containerTanggalSuratIzin">
+                <!-- Field: Tanggal Mulai (Required) -->
+                <div class="grupFieldFormSuratIzin">
+                    <label for="inputTanggalMulai" class="labelFieldForm">
+                        Tanggal Mulai <span class="asteriskRequired">*</span>
+                    </label>
+                    <input 
+                        type="date" 
+                        id="inputTanggalMulai" 
+                        name="inputTanggalMulai" 
+                        class="inputFieldForm" 
+                        required
+                    />
+                </div>
+                
+                <!-- Field: Tanggal Selesai (Required) -->
+                <div class="grupFieldFormSuratIzin">
+                    <label for="inputTanggalSelesai" class="labelFieldForm">
+                        Tanggal Selesai <span class="asteriskRequired">*</span>
+                    </label>
+                    <input 
+                        type="date" 
+                        id="inputTanggalSelesai" 
+                        name="inputTanggalSelesai" 
+                        class="inputFieldForm" 
+                        required
+                    />
+                </div>
+            </div>
+            
+            <!-- Field: Alasan (Textarea Required) -->
+            <div class="grupFieldFormSuratIzin">
+                <label for="textareaAlasan" class="labelFieldForm">
+                    Alasan <span class="asteriskRequired">*</span>
+                </label>
+                <textarea 
+                    id="textareaAlasan" 
+                    name="textareaAlasan" 
+                    class="textareaFieldForm" 
+                    placeholder="Jelaskan alasan pengajuan izin Anda…" 
+                    rows="5"
+                    required
+                ></textarea>
+            </div>
+            
+            <!-- Tombol Aksi: Lanjut ke Preview (Dummy UI) -->
+            <button 
+                type="button" 
+                id="tombolLanjutPreview" 
+                name="tombolLanjutPreview" 
+                class="tombolLanjutPreview" 
+                aria-label="Lanjut ke Preview"
+            >
+                Lanjut ke Preview
+            </button>
+        </form>
+        
+    </div>
+    </div>
+    <!-- END: STEP 1 CONTAINER -->
+    
+    <!-- ==================== STEP 2: PREVIEW SURAT IZIN CONTAINER ==================== -->
+    <!-- Halaman preview surat izin (tahap kedua, menampilkan data dari form) -->
+    <div id="stepDuaPratinjau" class="stepDuaPratinjau" style="display: none;">
+        <div class="containerPratinjauSurat">
+            
+            <!-- Header preview dengan judul -->
+            <div class="headerPratinjauSurat">
+                <h2 class="judulHeaderPreview">Preview Surat Izin</h2>
+            </div>
+            
+            <!-- ==================== ISI SURAT IZIN ==================== -->
+            <!-- Konten surat untuk dicetak/diajukan -->
+            <div class="kontenSuratIzin">
+                
+                <!-- Bagian judul surat -->
+                <div class="bagianJudulSurat">
+                    <h3 class="judulSuratUtama">SURAT <span id="jenisIzinPreview">IZIN</span></h3>
+                    <p class="subtitleSurat">NusaAttend - Portal Administrasi Kehadiran</p>
+                </div>
+                
+                <!-- Pembuka surat -->
+                <div class="bagianIsiSurat">
+                    <p class="textIsiBaku">Yang bertanda tangan di bawah ini:</p>
+                    
+                    <!-- Data diri pengaju -->
+                    <div class="dataDiriPengaju">
+                        <p class="textDataDiri">
+                            <strong>Nama:</strong> <span id="namaLengkapPreview">{{user.nama_lengkap}}</span>
+                        </p>
+                        <p class="textDataDiri">
+                            <strong>Jabatan:</strong> <span id="jabatanPreview">{{user.jabatan}}</span>
+                        </p>
+                    </div>
+                    
+                    <!-- Pernyataan izin -->
+                    <p class="textPernyataan">
+                        Dengan ini mengajukan <strong><span id="jenisIzinFullPreview">Izin</span></strong> pada tanggal 
+                        <strong><span id="tanggalMulaiPreview">--/--/----</span></strong> s.d. 
+                        <strong><span id="tanggalSelesaiPreview">--/--/----</span></strong> dengan alasan:
+                    </p>
+                    
+                    <!-- Kotak alasan -->
+                    <div class="kontenAlasanSurat">
+                        <p id="alasanPreview">Alasan pengajuan akan ditampilkan di sini...</p>
+                    </div>
+                    
+                    <!-- Penutup surat -->
+                    <p class="textPenutupBaku">
+                        Demikian surat ini dibuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.
+                    </p>
+                    
+                    <!-- Bagian tanda tangan -->
+                    <div class="bagianTandaTangan">
+                        <p class="textHormatSaya">Hormat saya,</p>
+                        <div class="areaTandaTangan">
+                            <!-- Tempat untuk signature akan ditambahkan di STEP 3 -->
+                        </div>
+                        <p class="textNamaPenandatangan" id="namaPenandatanganPreview">{{user.nama_lengkap}}</p>
+                    </div>
+                    
+                    <!-- Bagian tanggal pengajuan -->
+                    <div class="bagianTanggalPengajuan">
+                        <p class="textTanggalPengajuan">
+                            Diajukan pada: <strong id="tanggalPengajuanPreview">--/--/----</strong>
+                        </p>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            <!-- END: ISI SURAT IZIN -->
+            
+            <!-- ==================== TOMBOL AKSI ==================== -->
+            <!-- Tombol navigasi antar step -->
+            <div class="containerTombolPreview">
+                <button 
+                    type="button" 
+                    id="tombolKembaliKeForm" 
+                    class="tombolKembaliKeForm" 
+                    aria-label="Kembali ke Form"
+                >
+                    Kembali
+                </button>
+                <button 
+                    type="button" 
+                    id="tombolLanjutTandaTangan" 
+                    class="tombolLanjutTandaTangan" 
+                    aria-label="Lanjut ke Tanda Tangan"
+                >
+                    Lanjut ke Tanda Tangan
+                </button>
+            </div>
+        
+        </div>
+    </div>
+    <!-- END: STEP 2 CONTAINER -->
+    
+    <!-- ==================== STEP 3: TANDA TANGAN DIGITAL CONTAINER ==================== -->
+    <!-- Halaman tanda tangan digital (tahap ketiga, user menggambar tanda tangan) -->
+    <div id="stepTigaTandaTangan" class="stepTigaTandaTangan" style="display: none;">
+        <div class="containerTandaTanganDigital">
+            
+            <!-- Header section dengan judul -->
+            <div class="headerTandaTanganDigital">
+                <h2 class="judulHeaderTandaTangan">Tanda Tangan Digital</h2>
+            </div>
+            
+            <!-- Instruksi untuk user -->
+            <div class="instruksiTandaTangan">
+                <p class="textInstruksi">Gambar tanda tangan Anda di area di bawah ini</p>
+            </div>
+            
+            <!-- ==================== CANVAS AREA UNTUK TANDA TANGAN ==================== -->
+            <!-- Area untuk user menggambar tanda tangan menggunakan mouse atau touch -->
+            <div class="containerCanvasTandaTangan">
+                <canvas 
+                    id="kanvasTandaTangan" 
+                    class="kanvasTandaTangan" 
+                    width="800" 
+                    height="260"
+                    aria-label="Canvas untuk tanda tangan"
+                ></canvas>
+            </div>
+            
+            <!-- ==================== TOMBOL AKSI ==================== -->
+            <!-- Tombol navigasi dan kontrol untuk tanda tangan -->
+            <div class="containerTombolTandaTangan">
+                <button 
+                    type="button" 
+                    id="tombolKembaliDariTandaTangan" 
+                    class="tombolKembaliDariTandaTangan" 
+                    aria-label="Kembali ke Preview"
+                >
+                    Kembali
+                </button>
+                <button 
+                    type="button" 
+                    id="tombolHapusTandaTangan" 
+                    class="tombolHapusTandaTangan" 
+                    aria-label="Hapus Tanda Tangan"
+                >
+                    Hapus Tanda Tangan
+                </button>
+                <button 
+                    type="button" 
+                    id="tombolKirimPengajuan" 
+                    class="tombolKirimPengajuan" 
+                    aria-label="Kirim Pengajuan"
+                >
+                    Kirim Pengajuan
+                </button>
+            </div>
+        
+        </div>
+    </div>
+    <!-- END: STEP 3 CONTAINER -->
+
+    <!-- ==================== STEP 4: SELESAI / KONFIRMASI PENGAJUAN ==================== -->
+    <!-- Halaman penutup yang menampilkan pesan keberhasilan dan ringkasan pengajuan -->
+    <div id="stepEmpatSelesai" class="stepEmpatSelesai" style="display: none;">
+        <div class="containerSelesaiPengajuan">
+            
+            <!-- Icon sukses -->
+            <div class="iconContainerSelesai">
+                <i class="fas fa-check iconCheckSelesai"></i>
+            </div>
+            
+            <!-- Pesan utama: Pengajuan Berhasil Dikirim -->
+            <h2 class="judulSelesai">Pengajuan Berhasil Dikirim!</h2>
+            
+            <!-- Penjelasan singkat dan profesional -->
+            <p class="penjelasanSelesai">
+                Surat izin Anda telah dikirim ke penanggung jawab untuk ditinjau. Anda akan menerima notifikasi ketika ada perubahan status.
+            </p>
+            
+            <!-- ==================== DETAIL PENGAJUAN RINGKAS ==================== -->
+            <!-- Box dengan informasi singkat tentang pengajuan yang baru dikirim -->
+            <div class="boxDetailPengajuan">
+                <h3 class="judulDetailPengajuan">Detail Pengajuan:</h3>
+                
+                <!-- Item 1: Jenis Izin -->
+                <div class="itemDetailPengajuan">
+                    <span class="labelDetailPengajuan">Jenis:</span>
+                    <span class="nilaiDetailPengajuan" id="detailJenisIzinSelesai">-</span>
+                </div>
+                
+                <!-- Item 2: Periode Tanggal -->
+                <div class="itemDetailPengajuan">
+                    <span class="labelDetailPengajuan">Periode:</span>
+                    <span class="nilaiDetailPengajuan" id="detailPeriodeSelesai">-</span>
+                </div>
+                
+                <!-- Item 3: Status Pengajuan -->
+                <div class="itemDetailPengajuan">
+                    <span class="labelDetailPengajuan">Status:</span>
+                    <span class="nilaiDetailPengajuan" id="detailStatusSelesai">Menunggu Persetujuan</span>
+                </div>
+            </div>
+            
+            <!-- ==================== TOMBOL AKSI ==================== -->
+            <!-- Tombol untuk membuat surat baru (reset form dan kembali ke STEP 1) -->
+            <button 
+                type="button" 
+                id="tombolBuatSuratBaru" 
+                class="tombolBuatSuratBaru" 
+                aria-label="Buat Surat Izin Baru"
+            >
+                Buat Surat Baru
+            </button>
+        
+        </div>
+    </div>
+    <!-- END: STEP 4 CONTAINER -->
+
+<script>
+    // ==================== GLOBAL HELPER FUNCTIONS ====================
+    // Fungsi-fungsi berikut didefinisikan di level global agar dapat diakses dari berbagai scope
+    
+    /**
+     * Fungsi Global: Toggle visibility antar step
+     * @param {number} targetStep - Nomor step yang ingin ditampilkan (1, 2, 3, atau 4)
+     */
+    function navigateToStep(targetStep) {
+        const stepSatuIsiForm = document.getElementById('stepSatuIsiForm');
+        const stepDuaPratinjau = document.getElementById('stepDuaPratinjau');
+        const stepTigaTandaTangan = document.getElementById('stepTigaTandaTangan');
+        const stepEmpatSelesai = document.getElementById('stepEmpatSelesai');
+        
+        if (targetStep === 1) {
+            stepSatuIsiForm.style.display = 'block';
+            stepDuaPratinjau.style.display = 'none';
+            if (stepTigaTandaTangan) stepTigaTandaTangan.style.display = 'none';
+            if (stepEmpatSelesai) stepEmpatSelesai.style.display = 'none';
+            updateStepperStatus(1);
+            console.log('Navigasi ke STEP 1: Form Pengajuan');
+        } else if (targetStep === 2) {
+            stepSatuIsiForm.style.display = 'none';
+            stepDuaPratinjau.style.display = 'block';
+            if (stepTigaTandaTangan) stepTigaTandaTangan.style.display = 'none';
+            if (stepEmpatSelesai) stepEmpatSelesai.style.display = 'none';
+            updateStepperStatus(2);
+            console.log('Navigasi ke STEP 2: Preview Surat Izin');
+        } else if (targetStep === 3) {
+            stepSatuIsiForm.style.display = 'none';
+            stepDuaPratinjau.style.display = 'none';
+            if (stepTigaTandaTangan) stepTigaTandaTangan.style.display = 'block';
+            if (stepEmpatSelesai) stepEmpatSelesai.style.display = 'none';
+            updateStepperStatus(3);
+            console.log('Navigasi ke STEP 3: Tanda Tangan Digital');
+        } else if (targetStep === 4) {
+            stepSatuIsiForm.style.display = 'none';
+            stepDuaPratinjau.style.display = 'none';
+            if (stepTigaTandaTangan) stepTigaTandaTangan.style.display = 'none';
+            if (stepEmpatSelesai) stepEmpatSelesai.style.display = 'block';
+            updateStepperStatus(4);
+            console.log('Navigasi ke STEP 4: Selesai / Konfirmasi Pengajuan');
+        }
+    }
+    
+    /**
+     * Fungsi Global: Update stepper status untuk step tertentu
+     * @param {number} activeStep - Nomor step yang aktif (1-4)
+     */
+    function updateStepperStatus(activeStep) {
+        const itemStepper = document.querySelectorAll('.itemStepperSuratIzin');
+        itemStepper.forEach((item, index) => {
+            const stepNumber = index + 1;
+            const badge = item.querySelector('.badgeStepperNomor');
+            
+            if (stepNumber < activeStep) {
+                item.classList.remove('itemStepperAktif');
+                badge.classList.remove('badgeStepperAktif');
+                badge.innerHTML = '<i class="fas fa-check iconCheckmarkStepper"></i>';
+            } else if (stepNumber === activeStep) {
+                item.classList.add('itemStepperAktif');
+                badge.classList.add('badgeStepperAktif');
+                badge.innerHTML = `<span class="textBadgeStepperNomor">${stepNumber}</span>`;
+            } else {
+                item.classList.remove('itemStepperAktif');
+                badge.classList.remove('badgeStepperAktif');
+                badge.innerHTML = `<span class="textBadgeStepperNomor">${stepNumber}</span>`;
+            }
+        });
+    }
+    
+    /**
+     * Fungsi Global: Populate detail pengajuan di STEP 4
+     */
+    function populateDetailPengajuanSelesai() {
+        const inputJenisIzin = document.getElementById('inputJenisIzin');
+        const inputTanggalMulai = document.getElementById('inputTanggalMulai');
+        const inputTanggalSelesai = document.getElementById('inputTanggalSelesai');
+        
+        const jenisIzinValue = (inputJenisIzin && inputJenisIzin.value) ? inputJenisIzin.value : '-';
+        const tanggalMulaiValue = (inputTanggalMulai && inputTanggalMulai.value) ? inputTanggalMulai.value : '-';
+        const tanggalSelesaiValue = (inputTanggalSelesai && inputTanggalSelesai.value) ? inputTanggalSelesai.value : '-';
+        
+        const periode = `${tanggalMulaiValue} s.d. ${tanggalSelesaiValue}`;
+        
+        const detailJenisSelesai = document.getElementById('detailJenisIzinSelesai');
+        const detailPeriodeSelesai = document.getElementById('detailPeriodeSelesai');
+        
+        if (detailJenisSelesai) detailJenisSelesai.textContent = jenisIzinValue;
+        if (detailPeriodeSelesai) detailPeriodeSelesai.textContent = periode;
+        
+        console.log('Detail pengajuan di STEP 4 sudah diisi:', {
+            jenis: jenisIzinValue,
+            periode: periode
+        });
+    }
+    
+    /**
+     * Inisialisasi form surat izin dan navigasi antar step
+     * Menangani:
+     * 1. Validasi form STEP 1
+     * 2. Data flow dari STEP 1 ke STEP 2 preview
+     * 3. Toggle visibility antar step
+     * 4. Update stepper status
+     */
+    function inisialisasiFormSuratIzin() {
+        // ==================== AMBIL REFERENSI ELEMEN ====================
+        const formSuratIzin = document.getElementById('formSuratIzin');
+        const stepSatuIsiForm = document.getElementById('stepSatuIsiForm');
+        const stepDuaPratinjau = document.getElementById('stepDuaPratinjau');
+        
+        // Tombol dan kontrol input
+        const tombolLanjutPreview = document.getElementById('tombolLanjutPreview');
+        const tombolKembaliKeForm = document.getElementById('tombolKembaliKeForm');
+        const tombolLanjutTandaTangan = document.getElementById('tombolLanjutTandaTangan');
+        
+        // Input field di form
+        const inputNamaLengkap = document.getElementById('inputNamaLengkap');
+        const inputJabatan = document.getElementById('inputJabatan');
+        const selectJenisIzin = document.getElementById('selectJenisIzin');
+        const inputTanggalMulai = document.getElementById('inputTanggalMulai');
+        const inputTanggalSelesai = document.getElementById('inputTanggalSelesai');
+        const textareaAlasan = document.getElementById('textareaAlasan');
+        
+        // Element untuk preview
+        const jenisIzinPreview = document.getElementById('jenisIzinPreview');
+        const jenisIzinFullPreview = document.getElementById('jenisIzinFullPreview');
+        const namaLengkapPreview = document.getElementById('namaLengkapPreview');
+        const jabatanPreview = document.getElementById('jabatanPreview');
+        const tanggalMulaiPreview = document.getElementById('tanggalMulaiPreview');
+        const tanggalSelesaiPreview = document.getElementById('tanggalSelesaiPreview');
+        const alasanPreview = document.getElementById('alasanPreview');
+        const namaPenandatanganPreview = document.getElementById('namaPenandatanganPreview');
+        const tanggalPengajuanPreview = document.getElementById('tanggalPengajuanPreview');
+        
+        // Stepper elements
+        const itemStepper = document.querySelectorAll('.itemStepperSuratIzin');
+        const badgeStepper = document.querySelectorAll('.badgeStepperNomor');
+        
+        // Periksa ketersediaan elemen critical
+        if (!formSuratIzin || !tombolLanjutPreview) {
+            console.warn('Form surat izin atau tombol tidak ditemukan');
+            return;
+        }
+        
+        /**
+         * Fungsi: Format tanggal dari format YYYY-MM-DD ke DD/MM/YYYY
+         * @param {string} tanggalISO - Tanggal dalam format YYYY-MM-DD
+         * @returns {string} Tanggal dalam format DD/MM/YYYY
+         */
+        function formatTanggal(tanggalISO) {
+            if (!tanggalISO) return '--/--/----';
+            const [tahun, bulan, hari] = tanggalISO.split('-');
+            return `${hari}/${bulan}/${tahun}`;
+        }
+        
+        /**
+         * Fungsi: Konversi nilai jenis izin ke label yang lebih readable
+         * @param {string} value - Nilai dari select (cuti-tahunan, izin-tidak-masuk, dll)
+         * @returns {string} Label yang ditampilkan di preview
+         */
+        function formatJenisIzin(value) {
+            const jenisIzinMap = {
+                'cuti-tahunan': 'CUTI TAHUNAN',
+                'izin-tidak-masuk': 'IZIN TIDAK MASUK KERJA',
+                'izin-sakit': 'IZIN SAKIT',
+                'wfh': 'WORK FROM HOME'
+            };
+            return jenisIzinMap[value] || 'IZIN';
+        }
+        
+        /**
+         * Fungsi: Update preview dengan data dari form
+         * Mengisi semua field preview dari input user di STEP 1
+         */
+        function updatePreviewDariForm() {
+            // Ambil nilai dari form input
+            const namaLengkapValue = inputNamaLengkap.value || '{{user.nama_lengkap}}';
+            const jabatanValue = inputJabatan.value || '{{user.jabatan}}';
+            const jenisIzinValue = selectJenisIzin.value;
+            const tanggalMulaiValue = inputTanggalMulai.value;
+            const tanggalSelesaiValue = inputTanggalSelesai.value;
+            const alasanValue = textareaAlasan.value;
+            
+            // Dapatkan tanggal hari ini untuk tanggal pengajuan
+            const hariIni = new Date();
+            const tanggalPengajuan = formatTanggal(
+                `${hariIni.getFullYear()}-${String(hariIni.getMonth() + 1).padStart(2, '0')}-${String(hariIni.getDate()).padStart(2, '0')}`
+            );
+            
+            // Update preview elements dengan data dari form
+            jenisIzinPreview.textContent = formatJenisIzin(jenisIzinValue);
+            jenisIzinFullPreview.textContent = formatJenisIzin(jenisIzinValue);
+            namaLengkapPreview.textContent = namaLengkapValue;
+            jabatanPreview.textContent = jabatanValue;
+            tanggalMulaiPreview.textContent = formatTanggal(tanggalMulaiValue);
+            tanggalSelesaiPreview.textContent = formatTanggal(tanggalSelesaiValue);
+            alasanPreview.textContent = alasanValue;
+            namaPenandatanganPreview.textContent = namaLengkapValue;
+            tanggalPengajuanPreview.textContent = tanggalPengajuan;
+            
+            console.log('Preview updated dengan data:', {
+                namaLengkap: namaLengkapValue,
+                jabatan: jabatanValue,
+                jenisIzin: jenisIzinValue,
+                tanggalMulai: tanggalMulaiValue,
+                tanggalSelesai: tanggalSelesaiValue,
+                alasan: alasanValue,
+                tanggalPengajuan: tanggalPengajuan
+            });
+        }
+        
+        // ==================== STEP 4 HELPER FUNCTIONS ====================
+        /**
+         * Fungsi: Reset seluruh form dan canvas untuk membuat surat baru
+         * Menghapus semua data yang sudah diisi dan kembali ke STEP 1
+         */
+        function resetFormUntukSuratBaru() {
+            console.log('Reset form untuk membuat surat baru...');
+            
+            // 1. Clear semua field input di STEP 1
+            formSuratIzin.reset();
+            
+            // 2. Clear canvas di STEP 3
+            hapusKanvas();
+            
+            // 3. Clear preview di STEP 2
+            document.getElementById('namaLengkapPreview').textContent = '-';
+            document.getElementById('jabatanPreview').textContent = '-';
+            document.getElementById('jenisIzinPreview').textContent = '-';
+            document.getElementById('tanggalMulaiPreview').textContent = '-';
+            document.getElementById('tanggalSelesaiPreview').textContent = '-';
+            document.getElementById('alasanPreview').textContent = '-';
+            document.getElementById('namaPenandatanganPreview').textContent = '-';
+            document.getElementById('tanggalPengajuanPreview').textContent = '-';
+            
+            // 4. Remove validasi visual dari form
+            formSuratIzin.classList.remove('wasValidated');
+            
+            // 5. Navigasi kembali ke STEP 1
+            navigateToStep(1);
+            
+            console.log('Form berhasil direset, siap untuk pengajuan baru');
+        }
+
+        // ==================== EVENT LISTENER: TOMBOL LANJUT KE PREVIEW ====================
+        /**
+         * Klik tombol "Lanjut ke Preview"
+         * Validasi form → Update preview → Toggle ke STEP 2
+         */
+        tombolLanjutPreview.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // Validasi form menggunakan HTML5 validation
+            if (formSuratIzin.checkValidity() === false) {
+                // Tampilkan pesan validasi jika ada field yang kosong
+                event.stopPropagation();
+                formSuratIzin.classList.add('wasValidated');
+                console.warn('Form tidak valid. Mohon lengkapi semua field yang diperlukan.');
+                return;
+            }
+            
+            // Form valid: update preview dan navigasi ke STEP 2
+            console.log('Form valid. Melanjutkan ke preview...');
+            updatePreviewDariForm();
+            navigateToStep(2);
+        });
+        
+        // ==================== EVENT LISTENER: TOMBOL KEMBALI KE FORM ====================
+        /**
+         * Klik tombol "Kembali"
+         * Kembali ke STEP 1 untuk edit form
+         */
+        tombolKembaliKeForm.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Kembali ke form untuk edit...');
+            navigateToStep(1);
+        });
+        
+        // ==================== EVENT LISTENER: TOMBOL LANJUT KE TANDA TANGAN ====================
+        /**
+         * Klik tombol "Lanjut ke Tanda Tangan"
+         * Navigasi dari STEP 2 (Preview) ke STEP 3 (Tanda Tangan Digital)
+         */
+        tombolLanjutTandaTangan.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Navigasi ke STEP 3: Tanda Tangan Digital...');
+            navigateToStep(3);
+        });
+    }
+    
+    /**
+     * Inisialisasi Canvas dan Event Listeners untuk Tanda Tangan Digital (STEP 3)
+     * Menangani:
+     * 1. Drawing pada canvas (mouse dan touch events)
+     * 2. Clear canvas functionality
+     * 3. Navigation antar step
+     */
+    function inisialisasiTandaTanganDigital() {
+        // ==================== AMBIL REFERENSI ELEMEN ====================
+        const kanvasTandaTangan = document.getElementById('kanvasTandaTangan');
+        const stepTigaTandaTangan = document.getElementById('stepTigaTandaTangan');
+        const stepDuaPratinjau = document.getElementById('stepDuaPratinjau');
+        const stepSatuIsiForm = document.getElementById('stepSatuIsiForm');
+        
+        // Tombol kontrol tanda tangan
+        const tombolKembaliDariTandaTangan = document.getElementById('tombolKembaliDariTandaTangan');
+        const tombolHapusTandaTangan = document.getElementById('tombolHapusTandaTangan');
+        const tombolKirimPengajuan = document.getElementById('tombolKirimPengajuan');
+        
+        // Stepper elements
+        const itemStepper = document.querySelectorAll('.itemStepperSuratIzin');
+        
+        // Periksa ketersediaan canvas
+        if (!kanvasTandaTangan) {
+            console.warn('Canvas tanda tangan tidak ditemukan');
+            return;
+        }
+        
+        /**
+         * Get 2D context dari canvas untuk drawing
+         */
+        const kontekCanvas = kanvasTandaTangan.getContext('2d');
+        if (!kontekCanvas) {
+            console.warn('Gagal mendapatkan 2D context dari canvas');
+            return;
+        }
+        
+        /**
+         * State untuk tracking drawing status
+         * sedangMenggambar: flag untuk mengetahui apakah user sedang menggambar
+         */
+        let sedangMenggambar = false;
+        
+        /**
+         * Fungsi: Ambil koordinat mouse relative terhadap canvas dengan scaling
+         * Memperhitungkan perbedaan antara CSS size dan canvas attribute size
+         * @param {MouseEvent} event - Mouse event object
+         * @returns {object} {x, y} - Koordinat relative terhadap canvas (scaled)
+         */
+        function ambilPosisiMouse(event) {
+            const batasCanvas = kanvasTandaTangan.getBoundingClientRect();
+            
+            // Hitung rasio scaling antara CSS rendered size dan canvas attribute size
+            const skalaX = kanvasTandaTangan.width / batasCanvas.width;
+            const skalaY = kanvasTandaTangan.height / batasCanvas.height;
+            
+            // Ambil posisi relative terhadap canvas element
+            const posisiRelative = {
+                x: event.clientX - batasCanvas.left,
+                y: event.clientY - batasCanvas.top
+            };
+            
+            // Scale koordinat ke canvas internal resolution
+            return {
+                x: posisiRelative.x * skalaX,
+                y: posisiRelative.y * skalaY
+            };
+        }
+        
+        /**
+         * Fungsi: Ambil koordinat touch relative terhadap canvas dengan scaling
+         * Memperhitungkan perbedaan antara CSS size dan canvas attribute size
+         * @param {TouchEvent} event - Touch event object
+         * @returns {object} {x, y} - Koordinat relative terhadap canvas (scaled)
+         */
+        function ambilPosisiTouch(event) {
+            const batasCanvas = kanvasTandaTangan.getBoundingClientRect();
+            const touch = event.touches[0];
+            
+            // Hitung rasio scaling antara CSS rendered size dan canvas attribute size
+            const skalaX = kanvasTandaTangan.width / batasCanvas.width;
+            const skalaY = kanvasTandaTangan.height / batasCanvas.height;
+            
+            // Ambil posisi relative terhadap canvas element
+            const posisiRelative = {
+                x: touch.clientX - batasCanvas.left,
+                y: touch.clientY - batasCanvas.top
+            };
+            
+            // Scale koordinat ke canvas internal resolution
+            return {
+                x: posisiRelative.x * skalaX,
+                y: posisiRelative.y * skalaY
+            };
+        }
+        
+        /**
+         * Fungsi: Hapus semua konten canvas (clear drawing)
+         * Mengembalikan canvas ke state kosong
+         */
+        function hapusKanvas() {
+            kontekCanvas.clearRect(0, 0, kanvasTandaTangan.width, kanvasTandaTangan.height);
+            console.log('Canvas tanda tangan sudah dihapus');
+        }
+        
+        /**
+         * Fungsi: Update stepper untuk STEP 3
+         * Mengubah badge step sesuai dengan progress
+         */
+        function updateStepperUntukStep3() {
+            itemStepper.forEach((item, index) => {
+                const stepNumber = index + 1;
+                const badge = item.querySelector('.badgeStepperNomor');
+                
+                if (stepNumber < 3) {
+                    // Step 1-2 selesai: tampilkan checkmark
+                    item.classList.remove('itemStepperAktif');
+                    badge.classList.remove('badgeStepperAktif');
+                    badge.innerHTML = '<i class="fas fa-check iconCheckmarkStepper"></i>';
+                } else if (stepNumber === 3) {
+                    // Step 3 aktif: highlight dengan warna
+                    item.classList.add('itemStepperAktif');
+                    badge.classList.add('badgeStepperAktif');
+                    badge.innerHTML = '<span class="textBadgeStepperNomor">3</span>';
+                } else {
+                    // Step 4 belum aktif
+                    item.classList.remove('itemStepperAktif');
+                    badge.classList.remove('badgeStepperAktif');
+                    badge.innerHTML = '<span class="textBadgeStepperNomor">4</span>';
+                }
+            });
+        }
+        
+        /**
+         * Fungsi: Toggle visibility antar step termasuk STEP 3
+         * @param {number} targetStep - Nomor step yang ingin ditampilkan (2 atau 3)
+         */
+        function navigateToStep3(targetStep) {
+            if (targetStep === 2) {
+                // Tampilkan STEP 2 (Preview), sembunyikan STEP 3 (Tanda Tangan)
+                stepSatuIsiForm.style.display = 'none';
+                stepDuaPratinjau.style.display = 'block';
+                stepTigaTandaTangan.style.display = 'none';
+                updateStepperForStep2();
+                console.log('Navigasi ke STEP 2: Preview Surat Izin');
+            } else if (targetStep === 3) {
+                // Tampilkan STEP 3 (Tanda Tangan), sembunyikan STEP 2
+                stepSatuIsiForm.style.display = 'none';
+                stepDuaPratinjau.style.display = 'none';
+                stepTigaTandaTangan.style.display = 'block';
+                updateStepperUntukStep3();
+                console.log('Navigasi ke STEP 3: Tanda Tangan Digital');
+            }
+        }
+        
+        /**
+         * Update stepper untuk STEP 2 (diperlukan saat kembali dari STEP 3)
+         */
+        function updateStepperForStep2() {
+            itemStepper.forEach((item, index) => {
+                const stepNumber = index + 1;
+                const badge = item.querySelector('.badgeStepperNomor');
+                
+                if (stepNumber < 2) {
+                    item.classList.remove('itemStepperAktif');
+                    badge.classList.remove('badgeStepperAktif');
+                    badge.innerHTML = '<i class="fas fa-check iconCheckmarkStepper"></i>';
+                } else if (stepNumber === 2) {
+                    item.classList.add('itemStepperAktif');
+                    badge.classList.add('badgeStepperAktif');
+                    badge.innerHTML = '<span class="textBadgeStepperNomor">2</span>';
+                } else {
+                    item.classList.remove('itemStepperAktif');
+                    badge.classList.remove('badgeStepperAktif');
+                    badge.innerHTML = '<span class="textBadgeStepperNomor">' + stepNumber + '</span>';
+                }
+            });
+        }
+        
+        // ==================== EVENT LISTENER: MOUSE DOWN (Mulai Menggambar) ====================
+        /**
+         * Mouse down event
+         * Set flag sedangMenggambar = true dan siapkan pen untuk drawing
+         */
+        kanvasTandaTangan.addEventListener('mousedown', function(event) {
+            sedangMenggambar = true;
+            const posisi = ambilPosisiMouse(event);
+            kontekCanvas.beginPath();
+            kontekCanvas.moveTo(posisi.x, posisi.y);
+        });
+        
+        // ==================== EVENT LISTENER: MOUSE MOVE (Gambar Garis) ====================
+        /**
+         * Mouse move event
+         * Jika sedang menggambar, gambar garis dari posisi sebelumnya ke posisi sekarang
+         */
+        kanvasTandaTangan.addEventListener('mousemove', function(event) {
+            if (!sedangMenggambar) return;
+            
+            const posisi = ambilPosisiMouse(event);
+            
+            // Set styling untuk pen
+            kontekCanvas.lineTo(posisi.x, posisi.y);
+            kontekCanvas.strokeStyle = '#364153';
+            kontekCanvas.lineWidth = 2;
+            kontekCanvas.lineCap = 'round';
+            kontekCanvas.lineJoin = 'round';
+            kontekCanvas.stroke();
+        });
+        
+        // ==================== EVENT LISTENER: MOUSE UP / MOUSE LEAVE (Berhenti Menggambar) ====================
+        /**
+         * Mouse up dan mouse leave events
+         * Set flag sedangMenggambar = false untuk berhenti menggambar
+         */
+        kanvasTandaTangan.addEventListener('mouseup', function() {
+            sedangMenggambar = false;
+            kontekCanvas.closePath();
+        });
+        
+        kanvasTandaTangan.addEventListener('mouseleave', function() {
+            sedangMenggambar = false;
+            kontekCanvas.closePath();
+        });
+        
+        // ==================== EVENT LISTENER: TOUCH START (Mobile - Mulai Menggambar) ====================
+        /**
+         * Touch start event untuk support mobile/tablet
+         * Mulai drawing pada koordinat touch
+         */
+        kanvasTandaTangan.addEventListener('touchstart', function(event) {
+            event.preventDefault();
+            sedangMenggambar = true;
+            const posisi = ambilPosisiTouch(event);
+            kontekCanvas.beginPath();
+            kontekCanvas.moveTo(posisi.x, posisi.y);
+        });
+        
+        // ==================== EVENT LISTENER: TOUCH MOVE (Mobile - Gambar Garis) ====================
+        /**
+         * Touch move event untuk support mobile/tablet
+         * Gambar garis saat user menggerakkan jari di canvas
+         */
+        kanvasTandaTangan.addEventListener('touchmove', function(event) {
+            event.preventDefault();
+            if (!sedangMenggambar) return;
+            
+            const posisi = ambilPosisiTouch(event);
+            
+            // Set styling untuk pen
+            kontekCanvas.lineTo(posisi.x, posisi.y);
+            kontekCanvas.strokeStyle = '#364153';
+            kontekCanvas.lineWidth = 2;
+            kontekCanvas.lineCap = 'round';
+            kontekCanvas.lineJoin = 'round';
+            kontekCanvas.stroke();
+        });
+        
+        // ==================== EVENT LISTENER: TOUCH END (Mobile - Berhenti Menggambar) ====================
+        /**
+         * Touch end event
+         * Berhenti drawing saat user mengangkat jari dari canvas
+         */
+        kanvasTandaTangan.addEventListener('touchend', function(event) {
+            event.preventDefault();
+            sedangMenggambar = false;
+            kontekCanvas.closePath();
+        });
+        
+        // ==================== EVENT LISTENER: TOMBOL HAPUS TANDA TANGAN ====================
+        /**
+         * Klik tombol "Hapus Tanda Tangan"
+         * Clear canvas tanpa reload atau navigate
+         */
+        tombolHapusTandaTangan.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Hapus tanda tangan dari canvas...');
+            hapusKanvas();
+        });
+        
+        // ==================== EVENT LISTENER: TOMBOL KEMBALI DARI TANDA TANGAN ====================
+        /**
+         * Klik tombol "Kembali"
+         * Kembali ke STEP 2 untuk review preview surat
+         * Tanda tangan tetap tersimpan di canvas
+         */
+        tombolKembaliDariTandaTangan.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Kembali ke STEP 2 (Preview)...');
+            navigateToStep3(2);
+        });
+        
+        // ==================== EVENT LISTENER: TOMBOL KIRIM PENGAJUAN ====================
+        /**
+         * Klik tombol "Kirim Pengajuan"
+         * Navigasi ke STEP 4 (Selesai)
+         * Menampilkan ringkasan detail pengajuan dan pesan keberhasilan
+         */
+        // ==================== EVENT LISTENER: TOMBOL KIRIM PENGAJUAN ====================
+        /**
+         * Klik tombol "Kirim Pengajuan"
+         * Navigasi ke STEP 4 (Selesai)
+         * Menampilkan ringkasan detail pengajuan dan pesan keberhasilan
+         * 
+         * CATATAN: Validasi tanda tangan di-skip untuk testing UI
+         * Akan diaktifkan kembali saat integrase backend
+         */
+        tombolKirimPengajuan.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Kirim pengajuan ke STEP 4...');
+            
+            // TESTING: Skip validasi tanda tangan untuk melihat UI STEP 4
+            // Uncomment validasi di bawah saat siap untuk backend integration
+            
+            /*
+            // Cek apakah ada tanda tangan di canvas
+            const imageData = kontekCanvas.getImageData(0, 0, kanvasTandaTangan.width, kanvasTandaTangan.height);
+            const data = imageData.data;
+            let adaTandaTangan = false;
+            
+            // Periksa pixel untuk melihat apakah ada gambar di canvas
+            for (let i = 3; i < data.length; i += 4) {
+                if (data[i] !== 0) {
+                    adaTandaTangan = true;
+                    break;
+                }
+            }
+            
+            if (!adaTandaTangan) {
+                alert('Mohon berikan tanda tangan terlebih dahulu sebelum mengirim pengajuan.');
+                console.warn('User mencoba submit tanpa tanda tangan');
+                return;
+            }
+            */
+            
+            // Navigasi ke STEP 4 tanpa validasi (untuk testing)
+            navigateToStep(4);
+            alert('Menampilkan STEP 4 - cek halaman');
+            populateDetailPengajuanSelesai();
+            console.log('Pengajuan berhasil dikirim, menampilkan STEP 4: Selesai');
+        });
+        
+        // ==================== EVENT LISTENER: TOMBOL BUAT SURAT BARU ====================
+        /**
+         * Klik tombol "Buat Surat Baru" di STEP 4
+         * Reset form, canvas, dan preview
+         * Kembali ke STEP 1 untuk membuat pengajuan baru
+         */
+        const tombolBuatSuratBaru = document.getElementById('tombolBuatSuratBaru');
+        if (tombolBuatSuratBaru) {
+            tombolBuatSuratBaru.addEventListener('click', function(event) {
+                event.preventDefault();
+                console.log('User klik tombol Buat Surat Baru...');
+                resetFormUntukSuratBaru();
+            });
+        }
+    }
+    
+    // Jalankan inisialisasi saat DOM selesai dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        inisialisasiFormSuratIzin();
+        inisialisasiTandaTanganDigital();
+    });
+</script>

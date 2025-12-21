@@ -548,7 +548,7 @@ app.get('/pengajuan/buat', middlewareAuntenfikasi, (req, res) => {
     });
   }
   
-  res.render('employee/buat-pengajuan', { 
+  res.render('karyawan/surat-izin', { 
     title: 'Buat Surat Izin - NusaAttend',
     user: req.session.user,
     layout: 'dashboard-layout',
