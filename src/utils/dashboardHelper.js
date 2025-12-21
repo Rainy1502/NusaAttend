@@ -10,6 +10,43 @@ const User = require('../models/User');
  */
 
 /**
+ * Helper function untuk menghitung waktu relatif dari timestamp
+ * 
+ * @param {Date} timestamp - Timestamp yang akan dihitung
+ * @param {Object} options - Opsi untuk formatting
+ * @param {string} options.justNowText - Text untuk "baru saja" (default: "Baru saja")
+ * @param {string} options.minutePrefix - Prefix untuk menit (default: "")
+ * @param {string} options.hourPrefix - Prefix untuk jam (default: "")
+ * @param {string} options.dayPrefix - Prefix untuk hari (default: "")
+ * @returns {string} Waktu relatif dalam format readable
+ */
+function hitungWaktuRelatif(timestamp, options = {}) {
+  const {
+    justNowText = 'Baru saja',
+    minutePrefix = '',
+    hourPrefix = '',
+    dayPrefix = ''
+  } = options;
+  
+  const waktuSekarang = new Date();
+  const selisihMs = waktuSekarang - timestamp;
+  const selisihDetik = Math.floor(selisihMs / 1000);
+  const selisihMenit = Math.floor(selisihDetik / 60);
+  const selisihJam = Math.floor(selisihMenit / 60);
+  const selisihHari = Math.floor(selisihJam / 24);
+  
+  if (selisihDetik < 60) {
+    return justNowText;
+  } else if (selisihMenit < 60) {
+    return `${minutePrefix}${selisihMenit} menit lalu`;
+  } else if (selisihJam < 24) {
+    return `${hourPrefix}${selisihJam} jam lalu`;
+  } else {
+    return `${dayPrefix}${selisihHari} hari lalu`;
+  }
+}
+
+/**
  * Hitung ringkasan statistik dashboard
  * 
  * @returns {Object} Objek berisi ringkasan statistik
@@ -70,24 +107,8 @@ async function ambilAktivitasTerbaru(hariIniMulai, hariIniAkhir) {
       deskripsi = isNew ? 'Admin sistem ditambahkan' : 'Data admin diperbarui';
     }
     
-    // Hitung waktu relatif
-    const waktuSekarang = new Date();
-    const selisihMs = waktuSekarang - user.updatedAt;
-    const selisihDetik = Math.floor(selisihMs / 1000);
-    const selisihMenit = Math.floor(selisihDetik / 60);
-    const selisihJam = Math.floor(selisihMenit / 60);
-    const selisihHari = Math.floor(selisihJam / 24);
-    
-    let waktuRelatif = '';
-    if (selisihDetik < 60) {
-      waktuRelatif = 'Baru saja';
-    } else if (selisihMenit < 60) {
-      waktuRelatif = `${selisihMenit} menit lalu`;
-    } else if (selisihJam < 24) {
-      waktuRelatif = `${selisihJam} jam lalu`;
-    } else {
-      waktuRelatif = `${selisihHari} hari lalu`;
-    }
+    // Hitung waktu relatif menggunakan helper function
+    const waktuRelatif = hitungWaktuRelatif(user.updatedAt);
     
     return {
       deskripsi,
@@ -133,24 +154,13 @@ function transformKePengajuanMendesak(daftarUserTerbaru, hariIniMulai, hariIniAk
       day: 'numeric' 
     });
     
-    // Hitung waktu relatif
-    const waktuSekarang = new Date();
-    const selisihMs = waktuSekarang - user.updatedAt;
-    const selisihDetik = Math.floor(selisihMs / 1000);
-    const selisihMenit = Math.floor(selisihDetik / 60);
-    const selisihJam = Math.floor(selisihMenit / 60);
-    const selisihHari = Math.floor(selisihJam / 24);
-    
-    let waktuPengajuan = '';
-    if (selisihDetik < 60) {
-      waktuPengajuan = 'Diajukan baru saja';
-    } else if (selisihMenit < 60) {
-      waktuPengajuan = `Diajukan ${selisihMenit} menit lalu`;
-    } else if (selisihJam < 24) {
-      waktuPengajuan = `Diajukan ${selisihJam} jam lalu`;
-    } else {
-      waktuPengajuan = `Diajukan ${selisihHari} hari lalu`;
-    }
+    // Hitung waktu relatif menggunakan helper function dengan prefix "Diajukan"
+    const waktuPengajuan = hitungWaktuRelatif(user.updatedAt, {
+      justNowText: 'Diajukan baru saja',
+      minutePrefix: 'Diajukan ',
+      hourPrefix: 'Diajukan ',
+      dayPrefix: 'Diajukan '
+    });
     
     return {
       namaKaryawan: user.nama_lengkap,
