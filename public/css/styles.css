@@ -750,37 +750,47 @@ footer a:hover {
   margin: 0;
 }
 
-/* Informasi pengguna di sidebar */
-.sidebar-user {
-  padding: 16px;
-  background-color: #e7f5ff;
-  border-radius: 8px;
-  margin: 16px;
+/* Informasi pengguna di sidebar - Sesuai Figma design node 3-884 */
+.sidebar-user-info {
+  padding: 12px;
+  background-color: #ecfdf5;
+  border-radius: 10px;
+  margin: 12px 16px 0 16px;
 }
 
-.user-role {
-  font-size: 11px;
-  color: #4f39f6;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.user-role-title {
+  font-size: 16px;
+  color: #004f3b;
   font-weight: 600;
   margin: 0 0 4px 0;
+  text-transform: capitalize;
 }
 
-.user-name {
-  font-size: 13px;
-  color: #312c85;
+.user-role-label {
+  font-size: 14px;
+  color: #059669;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.user-role-badge {
+  display: inline-block;
+  font-size: 12px;
+  color: #006045;
+  background-color: #a4f4cf;
+  padding: 4px 8px;
+  border-radius: 4px;
   font-weight: 600;
-  margin: 0;
+  text-transform: capitalize;
 }
 
 /* Menu navigasi di sidebar */
 .sidebar-menu {
   flex: 1;
-  padding: 12px 8px;
+  padding: 16px 8px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .menu-item {
@@ -788,17 +798,17 @@ footer a:hover {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  color: #4a5565;
+  color: #364153;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.3s ease;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
 }
 
 .menu-item i {
-  font-size: 16px;
+  font-size: 20px;
   width: 20px;
 }
 
@@ -826,23 +836,23 @@ footer a:hover {
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: transparent;
+  color: #e7000b;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
 }
 
 .logout-btn:hover {
-  background-color: #ffeaa7;
+  background-color: rgba(231, 0, 11, 0.1);
   transform: translateY(-2px);
 }
 
 .logout-btn i {
-  font-size: 16px;
+  font-size: 20px;
 }
 
 /* ==================== KONTEN UTAMA DASHBOARD ==================== */
@@ -937,11 +947,13 @@ footer a:hover {
 }
 
 /* ========== DASHBOARD ADMIN CONTENT ========== */
+/* Menyamakan lebar dan posisi konten Dashboard Admin dengan halaman Manajemen Karyawan
+   agar terlihat konsisten dan rapi secara visual */
 
-.dashboard-header { margin-bottom: 28px; }
-.dashboard-title { font-size: 28px; font-weight: 700; color: #1a202c; margin: 0 0 8px 0; }
+.dashboard-header { margin-bottom: 28px; padding: 0 32px; }
+.dashboard-title { font-size: 28px; font-weight: 700; color: #212529; margin: 0 0 8px 0; line-height: 36px; }
 .dashboard-subtitle { font-size: 14px; color: #718096; margin: 0; }
-.alert-card { display: flex; gap: 16px; padding: 20px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid; }
+.alert-card { display: flex; gap: 16px; padding: 20px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid; margin-left: 32px; margin-right: 32px; }
 .success-alert { background-color: #dcfce7; border-left-color: #16a34a; }
 .alert-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; font-size: 20px; }
 .success-icon { background-color: #bbf7d0; color: #166534; }
@@ -949,7 +961,8 @@ footer a:hover {
 .feature-list { list-style: none; padding: 0; margin: 0; }
 .feature-list li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #166534; margin-bottom: 4px; }
 .feature-list i { width: 16px; text-align: center; }
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 28px; }
+/* Padding horizontal untuk selaraskan dengan header width */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 28px; padding: 0 32px; }
 .stat-card { background: white; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
 .stat-icon { display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 10px; font-size: 24px; }
 .user-icon { background-color: #dbeafe; color: #0c63e4; }
@@ -959,7 +972,8 @@ footer a:hover {
 .stat-content { flex: 1; }
 .stat-number { font-size: 24px; font-weight: 700; color: #1a202c; margin: 0; }
 .stat-label { font-size: 13px; color: #718096; margin: 4px 0 0 0; }
-.activity-section { background: white; border-radius: 12px; padding: 24px; margin-bottom: 28px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+/* Padding horizontal untuk activity section */
+.activity-section { background: white; border-radius: 12px; padding: 24px; margin-bottom: 28px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); margin-left: 32px; margin-right: 32px; }
 .section-title { font-size: 18px; font-weight: 700; color: #1a202c; margin: 0 0 16px 0; }
 .activity-list { display: flex; flex-direction: column; gap: 12px; }
 .activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
@@ -969,7 +983,8 @@ footer a:hover {
 .activity-text { font-size: 14px; color: #1a202c; margin: 0; font-weight: 500; }
 .activity-person { font-size: 12px; color: #718096; margin: 4px 0 0 0; }
 .activity-time { font-size: 11px; color: #a0aec0; margin: 4px 0 0 0; }
-.management-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 0; }
+/* Padding horizontal untuk management grid selaraskan dengan konten lainnya */
+.management-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 0; padding: 0 32px; }
 .management-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); margin-bottom: 0; }
 .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .card-header i { font-size: 24px; color: #4f39f6; }
@@ -1003,7 +1018,7 @@ footer a:hover {
 .manajemen-title {
   font-size: 28px;
   font-weight: 700;
-  color: #101828;
+  color: #212529;
   margin: 0;
   line-height: 36px;
 }
@@ -2769,5 +2784,2401 @@ select.input-form {
 
   .bagian-footer-info {
     text-align: center;
+  }
+}
+
+/* ==================== MODAL TAMBAH KARYAWAN BARU ==================== */
+/* Styling untuk komponen modal form tambah karyawan */
+
+/* Lapisan overlay semi-transparan di belakang modal */
+.lapisanOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(50, 50, 50, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Overlay dalam keadaan tampil */
+.lapisanOverlay.tampil-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Container modal utama */
+.modalTambahKaryawan {
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 672px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: munculModal 0.3s ease-out;
+}
+
+/* Animasi munculnya modal */
+@keyframes munculModal {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Header modal dengan judul dan tombol close */
+.headerModalKaryawan {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 16px;
+}
+
+/* Judul modal */
+.judulModal {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Tombol close (X) pada header modal */
+.tombolTutupModal {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.tombolTutupModal:hover {
+  color: #1f2937;
+}
+
+/* Form container */
+.formTambahKaryawan {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Container untuk semua input form */
+.containerFormKaryawan {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  padding-bottom: 0;
+}
+
+/* Kelompok input (label + input field) */
+.kelompokInputForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Label untuk input */
+.labelInput {
+  font-size: 16px;
+  font-weight: 400;
+  color: #364153;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 24px;
+}
+
+/* Icon dalam label */
+.labelInput i {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tanda wajib (*) */
+.tandaWajib {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* Input form field (text, email, number) */
+.inputForm {
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  color: #0a0a0a;
+  background-color: white;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.inputForm::placeholder {
+  color: rgba(10, 10, 10, 0.5);
+}
+
+.inputForm:focus {
+  outline: none;
+  border-color: #4f39f6;
+  box-shadow: 0 0 0 3px rgba(79, 57, 246, 0.1);
+}
+
+/* Select dropdown */
+.inputForm[type="select"],
+.inputForm {
+  cursor: text;
+}
+
+.inputForm[type="select"]:focus {
+  cursor: pointer;
+}
+
+/* Teks keterangan di bawah input */
+.teksKeterangan {
+  font-size: 14px;
+  color: #6a7282;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Pemisah form (divider) */
+.pemisahForm {
+  border-top: 1px solid #e5e7eb;
+  margin: 8px 0;
+}
+
+/* Bagian pengaturan password */
+.bagianPengaturanPassword {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Judul bagian form */
+.judulBagian {
+  font-size: 16px;
+  font-weight: 400;
+  color: #101828;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Container untuk checkbox dengan label */
+.containerCheckboxPassword {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Input checkbox */
+.inputCheckbox {
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+  cursor: pointer;
+  accent-color: #4f39f6;
+  flex-shrink: 0;
+}
+
+/* Label untuk checkbox */
+.labelCheckbox {
+  font-size: 16px;
+  color: #364153;
+  cursor: pointer;
+  line-height: 24px;
+}
+
+/* Info box dengan background biru muda */
+.kotak-info-modal {
+  background-color: #eff6ff;
+  border: 1px solid #bedbff;
+  border-radius: 10px;
+  padding: 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Judul info box */
+.judul-info {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1c398e;
+  line-height: 20px;
+}
+
+/* Teks dalam info box */
+.teks-info {
+  font-size: 14px;
+  color: #1c398e;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Footer modal dengan tombol aksi */
+.footerModalKaryawan {
+  display: flex;
+  gap: 12px;
+  padding: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Tombol batal (secondary button) */
+.tombolBatal {
+  flex: 1;
+  padding: 12px 24px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  background-color: white;
+  color: #364153;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombolBatal:hover {
+  background-color: #f9fafb;
+  border-color: #b4bcc8;
+}
+
+.tombolBatal:active {
+  background-color: #f3f4f6;
+}
+
+/* Tombol buat akun (primary button) */
+.tombolBuatAkun {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background-color: #4f39f6;
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombolBuatAkun:hover {
+  background-color: #3d2ae3;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.tombolBuatAkun:active {
+  background-color: #3220c0;
+  transform: translateY(0);
+}
+
+/* ==================== MODAL EDIT DATA KARYAWAN ==================== */
+/* Styling khusus untuk modal edit dengan struktur serupa modal tambah */
+
+/* Overlay untuk modal edit */
+.lapisanOverlayEditKaryawan {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(50, 50, 50, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Overlay dalam keadaan tampil */
+.lapisanOverlayEditKaryawan.tampil-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Container modal edit - sama dengan modal tambah */
+.modalEditKaryawan {
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 672px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: munculModal 0.3s ease-out;
+}
+
+/* Header modal edit dengan judul dan tombol close */
+.headerModalEdit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 16px;
+}
+
+/* Judul modal edit */
+.judulModalEdit {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Tombol close (X) pada header modal edit */
+.tombolTutupModalEdit {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.tombolTutupModalEdit:hover {
+  color: #1f2937;
+}
+
+/* Form container untuk edit karyawan */
+.formEditKaryawan {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Container untuk semua input form edit */
+.containerFormEditKaryawan {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  padding-bottom: 0;
+}
+
+/* Kelompok input form edit (label + input field) */
+.kelompokInputEdit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Label untuk input edit */
+.labelInputEdit {
+  font-size: 16px;
+  font-weight: 400;
+  color: #364153;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 24px;
+}
+
+/* Icon dalam label edit */
+.labelInputEdit i {
+  font-size: 16px;
+  color: #6b7280;
+  width: 16px;
+  height: 16px;
+}
+
+/* Input field untuk form edit */
+.inputFormEdit {
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #0a0a0a;
+  line-height: 24px;
+  transition: all 0.2s ease;
+}
+
+/* Input field edit saat focus */
+.inputFormEdit:focus {
+  outline: none;
+  border-color: #4f39f6;
+  box-shadow: 0 0 0 3px rgba(79, 57, 246, 0.1);
+  background-color: #f9fafb;
+}
+
+/* Input field edit saat ada error */
+.inputFormEdit.error {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Teks keterangan untuk input edit */
+.teksKeterangan {
+  font-size: 14px;
+  color: #6a7282;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Footer modal edit dengan tombol aksi */
+.footerModalEdit {
+  display: flex;
+  gap: 12px;
+  padding: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Tombol batal edit (secondary button) */
+.tombolBatalEdit {
+  flex: 1;
+  padding: 12px 24px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  background-color: white;
+  color: #364153;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombolBatalEdit:hover {
+  background-color: #f9fafb;
+  border-color: #b4bcc8;
+}
+
+.tombolBatalEdit:active {
+  background-color: #f3f4f6;
+}
+
+/* Tombol simpan perubahan (primary button) */
+.tombolSimpanPerubahan {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background-color: #4f39f6;
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombolSimpanPerubahan:hover {
+  background-color: #3d2ae3;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.tombolSimpanPerubahan:active {
+  background-color: #3220c0;
+  transform: translateY(0);
+}
+
+/* Responsive styling untuk modal */
+@media (max-width: 768px) {
+  .modalTambahKaryawan {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .headerModalKaryawan {
+    padding: 16px;
+  }
+
+  .judulModal {
+    font-size: 18px;
+  }
+
+  .containerFormKaryawan {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .footerModalKaryawan {
+    padding: 16px;
+    flex-direction: column;
+  }
+
+  .tombolBatal,
+  .tombolBuatAkun {
+    width: 100%;
+  }
+}
+
+/* ==================== EMPTY STATE - PESAN KOSONG KARYAWAN ==================== */
+/* Styling untuk kondisi ketika belum ada data karyawan */
+
+.pesan-kosong-karyawan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 80px 32px;
+  text-align: center;
+  background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 16px;
+  border: 2px dashed #d1d5dc;
+  min-height: 500px;
+}
+
+/* Icon untuk empty state */
+.ikon-kosong-karyawan {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: #4f39f6;
+  flex-shrink: 0;
+}
+
+/* Teks pesan kosong */
+.teks-kosong-karyawan {
+  font-size: 16px;
+  color: #364153;
+  margin: 0;
+  line-height: 24px;
+  max-width: 400px;
+  font-weight: 500;
+}
+
+/* Tombol "Tambah Karyawan Pertama" */
+.tombol-tambah-pertama {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #4f39f6 0%, #3d2ae3 100%);
+  color: #ffffff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  border: none;
+}
+
+.tombol-tambah-pertama:hover {
+  background: linear-gradient(135deg, #3d2ae3 0%, #3220c0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 57, 246, 0.4);
+}
+
+.tombol-tambah-pertama:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(79, 57, 246, 0.2);
+}
+
+.tombol-tambah-pertama i {
+  font-size: 18px;
+}
+
+/* Responsive untuk empty state */
+@media (max-width: 768px) {
+  .pesan-kosong-karyawan {
+    padding: 60px 16px;
+    min-height: 400px;
+    gap: 20px;
+  }
+
+  .ikon-kosong-karyawan {
+    width: 64px;
+    height: 64px;
+    font-size: 40px;
+  }
+
+  .teks-kosong-karyawan {
+    font-size: 14px;
+  }
+
+  .tombol-tambah-pertama {
+    font-size: 14px;
+    padding: 10px 24px;
+  }
+}
+
+/* ==================== MODAL KONFIRMASI HAPUS ==================== */
+/* Styling untuk modal konfirmasi sebelum menghapus karyawan */
+
+.modal-konfirmasi-hapus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Modal dalam keadaan tampil */
+.modal-konfirmasi-hapus.tampil {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Overlay semi-transparan di belakang modal */
+.overlay-konfirmasi {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 0;
+}
+
+/* Container modal konfirmasi - tetap di tengah dengan z-index lebih tinggi */
+.konten-konfirmasi {
+  position: relative;
+  z-index: 1;
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+/* Animasi slide up saat modal muncul */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animasi slide down saat modal hilang */
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Header konfirmasi */
+.header-konfirmasi {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 16px;
+}
+
+.header-konfirmasi h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Tombol tutup konfirmasi */
+.tombol-tutup-konfirmasi {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.tombol-tutup-konfirmasi:hover {
+  color: #1f2937;
+}
+
+/* Body konfirmasi */
+.body-konfirmasi {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+/* Icon warning */
+.icon-warning {
+  width: 64px;
+  height: 64px;
+  background-color: #fef3c7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.icon-warning i {
+  line-height: 1;
+}
+
+/* Teks konfirmasi */
+.teks-konfirmasi {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 24px;
+}
+
+.teks-detail {
+  font-size: 14px;
+  color: #6a7282;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Footer konfirmasi dengan tombol */
+.footer-konfirmasi {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 24px 24px;
+  width: 100%;
+}
+
+.tombol-batal-konfirmasi {
+  flex: 1;
+  padding: 12px 24px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  background-color: white;
+  color: #364153;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombol-batal-konfirmasi:hover {
+  background-color: #f9fafb;
+  border-color: #b4bcc8;
+}
+
+.tombol-batal-konfirmasi:active {
+  background-color: #f3f4f6;
+}
+
+.tombol-hapus-konfirmasi {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 24px;
+}
+
+.tombol-hapus-konfirmasi:hover {
+  background-color: #bb2d3b;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+  transform: translateY(-1px);
+}
+
+.tombol-hapus-konfirmasi:active {
+  background-color: #a02d34;
+  transform: translateY(0);
+}
+
+/* ==================== NOTIFIKASI TOAST ==================== */
+/* Styling untuk notifikasi toast yang muncul di atas halaman */
+
+.notifikasi-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  min-width: 300px;
+  max-width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  animation: slideInRight 0.3s ease-out;
+  opacity: 0;
+  transform: translateX(400px);
+}
+
+/* Notifikasi dalam keadaan tampil */
+.notifikasi-toast.tampil {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Animasi slide in dari kanan */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animasi slide out ke kanan */
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+}
+
+/* Konten notifikasi */
+.konten-notifikasi {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+/* Pesan notifikasi */
+.pesan-notifikasi {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+/* Tipe notifikasi: Sukses */
+.notifikasi-sukses {
+  background-color: #dcfce7;
+  border: 1px solid #86efac;
+  color: #166534;
+}
+
+.notifikasi-sukses .konten-notifikasi::before {
+  content: '✓';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #16a34a;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Tipe notifikasi: Error */
+.notifikasi-error {
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+}
+
+.notifikasi-error .konten-notifikasi::before {
+  content: '✕';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #dc2626;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Tipe notifikasi: Info */
+.notifikasi-info {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1e40af;
+}
+
+.notifikasi-info .konten-notifikasi::before {
+  content: 'ℹ';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #0284c7;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Tipe notifikasi: Loading */
+.notifikasi-loading {
+  background-color: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+.notifikasi-loading .konten-notifikasi::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f59e0b;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive notifikasi toast */
+@media (max-width: 768px) {
+  .notifikasi-toast {
+    min-width: 280px;
+    max-width: 90%;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+  }
+
+  .pesan-notifikasi {
+    font-size: 14px;
+  }
+}
+
+/* ==================== STYLING HALAMAN MANAJEMEN PENANGGUNG JAWAB ==================== */
+
+/* Header halaman manajemen penanggung-jawab */
+.manajemen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  gap: 24px;
+}
+
+.manajemen-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.manajemen-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 36px;
+}
+
+.manajemen-subtitle {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Tombol tambah penanggung jawab */
+.btn-tambah-penanggung-jawab {
+  background-color: #9810fa;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-tambah-penanggung-jawab:hover {
+  background-color: #8a0ed5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(152, 16, 250, 0.3);
+}
+
+.btn-tambah-penanggung-jawab:active {
+  transform: translateY(0);
+}
+
+.btn-tambah-penanggung-jawab i {
+  font-size: 18px;
+}
+
+/* Kartu informasi tentang penanggung jawab */
+/* ========== MANAJEMEN PENANGGUNG JAWAB ADMIN CONTENT ========== */
+/* Menyamakan lebar dan posisi konten Manajemen Penanggung Jawab dengan halaman admin lainnya
+   agar terlihat konsisten dan rapi secara visual */
+
+.kartu-informasi-penanggung-jawab {
+  background-color: #faf5ff;
+  border: 1px solid #e9d4ff;
+  border-radius: 14px;
+  padding: 25px;
+  margin-bottom: 32px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+.konten-informasi {
+  display: flex;
+  gap: 24px;
+}
+
+.icon-informasi {
+  flex-shrink: 0;
+  font-size: 24px;
+  color: #59168b;
+  margin-top: 4px;
+}
+
+.teks-informasi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.judul-informasi {
+  font-size: 16px;
+  font-weight: 600;
+  color: #59168b;
+  margin: 0;
+  line-height: 24px;
+}
+
+.daftar-informasi {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.daftar-informasi li {
+  font-size: 14px;
+  color: #6e11b0;
+  line-height: 20px;
+  margin: 0;
+}
+
+/* Kartu tabel penanggung-jawab */
+/* ==================== STYLING TABEL penanggung-jawab (MANAJEMEN PENANGGUNG JAWAB) ==================== */
+
+/* Container tabel penanggung-jawab */
+.tabel-penanggung-jawab-container {
+  background-color: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  margin: 0 32px 32px 32px;
+  overflow: hidden;
+}
+
+.tabel-header {
+  display: flex;
+  align-items: center;
+  padding: 24px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.tabel-judul {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Wrapper tabel dengan horizontal scroll */
+.tabel-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-height: 500px;
+}
+
+/* Tabel daftar penanggung-jawab */
+.tabel-daftar-penanggung-jawab {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+/* Header tabel */
+.tabel-kepala {
+  background-color: #f9fafb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.baris-header {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.sel-header {
+  padding: 16px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #364153;
+  text-align: left;
+  text-transform: none;
+  line-height: 24px;
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+/* Kolom header spesifik penanggung-jawab */
+.nama-header {
+  min-width: 164px;
+}
+
+.email-header {
+  min-width: 312px;
+}
+
+.jabatan-header {
+  min-width: 138px;
+}
+
+.jumlah-karyawan-header {
+  min-width: 157px;
+}
+
+.bergabung-header {
+  min-width: 137px;
+}
+
+.status-header {
+  min-width: 113px;
+}
+
+.aksi-header {
+  min-width: 137px;
+  text-align: center;
+}
+
+/* Baris data tabel */
+.baris-data {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.baris-data:hover {
+  background-color: #f9fafb;
+}
+
+.sel-data {
+  padding: 16px 24px;
+  font-size: 16px;
+  color: #101828;
+  text-align: left;
+  line-height: 24px;
+}
+
+/* Nama penanggung-jawab dengan avatar */
+.nama-penanggung-jawab {
+  display: flex;
+  align-items: center;
+}
+
+.kontainer-nama {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar-penanggung-jawab {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f3e8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #59168b;
+  font-size: 16px;
+}
+
+.email-cell,
+.jabatan-cell {
+  color: #4a5565;
+  white-space: nowrap;
+}
+
+.jumlah-karyawan-cell {
+  color: #4a5565;
+}
+
+.bergabung-cell {
+  color: #4a5565;
+  white-space: nowrap;
+}
+
+/* Status badge */
+.status-badge {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-aktif {
+  background-color: #ecfdf5;
+  color: #065f46;
+}
+
+.status-nonaktif {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Kontainer aksi (tombol edit/hapus) */
+.kontainer-aksi {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Pesan kosong saat tidak ada data */
+.pesan-kosong-penanggung-jawab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+  background-color: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  margin: 0 32px 32px 32px;
+}
+
+.ikon-kosong {
+  font-size: 48px;
+  color: #d1d5db;
+  margin-bottom: 16px;
+}
+
+.teks-kosong {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 24px;
+}
+
+.teks-email {
+  font-size: 16px;
+}
+
+/* Sel jabatan */
+.sel-jabatan {
+  color: #4a5565;
+  white-space: nowrap;
+}
+
+.teks-jabatan {
+  font-size: 16px;
+}
+
+/* Sel jumlah karyawan */
+.sel-jumlah-karyawan {
+  color: #4a5565;
+}
+
+.teks-jumlah-karyawan {
+  font-size: 16px;
+}
+
+/* Sel bergabung */
+.sel-bergabung {
+  color: #4a5565;
+  white-space: nowrap;
+}
+
+.teks-bergabung {
+  font-size: 16px;
+}
+
+/* Sel status dengan badge */
+.sel-status {
+  padding: 18px 24px;
+}
+
+.badge-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 3.35544e+07px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 20px;
+}
+
+.badge-aktif {
+  background-color: #dcfce7;
+  color: #016630;
+}
+
+.badge-nonaktif {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Sel aksi dengan tombol */
+.sel-aksi {
+  padding: 18px 24px;
+}
+
+.kontainer-tombol-aksi {
+  display: flex;
+  gap: 8px;
+  height: 32px;
+  align-items: flex-start;
+}
+
+.tombol-edit-penanggung-jawab,
+.tombol-hapus-penanggung-jawab {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 16px;
+}
+
+.tombol-edit-penanggung-jawab {
+  background-color: #f0f0f0;
+  color: #364153;
+}
+
+.tombol-edit-penanggung-jawab:hover {
+  background-color: #e0e0e0;
+  color: #000;
+}
+
+.tombol-hapus-penanggung-jawab {
+  background-color: #f0f0f0;
+  color: #364153;
+}
+
+.tombol-hapus-penanggung-jawab:hover {
+  background-color: #fee2e2;
+  color: #dc3545;
+}
+
+/* Baris kosong (no data) */
+.baris-kosong {
+  height: 200px;
+}
+
+.sel-kosong {
+  text-align: center;
+  padding: 60px 24px;
+}
+
+.teks-kosong {
+  font-size: 16px;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* ==================== MODAL TAMBAH PENANGGUNG JAWAB ==================== */
+
+/* Overlay untuk modal */
+.lapisanOverlayTambahPenanggungJawab,
+.lapisanOverlayEditPenanggungJawab {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.lapisanOverlayTambahPenanggungJawab.tampil,
+.lapisanOverlayEditPenanggungJawab.tampil {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal container */
+.modalTambahPenanggungJawab,
+.modalEditPenanggungJawab {
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  width: 672px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.lapisanOverlayTambahPenanggungJawab.tampil .modalTambahPenanggungJawab,
+.lapisanOverlayEditPenanggungJawab.tampil .modalEditPenanggungJawab {
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header modal */
+.headerModalPenanggungJawab {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #f3f4f6;
+  height: 79px;
+  flex-shrink: 0;
+}
+
+.judulModal {
+  font-size: 20px;
+  font-weight: 400;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+.tombolTutupModal {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #6b7280;
+  transition: color 0.2s ease;
+}
+
+.tombolTutupModal:hover {
+  color: #000;
+}
+
+/* Kotak informasi detail untuk modal edit */
+.kotak-info-edit-detail {
+  background-color: #f0f0f0;
+  border-left: 4px solid #9810fa;
+  padding: 16px;
+  margin-top: 16px;
+  border-radius: 6px;
+}
+
+.teks-info-edit {
+  margin: 0;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.teks-info-edit strong {
+  color: #9810fa;
+  font-weight: 500;
+}
+
+/* Form container */
+.containerFormPenanggungJawab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+/* Kelompok input form */
+.kelompokInputForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.labelInput {
+  font-size: 16px;
+  font-weight: 400;
+  color: #364153;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 24px;
+}
+
+.labelInput i {
+  font-size: 16px;
+  color: #9ca3af;
+}
+
+.tandaWajib {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.inputForm {
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 50px;
+  box-sizing: border-box;
+  color: #101828;
+  background-color: white;
+  line-height: normal;
+}
+
+.inputForm:focus {
+  outline: none;
+  border-color: #9810fa;
+  box-shadow: 0 0 0 3px rgba(152, 16, 250, 0.1);
+  background-color: #faf5ff;
+}
+
+.inputForm::placeholder {
+  color: #9ca3af;
+}
+
+/* Teks bantuan di bawah input */
+.teks-bantuan {
+  font-size: 14px;
+  color: #6a7282;
+  display: block;
+  margin-top: 0;
+  line-height: 20px;
+}
+
+/* Pembatas form (divider) */
+.pembatas-form {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 16px 0;
+}
+
+/* Kelompok Pengaturan Password */
+.kelompok-pengaturan-password {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 25px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 0;
+}
+
+.judul-pengaturan {
+  font-size: 16px;
+  font-weight: 400;
+  color: #101828;
+  margin: 0;
+  padding-top: 0;
+  line-height: 24px;
+}
+
+/* Checkbox untuk generate password */
+.kontainer-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.checkbox-generate {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #9810fa;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.label-checkbox {
+  font-size: 16px;
+  color: #364153;
+  cursor: pointer;
+  line-height: 24px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.teks-bantuan-password {
+  font-size: 14px;
+  color: #6a7282;
+  display: block;
+  line-height: 20px;
+}
+
+/* Kotak informasi untuk modal tambah (Info box) */
+.kotak-info-tambah {
+  background-color: #faf5ff;
+  border: 1px solid #e9d4ff;
+  border-radius: 10px;
+  padding: 17px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.teks-info-tambah {
+  font-size: 14px;
+  color: #59168b;
+  line-height: 20px;
+  margin: 0;
+}
+
+.teks-info-tambah strong {
+  font-weight: 600;
+  color: #7c3aed;
+}
+
+/* Kelompok tombol form */
+.kelompokTombolForm {
+  display: flex;
+  gap: 12px;
+  margin-top: 0;
+  justify-content: space-between;
+}
+
+.tombolBatal,
+.tombolSimpan {
+  padding: 0;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 50px;
+  flex: 1;
+  font-family: inherit;
+}
+
+.tombolBatal {
+  background-color: white;
+  color: #364153;
+  border: 1px solid #d1d5dc;
+}
+
+.tombolBatal:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.tombolSimpan {
+  background-color: #9810fa;
+  color: white;
+}
+
+.tombolSimpan:hover {
+  background-color: #8a0ed5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(152, 16, 250, 0.3);
+}
+
+.tombolSimpan:active {
+  transform: translateY(0);
+}
+
+.tombolSimpan i {
+  font-size: 16px;
+}
+
+/* ==================== RESPONSIVE HALAMAN MANAJEMEN penanggung-jawab ==================== */
+
+@media (max-width: 1024px) {
+  .manajemen-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-tambah-penanggung-jawab {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kontainer-tabel-penanggung-jawab {
+    height: 300px;
+  }
+
+  .tabel-penanggung-jawab th,
+  .tabel-penanggung-jawab td {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .manajemen-title {
+    font-size: 20px;
+  }
+
+  .manajemen-subtitle {
+    font-size: 14px;
+  }
+
+  .kartu-informasi-penanggung-jawab {
+    padding: 16px;
+  }
+
+  .konten-informasi {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .icon-informasi {
+    font-size: 20px;
+  }
+
+  .judul-informasi {
+    font-size: 14px;
+  }
+
+  .daftar-informasi li {
+    font-size: 13px;
+  }
+
+  .judul-tabel-penanggung-jawab {
+    font-size: 16px;
+  }
+
+  .tabel-penanggung-jawab th,
+  .tabel-penanggung-jawab td {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .kolom-nama { width: 100px; }
+  .kolom-email { width: 140px; }
+  .kolom-jabatan { width: 120px; }
+  .kolom-jumlah-karyawan { width: 100px; }
+  .kolom-bergabung { width: 90px; }
+  .kolom-status { width: 80px; }
+  .kolom-aksi { width: 80px; }
+
+  .teks-nama {
+    font-size: 13px;
+  }
+
+  .avatar-penanggung-jawab {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .modalTambahpenanggung-jawab,
+  .modalEditpenanggung-jawab {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .containerFormPenanggungJawab {
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .labelInput {
+    font-size: 13px;
+  }
+
+  .inputForm {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .kelompokTombolForm {
+    flex-direction: column-reverse;
+  }
+
+  .tombolBatal,
+  .tombolSimpan {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ==================== LOG KEBERATAN ADMINISTRATIF ==================== */
+/* Styling untuk halaman monitoring keberatan admin */
+
+/* Header halaman log keberatan */
+/* ========== LOG KEBERATAN ADMIN CONTENT ========== */
+/* Menyamakan lebar dan posisi konten Log Keberatan dengan halaman admin lainnya
+   agar terlihat konsisten dan rapi secara visual */
+
+.headerLogKeberatan {
+  margin-bottom: 2rem;
+  padding: 0 32px;
+}
+
+.infoHeaderLogKeberatan {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.judulLogKeberatan {
+  font-size: 28px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+  line-height: 36px;
+}
+
+.subjudulLogKeberatan {
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Kartu informasi peran admin untuk log keberatan */
+.kartuAlertLogKeberatan {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+  margin-left: 32px;
+  margin-right: 32px;
+  background-color: #d1ecf1;
+  border: 1px solid #bee5eb;
+  border-radius: 0.375rem;
+  border-left: 4px solid #0dcaf0;
+}
+
+.ikonAlertLogKeberatan {
+  flex-shrink: 0;
+  font-size: 1.5rem;
+  color: #0dcaf0;
+  padding-top: 0.25rem;
+}
+
+.ikonAlertLogKeberatan.infoIcon {
+  color: #0dcaf0;
+}
+
+.kontenAlertLogKeberatan {
+  flex-grow: 1;
+}
+
+.kontenAlertLogKeberatan h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #004085;
+  margin-bottom: 0.75rem;
+}
+
+.daftarFiturKeberatan {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.daftarFiturKeberatan li {
+  font-size: 0.95rem;
+  color: #004085;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.daftarFiturKeberatan i {
+  min-width: 1rem;
+}
+
+/* Grid statistik keberatan dengan padding horizontal selaras */
+.gridStatistikKeberatan {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 0 32px;
+}
+
+.kartuStatistikKeberatan {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.kartuStatistikKeberatan:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ikonStatistikKeberatan {
+  flex-shrink: 0;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 0.375rem;
+}
+
+.ikonStatistikKeberatan.iconTotal {
+  background-color: #f0f3f7;
+  color: #0d6efd;
+}
+
+.ikonStatistikKeberatan.iconPending {
+  background-color: #fff3cd;
+  color: #ffc107;
+}
+
+.ikonStatistikKeberatan.iconSuccess {
+  background-color: #d1e7dd;
+  color: #198754;
+}
+
+.ikonStatistikKeberatan.iconDanger {
+  background-color: #f8d7da;
+  color: #dc3545;
+}
+
+.kontenStatistikKeberatan {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.angkaStatistik {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+  line-height: 1;
+}
+
+.labelStatistik {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0.5rem 0 0 0;
+}
+
+/* Container tabel log keberatan dengan padding horizontal */
+.containerTabelLogKeberatan {
+  margin-bottom: 2rem;
+  padding: 0 32px;
+}
+
+.judulTabelKeberatan {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 1rem;
+}
+
+/* Wrapper tabel responsive */
+.wrapperTabelResponsif {
+  overflow-x: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  background-color: #fff;
+}
+
+.tabelLogKeberatan {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.headTabelKeberatan {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.barisHeaderTabel {
+  background-color: #f8f9fa;
+}
+
+.barisHeaderTabel th {
+  padding: 1rem;
+  font-weight: 600;
+  text-align: left;
+  color: #212529;
+  font-size: 0.95rem;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.bodyTabelKeberatan tr {
+  border-bottom: 1px solid #dee2e6;
+  transition: background-color 0.2s ease;
+}
+
+.bodyTabelKeberatan tr:hover {
+  background-color: rgba(13, 110, 253, 0.03);
+}
+
+.barisDataKeberatan td {
+  padding: 1rem;
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.barisKosong td {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.selKosong {
+  color: #6c757d;
+}
+
+.teksKosong {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Kolom Karyawan */
+.detailKaryawan {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.namaKaryawan {
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+}
+
+.departemenKaryawan {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Kolom Jenis Keberatan */
+.ikonJenisKeberatan {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+.teksJenisKeberatan {
+  margin: 0;
+  font-weight: 500;
+  color: #212529;
+}
+
+/* Kolom Periode */
+.teksPeriode {
+  margin: 0;
+  color: #495057;
+}
+
+/* Kolom Penanggung Jawab */
+.namaPenanggungJawab {
+  margin: 0;
+  color: #212529;
+}
+
+/* Kolom Tanggal Diajukan */
+.teksTanggalDiajukan {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Badge Status */
+.badgeStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.badgeWarning {
+  background-color: #fff3cd;
+  color: #664d03;
+  border: 1px solid #ffecb5;
+}
+
+.badgeSuccess {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.badgeDanger {
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+
+.badgeStatus i {
+  font-size: 0.8rem;
+}
+
+.tglDisetujui,
+.tglDitolak {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-top: 0.25rem;
+  opacity: 0.85;
+}
+
+/* Kartu catatan log keberatan */
+.kartuCatatanLogKeberatan {
+  padding: 1rem;
+  background-color: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 0.375rem;
+  border-left: 4px solid #0dcaf0;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+.labelCatatan {
+  display: block;
+  color: #004085;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.teksCatatan {
+  margin: 0;
+  color: #004085;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ==================== RESPONSIVE DESIGN LOG KEBERATAN ==================== */
+@media (max-width: 1024px) {
+  .gridStatistikKeberatan {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .kolKaryawan { width: 150px; }
+  .kolJenisKeberatan { width: 140px; }
+  .kolPeriode { width: 130px; }
+  .kolPenanggungJawab { width: 140px; }
+  .kolTanggalDiajukan { width: 110px; }
+  .kolStatus { width: 140px; }
+}
+
+@media (max-width: 768px) {
+  .judulLogKeberatan {
+    font-size: 1.5rem;
+  }
+  
+  .subjudulLogKeberatan {
+    font-size: 0.9rem;
+  }
+  
+  .gridStatistikKeberatan {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .kartuStatistikKeberatan {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+  
+  .ikonStatistikKeberatan {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  
+  .angkaStatistik {
+    font-size: 1.5rem;
+  }
+  
+  .labelStatistik {
+    font-size: 0.85rem;
+  }
+  
+  .barisHeaderTabel th {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .barisDataKeberatan td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .namaKaryawan {
+    font-size: 0.9rem;
+  }
+  
+  .departemenKaryawan {
+    font-size: 0.75rem;
+  }
+  
+  .badgeStatus {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.5rem;
+  }
+  
+  .detailKaryawan {
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .judulLogKeberatan {
+    font-size: 1.25rem;
+  }
+  
+  .gridStatistikKeberatan {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .kartuStatistikKeberatan {
+    padding: 0.75rem;
+  }
+  
+  .ikonStatistikKeberatan {
+    width: 45px;
+    height: 45px;
+    font-size: 1.25rem;
+  }
+  
+  .angkaStatistik {
+    font-size: 1.25rem;
+  }
+  
+  .kontenAlertLogKeberatan h3 {
+    font-size: 0.9rem;
+  }
+  
+  .daftarFiturKeberatan li {
+    font-size: 0.85rem;
+  }
+  
+  .barisHeaderTabel th {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .barisDataKeberatan td {
+    padding: 0.5rem;
+    font-size: 0.8rem;
   }
 }
