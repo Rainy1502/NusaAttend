@@ -1,0 +1,157 @@
+<!-- ==================== HEADER DASHBOARD PENANGGUNG JAWAB ==================== -->
+<!-- Judul halaman dan deskripsi ringkas fungsi dashboard -->
+<div class="headerDashboardPenanggungJawab">
+    <h1 class="judulDashboardPenanggungJawab">Dashboard Penanggung Jawab</h1>
+    <p class="deskripsiDashboardPenanggungJawab">Pantau dan kelola pengajuan kehadiran tim</p>
+</div>
+
+<!-- ==================== GRID STATISTIK RINGKASAN ==================== -->
+<!-- Menampilkan 4 kartu informasi utama untuk penanggung jawab -->
+<div class="gridStatistikPenanggungJawab">
+    <!-- Kartu 1: Pengajuan Menunggu Review -->
+    <div class="kartuStatistikPenanggungJawab">
+        <div class="iconContainerPenanggungJawab warningColor">
+            <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="contentStatistikPenanggungJawab">
+            <p class="angkaStatistik">{{jumlahMenungguReview}}</p>
+            <p class="labelStatistik">Menunggu Review</p>
+        </div>
+    </div>
+
+    <!-- Kartu 2: Pengajuan Disetujui Bulan Ini -->
+    <div class="kartuStatistikPenanggungJawab">
+        <div class="iconContainerPenanggungJawab successColor">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="contentStatistikPenanggungJawab">
+            <p class="angkaStatistik">{{jumlahDisetujuiBulanIni}}</p>
+            <p class="labelStatistik">Disetujui Bulan Ini</p>
+        </div>
+    </div>
+
+    <!-- Kartu 3: Pengajuan Ditolak Bulan Ini -->
+    <div class="kartuStatistikPenanggungJawab">
+        <div class="iconContainerPenanggungJawab dangerColor">
+            <i class="fas fa-times-circle"></i>
+        </div>
+        <div class="contentStatistikPenanggungJawab">
+            <p class="angkaStatistik">{{jumlahDitolakBulanIni}}</p>
+            <p class="labelStatistik">Ditolak Bulan Ini</p>
+        </div>
+    </div>
+
+    <!-- Kartu 4: Total Karyawan Tim -->
+    <div class="kartuStatistikPenanggungJawab">
+        <div class="iconContainerPenanggungJawab infoColor">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="contentStatistikPenanggungJawab">
+            <p class="angkaStatistik">{{totalKaryawanTim}}</p>
+            <p class="labelStatistik">Total Karyawan</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== BAGIAN PENGAJUAN MENDESAK ==================== -->
+<!-- Menampilkan daftar pengajuan yang perlu segera ditinjau -->
+<div class="containerPengajuanMendesak">
+    <!-- Header section dengan ikon dan judul -->
+    <div class="headerSectionPengajuan">
+        <div class="iconSectionPengajuan">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h2 class="judulSectionPengajuan">Pengajuan Mendesak</h2>
+    </div>
+
+    <!-- Daftar item pengajuan yang menunggu review -->
+    <div class="daftarPengajuanMendesak">
+        {{#each pengajuanMendesak}}
+        <!-- Item pengajuan individual -->
+        <div class="itemPengajuanMendesak">
+            <!-- Informasi karyawan dan status -->
+            <div class="infoKaryawanPengajuan">
+                <!-- Nama dan status mendesak -->
+                <div class="headerInfoPengajuan">
+                    <p class="namaKaryawanPengajuan">{{namaKaryawan}}</p>
+                    <span class="badgeStatusMendesak">Mendesak</span>
+                </div>
+
+                <!-- Detail pengajuan: jenis dan tanggal -->
+                <p class="detailPengajuanJenis">{{jenisPengajuan}} - {{tanggalPengajuan}}</p>
+
+                <!-- Informasi waktu pengajuan -->
+                <p class="detailPengajuanWaktu">{{waktuPengajuan}}</p>
+            </div>
+
+            <!-- Tombol aksi untuk review pengajuan -->
+            <button type="button" class="tombolReviewSekarang">
+                Review Sekarang
+            </button>
+        </div>
+        {{/each}}
+
+        <!-- Pesan jika tidak ada pengajuan mendesak -->
+        {{#unless pengajuanMendesak}}
+        <div class="pesanKosongPengajuan">
+            <p>Tidak ada pengajuan mendesak saat ini</p>
+        </div>
+        {{/unless}}
+    </div>
+</div>
+
+<!-- ==================== BAGIAN KEHADIRAN HARIAN & STATISTIK ==================== -->
+<!-- Menampilkan ringkasan kehadiran hari ini dan statistik bulan ini -->
+<div class="gridInformasiKehadiran">
+    <!-- Kartu 1: Kehadiran Hari Ini -->
+    <div class="kartuKehadiranHariIni">
+        <h3 class="judulKartuKehadiran">Kehadiran Hari Ini</h3>
+
+        <!-- Daftar status kehadiran -->
+        <div class="daftarStatusKehadiran">
+            <!-- Status Hadir -->
+            <div class="itemStatusKehadiran">
+                <p class="labelStatusKehadiran">Hadir</p>
+                <p class="nilaiStatusKehadiran hadir">{{jumlahHadir}} karyawan</p>
+            </div>
+
+            <!-- Status Izin/Cuti -->
+            <div class="itemStatusKehadiran">
+                <p class="labelStatusKehadiran">Izin/Cuti</p>
+                <p class="nilaiStatusKehadiran izin">{{jumlahIzinCuti}} karyawan</p>
+            </div>
+
+            <!-- Status Belum Absen -->
+            <div class="itemStatusKehadiran">
+                <p class="labelStatusKehadiran">Belum Absen</p>
+                <p class="nilaiStatusKehadiran belumAbsen">{{jumlahBelumAbsen}} karyawan</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kartu 2: Statistik Bulan Ini -->
+    <div class="kartuStatistikBulanIni">
+        <h3 class="judulKartuKehadiran">Statistik Bulan Ini</h3>
+
+        <!-- Daftar metrik statistik bulan -->
+        <div class="daftarStatistikBulan">
+            <!-- Metrik Total Pengajuan -->
+            <div class="itemStatistikBulan">
+                <p class="labelStatistikBulan">Total Pengajuan</p>
+                <p class="nilaiStatistikBulan">{{totalPengajuanBulanIni}}</p>
+            </div>
+
+            <!-- Metrik Rata-rata Waktu Review -->
+            <div class="itemStatistikBulan">
+                <p class="labelStatistikBulan">Rata-rata Waktu Review</p>
+                <p class="nilaiStatistikBulan">{{rataRataWaktuReview}}</p>
+            </div>
+
+            <!-- Metrik Tingkat Persetujuan -->
+            <div class="itemStatistikBulan">
+                <p class="labelStatistikBulan">Tingkat Persetujuan</p>
+                <p class="nilaiStatistikBulan">{{tingkatPersetujuan}}</p>
+            </div>
+        </div>
+    </div>
+</div>

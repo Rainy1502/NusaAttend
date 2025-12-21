@@ -31,6 +31,19 @@ const rutAdminKeberatan = require('./routes/adminKeberatan');
  * Menangani pengambilan data ringkasan dan aktivitas terbaru (read-only)
  */
 const rutDashboardAdmin = require('./routes/dashboardAdmin');
+/**
+ * [FITUR BARU - Dashboard Penanggung Jawab]
+ * Router untuk API Dashboard Penanggung Jawab (Supervisor)
+ * Menangani pengambilan data ringkasan dan aktivitas terbaru tim (read-only)
+ */
+const rutDashboardPenanggungJawab = require('./routes/dashboardPenanggungJawab');
+
+/**
+ * [FITUR BARU - Review Pengajuan]
+ * Router untuk API Review Pengajuan (Penanggung Jawab)
+ * Menangani pengambilan daftar pengajuan yang menunggu review (read-only)
+ */
+const rutReviewPengajuan = require('./routes/reviewPengajuan');
 // const rutPengajuan = require('./routes/pengajuan'); // Di-backup
 // const rutAbsensi = require('./routes/absensi');     // Di-backup
 // const rutAdmin = require('./routes/admin');         // Di-backup
@@ -214,6 +227,24 @@ app.use('/api/admin', middlewareAuntenfikasi, rutAdminKeberatan);
  */
 app.use('/api/admin', middlewareAuntenfikasi, rutDashboardAdmin);
 
+/**
+ * [FITUR BARU - Dashboard Penanggung Jawab]
+ * Daftarkan router dashboard penanggung jawab dengan middleware autentikasi
+ * Endpoint: /api/penanggung-jawab/dashboard
+ * Handler: dashboardPenanggungJawabController.js
+ * Sifat: Read-only (pengambilan data ringkasan dan aktivitas tim)
+ */
+app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutDashboardPenanggungJawab);
+
+/**
+ * [FITUR BARU - Review Pengajuan]
+ * Daftarkan router review pengajuan dengan middleware autentikasi
+ * Endpoint: /api/penanggung-jawab/review-pengajuan
+ * Handler: reviewPengajuanController.js
+ * Sifat: Read-only (pengambilan daftar pengajuan yang menunggu review)
+ */
+app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutReviewPengajuan);
+
 // app.use('/api/pengajuan', middlewareAuntenfikasi, rutPengajuan); // Di-backup
 // app.use('/api/absensi', middlewareAuntenfikasi, rutAbsensi);     // Di-backup
 // app.use('/api/chatbot', rutChatbot);                             // Di-backup
@@ -334,12 +365,132 @@ app.get('/dashboard', async (req, res) => {
       });
     }
   } else if (role === 'penanggung-jawab') {
-    res.render('supervisor/dashboard', { 
-      title: 'Dashboard Penanggung Jawab - NusaAttend',
-      user: req.session.user,
-      layout: 'dashboard-layout',
-      halaman: 'dashboard'
-    });
+    /**
+     * [DASHBOARD PENANGGUNG JAWAB - Data Dinamis]
+     * Route dashboard penanggung jawab sekarang fetch data dari model User
+     * Mengambil ringkasan & aktivitas terbaru dari database
+     */
+    try {
+      // Query data dashboard dari User model (sama seperti admin, tapi untuk semua user)
+      const User = require('./models/User');
+      
+      // Hitung ringkasan
+      const totalKaryawan = await User.countDocuments({ role: 'karyawan' });
+      const totalPenanggungJawab = await User.countDocuments({ role: 'penanggung-jawab' });
+      const totalAkunAktif = await User.countDocuments({ adalah_aktif: true });
+      
+      // Hitung aktivitas hari ini
+      const hariIniMulai = new Date();
+      hariIniMulai.setHours(0, 0, 0, 0);
+      const hariIniAkhir = new Date();
+      hariIniAkhir.setHours(23, 59, 59, 999);
+      
+      const totalAktivitasHariIni = await User.countDocuments({
+        $or: [
+          { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
+          { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } }
+        ]
+      });
+      
+      // Ambil 5 aktivitas terbaru
+      const daftarUserTerbaru = await User.find()
+        .select('nama_lengkap jabatan email role adalah_aktif createdAt updatedAt')
+        .sort({ updatedAt: -1 })
+        .limit(5)
+        .lean();
+      
+      // Transform ke format pengajuan mendesak untuk dashboard penanggung jawab
+      const pengajuanMendesak = daftarUserTerbaru.map(user => {
+        const isNew = hariIniMulai <= user.createdAt && user.createdAt <= hariIniAkhir;
+        
+        // Tentukan jenis pengajuan berdasarkan role user
+        let jenisPengajuan = '';
+        if (user.role === 'karyawan') {
+          jenisPengajuan = isNew ? 'Pendaftaran Karyawan Baru' : 'Update Data Karyawan';
+        } else if (user.role === 'penanggung-jawab') {
+          jenisPengajuan = isNew ? 'Penambahan Penanggung Jawab' : 'Update Penanggung Jawab';
+        } else if (user.role === 'admin') {
+          jenisPengajuan = 'Update Admin Sistem';
+        }
+        
+        // Format tanggal pengajuan
+        const tanggalPengajuan = user.updatedAt.toLocaleDateString('id-ID', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric' 
+        });
+        
+        // Hitung waktu relatif
+        const waktuSekarang = new Date();
+        const selisihMs = waktuSekarang - user.updatedAt;
+        const selisihDetik = Math.floor(selisihMs / 1000);
+        const selisihMenit = Math.floor(selisihDetik / 60);
+        const selisihJam = Math.floor(selisihMenit / 60);
+        const selisihHari = Math.floor(selisihJam / 24);
+        
+        let waktuPengajuan = '';
+        if (selisihDetik < 60) {
+          waktuPengajuan = 'Diajukan baru saja';
+        } else if (selisihMenit < 60) {
+          waktuPengajuan = `Diajukan ${selisihMenit} menit lalu`;
+        } else if (selisihJam < 24) {
+          waktuPengajuan = `Diajukan ${selisihJam} jam lalu`;
+        } else {
+          waktuPengajuan = `Diajukan ${selisihHari} hari lalu`;
+        }
+        
+        return {
+          namaKaryawan: user.nama_lengkap,
+          jenisPengajuan: jenisPengajuan,
+          tanggalPengajuan: tanggalPengajuan,
+          waktuPengajuan: waktuPengajuan
+        };
+      });
+      
+      res.render('penanggung-jawab/dashboard', { 
+        title: 'Dashboard Penanggung Jawab - NusaAttend',
+        user: req.session.user,
+        layout: 'dashboard-layout',
+        halaman: 'dashboard',
+        // Data ringkasan - mapping ke frontend variables
+        jumlahMenungguReview: totalAktivitasHariIni,
+        jumlahDisetujuiBulanIni: totalKaryawan,
+        jumlahDitolakBulanIni: totalPenanggungJawab,
+        totalKaryawanTim: totalAkunAktif,
+        // Badge notification untuk sidebar
+        totalKeberatan: 2,
+        // Data kehadiran (dummy untuk sekarang)
+        jumlahHadir: 18,
+        jumlahIzinCuti: 4,
+        jumlahBelumAbsen: 2,
+        // Data statistik bulan (dummy untuk sekarang)
+        totalPengajuanBulanIni: 19,
+        rataRataWaktuReview: '4.2 jam',
+        tingkatPersetujuan: '85.7%',
+        // Data aktivitas pengajuan mendesak
+        pengajuanMendesak: pengajuanMendesak
+      });
+    } catch (error) {
+      console.error('Error loading dashboard penanggung jawab data:', error);
+      res.render('penanggung-jawab/dashboard', { 
+        title: 'Dashboard Penanggung Jawab - NusaAttend',
+        user: req.session.user,
+        layout: 'dashboard-layout',
+        halaman: 'dashboard',
+        jumlahMenungguReview: 0,
+        jumlahDisetujuiBulanIni: 0,
+        jumlahDitolakBulanIni: 0,
+        totalKaryawanTim: 0,
+        totalKeberatan: 0,
+        jumlahHadir: 0,
+        jumlahIzinCuti: 0,
+        jumlahBelumAbsen: 0,
+        totalPengajuanBulanIni: 0,
+        rataRataWaktuReview: '0 jam',
+        tingkatPersetujuan: '0%',
+        pengajuanMendesak: []
+      });
+    }
   } else {
     res.render('karyawan/dashboard', { 
       title: 'Dashboard Karyawan - NusaAttend',
@@ -366,7 +517,7 @@ app.get('/pengajuan', middlewareAuntenfikasi, (req, res) => {
     });
   } else if (role === 'penanggung-jawab') {
     // Penanggung jawab melihat pengajuan untuk direview
-    res.render('supervisor/pengajuan', { 
+    res.render('penanggung-jawab/review-pengajuan', { 
       title: 'Review Pengajuan - NusaAttend',
       user: req.session.user,
       layout: 'dashboard-layout',
@@ -626,7 +777,7 @@ app.get('/supervisor/laporan', middlewareAuntenfikasi, (req, res) => {
     });
   }
   
-  res.render('supervisor/laporan', { 
+  res.render('penanggung-jawab/laporan', { 
     title: 'Laporan Tim - NusaAttend',
     user: req.session.user,
     layout: 'dashboard-layout',
@@ -648,7 +799,7 @@ app.get('/pengajuan/:id', middlewareAuntenfikasi, (req, res) => {
       halaman: 'pengajuan'
     });
   } else if (role === 'penanggung-jawab') {
-    res.render('supervisor/detail-pengajuan', { 
+    res.render('penanggung-jawab/detail-pengajuan', { 
       title: 'Detail Review Pengajuan - NusaAttend',
       user: req.session.user,
       layout: 'dashboard-layout',

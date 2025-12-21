@@ -805,6 +805,9 @@ footer a:hover {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .menu-item i {
@@ -853,6 +856,40 @@ footer a:hover {
 
 .logout-btn i {
   font-size: 20px;
+}
+
+/* ==================== STYLING MENU ITEM PENANGGUNG JAWAB ==================== */
+
+/* Menu item active state untuk Penanggung Jawab */
+.menu-item-active {
+  background-color: #4f39f6;
+  color: white;
+  box-shadow: 0 2px 8px rgba(79, 57, 246, 0.3);
+}
+
+.menu-item-active i {
+  color: white;
+}
+
+/* Badge untuk indikator notifikasi */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Badge alert (orange) untuk keberatan */
+.badge-alert {
+  background-color: #ff6900;
+  color: white;
+  min-width: 20px;
+  height: 20px;
 }
 
 /* ==================== KONTEN UTAMA DASHBOARD ==================== */
@@ -5040,6 +5077,344 @@ select.input-form {
   opacity: 0.85;
 }
 
+/* ==================== DASHBOARD PENANGGUNG JAWAB ==================== */
+/* Styling untuk halaman dashboard penanggung jawab (supervisor) */
+
+/* Header dashboard penanggung jawab */
+.headerDashboardPenanggungJawab {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+  padding: 0 32px;
+}
+
+.judulDashboardPenanggungJawab {
+  font-size: 28px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0;
+  line-height: 36px;
+}
+
+.deskripsiDashboardPenanggungJawab {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Grid statistik ringkasan dashboard penanggung jawab */
+.gridStatistikPenanggungJawab {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+  padding: 0 32px;
+}
+
+/* Kartu statistik individual */
+.kartuStatistikPenanggungJawab {
+  background: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.kartuStatistikPenanggungJawab:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Icon container untuk statistik */
+.iconContainerPenanggungJawab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  font-size: 24px;
+}
+
+.warningColor {
+  background-color: #fef9c2;
+  color: #ca8a04;
+}
+
+.successColor {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.dangerColor {
+  background-color: #ffe2e2;
+  color: #dc3545;
+}
+
+.infoColor {
+  background-color: #dbeafe;
+  color: #0c63e4;
+}
+
+/* Konten statistik */
+.contentStatistikPenanggungJawab {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.angkaStatistik {
+  font-size: 24px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0;
+  line-height: 32px;
+}
+
+.labelStatistik {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Container pengajuan mendesak */
+.containerPengajuanMendesak {
+  background: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 1px;
+  margin-bottom: 32px;
+  margin-left: 32px;
+  margin-right: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Header section pengajuan mendesak */
+.headerSectionPengajuan {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 24px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.iconSectionPengajuan {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  color: #101828;
+}
+
+.judulSectionPengajuan {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Daftar pengajuan mendesak */
+.daftarPengajuanMendesak {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Item pengajuan individual */
+.itemPengajuanMendesak {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.itemPengajuanMendesak:last-child {
+  border-bottom: none;
+}
+
+/* Info karyawan dan pengajuan */
+.infoKaryawanPengajuan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.headerInfoPengajuan {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.namaKaryawanPengajuan {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Badge status mendesak */
+.badgeStatusMendesak {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background-color: #ffe2e2;
+  color: #9f0712;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.detailPengajuanJenis {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 20px;
+}
+
+.detailPengajuanWaktu {
+  font-size: 14px;
+  color: #6a7282;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Tombol review sekarang */
+.tombolReviewSekarang {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 24px;
+  background-color: #4f39f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tombolReviewSekarang:hover {
+  background-color: #3d2ae3;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.tombolReviewSekarang:active {
+  transform: translateY(0);
+}
+
+/* Pesan kosong pengajuan */
+.pesanKosongPengajuan {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.pesanKosongPengajuan p {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+}
+
+/* Grid informasi kehadiran dan statistik */
+.gridInformasiKehadiran {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-left: 32px;
+  margin-right: 32px;
+  margin-bottom: 32px;
+}
+
+/* Kartu kehadiran dan statistik */
+.kartuKehadiranHariIni,
+.kartuStatistikBulanIni {
+  background: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.kartuKehadiranHariIni:hover,
+.kartuStatistikBulanIni:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.judulKartuKehadiran {
+  font-size: 18px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 16px 0;
+  line-height: 27px;
+}
+
+/* Daftar status kehadiran */
+.daftarStatusKehadiran,
+.daftarStatistikBulan {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.itemStatusKehadiran,
+.itemStatistikBulan {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 24px;
+}
+
+.labelStatusKehadiran,
+.labelStatistikBulan {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+.nilaiStatusKehadiran,
+.nilaiStatistikBulan {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 24px;
+}
+
+.hadir {
+  color: #00a63e;
+}
+
+.izin {
+  color: #155dfc;
+}
+
+.belumAbsen {
+  color: #f54900;
+}
+
 /* Kartu catatan log keberatan */
 .kartuCatatanLogKeberatan {
   padding: 1rem;
@@ -5182,3 +5557,677 @@ select.input-form {
     font-size: 0.8rem;
   }
 }
+
+/* ==================== MODAL KONFIRMASI LOGOUT ==================== */
+
+/* Overlay untuk modal logout */
+.lapisanOverlayLogout {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* Tampilkan overlay saat active */
+.lapisanOverlayLogout.aktif {
+  display: flex;
+}
+
+/* Modal konfirmasi logout */
+.modalKonfirmasiLogout {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 420px;
+  overflow: hidden;
+  animation: slideInUp 0.3s ease-out;
+}
+
+/* Animasi slide modal */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header modal logout dengan icon */
+.headerModalLogout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px 24px 24px;
+  background-color: #fff5f5;
+}
+
+/* Icon warning di header modal */
+.iconWarningLogout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: #fce4e4;
+  border-radius: 50%;
+  color: #e7000b;
+  font-size: 32px;
+}
+
+/* Content area modal logout */
+.contentModalLogout {
+  padding: 24px 24px 16px 24px;
+  text-align: center;
+}
+
+/* Judul modal logout */
+.judulModalLogout {
+  font-size: 20px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 12px 0;
+  line-height: 28px;
+}
+
+/* Deskripsi modal logout */
+.deskripsiModalLogout {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Footer modal logout dengan tombol */
+.footerModalLogout {
+  display: flex;
+  gap: 12px;
+  padding: 24px;
+  border-top: 1px solid #e5e7eb;
+  justify-content: flex-end;
+}
+
+/* Tombol batal logout */
+.tombolBatalLogout {
+  flex: 1;
+  height: 40px;
+  padding: 10px 16px;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect tombol batal */
+.tombolBatalLogout:hover {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+/* Active/pressed effect tombol batal */
+.tombolBatalLogout:active {
+  transform: scale(0.98);
+}
+
+/* Tombol konfirmasi logout (merah) */
+.tombolKonfirmasiLogout {
+  flex: 1;
+  height: 40px;
+  padding: 10px 16px;
+  background-color: #e7000b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect tombol konfirmasi */
+.tombolKonfirmasiLogout:hover {
+  background-color: #bb0009;
+  box-shadow: 0 4px 12px rgba(231, 0, 11, 0.3);
+}
+
+/* Active/pressed effect tombol konfirmasi */
+.tombolKonfirmasiLogout:active {
+  transform: scale(0.98);
+}
+
+/* Responsive: Mobile */
+@media (max-width: 768px) {
+  .modalKonfirmasiLogout {
+    width: 95%;
+    max-width: 360px;
+  }
+
+  .headerModalLogout {
+    padding: 24px 20px 20px 20px;
+  }
+
+  .contentModalLogout {
+    padding: 20px 20px 12px 20px;
+  }
+
+  .judulModalLogout {
+    font-size: 18px;
+  }
+
+  .deskripsiModalLogout {
+    font-size: 14px;
+  }
+
+  .footerModalLogout {
+    flex-direction: column;
+    padding: 20px;
+    gap: 10px;
+  }
+
+  .tombolBatalLogout,
+  .tombolKonfirmasiLogout {
+    height: 44px;
+    font-size: 14px;
+  }
+}
+
+
+/* ==================== HALAMAN REVIEW PENGAJUAN (PENANGGUNG JAWAB) ==================== */
+
+/* Header halaman review pengajuan */
+.reviewPengajuanHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  margin: 0;
+  background-color: white;
+  border-bottom: 1px solid #f0f1f3;
+  gap: 16px;
+}
+
+.reviewPengajuanInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+/* Judul halaman review pengajuan */
+.reviewPengajuanTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+  line-height: 36px;
+}
+
+/* Subtitle/deskripsi halaman review pengajuan */
+.reviewPengajuanSubtitle {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Container daftar pengajuan menunggu review */
+.containerDaftarPengajuan {
+  background-color: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  margin: 0 32px 32px 32px;
+  overflow: hidden;
+}
+
+/* Header container daftar pengajuan */
+.headerDaftarPengajuan {
+  display: flex;
+  align-items: center;
+  padding: 24px 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* Judul daftar pengajuan menunggu review */
+.judulDaftarPengajuan {
+  font-size: 20px;
+  font-weight: 600;
+  color: #101828;
+  margin: 0;
+  line-height: 30px;
+}
+
+/* Wrapper tabel untuk horizontal scroll */
+.wrapperTabelPengajuan {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-height: 600px;
+}
+
+/* Tabel daftar pengajuan */
+.tabelPengajuan {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+/* Header tabel */
+.headTabelPengajuan {
+  background-color: #f9fafb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Row header tabel */
+.rowHeaderTabel {
+  display: table-row;
+  height: 48px;
+}
+
+/* Cell header tabel dengan border bawah */
+.cellHeaderTabel {
+  padding: 10px 24px;
+  text-align: left;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 16px;
+  font-weight: 600;
+  color: #364153;
+  white-space: nowrap;
+}
+
+/* Width spesifik untuk kolom Karyawan */
+.cellKaryawan {
+  width: 200px;
+  min-width: 200px;
+}
+
+/* Width spesifik untuk kolom Jenis Izin */
+.cellJenisIzin {
+  width: 280px;
+  min-width: 280px;
+}
+
+/* Width spesifik untuk kolom Periode */
+.cellPeriode {
+  width: 270px;
+  min-width: 270px;
+}
+
+/* Width spesifik untuk kolom Durasi */
+.cellDurasi {
+  width: 130px;
+  min-width: 130px;
+}
+
+/* Width spesifik untuk kolom Diajukan */
+.cellDiajukan {
+  width: 160px;
+  min-width: 160px;
+}
+
+/* Width spesifik untuk kolom Aksi */
+.cellAksi {
+  width: 180px;
+  min-width: 180px;
+}
+
+/* Body tabel */
+.bodyTabelPengajuan {
+  display: table-row-group;
+}
+
+/* Row data tabel */
+.rowTabelPengajuan {
+  display: table-row;
+  border-bottom: 1px solid #f3f4f6;
+  height: 76.5px;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover effect pada row tabel */
+.rowTabelPengajuan:hover {
+  background-color: #f9fafb;
+}
+
+/* Cell data tabel */
+.cellTabel {
+  padding: 16px 24px;
+  text-align: left;
+  font-size: 16px;
+  color: #4a5565;
+  vertical-align: middle;
+}
+
+/* Container info karyawan dalam cell */
+.containerInfoKaryawan {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Nama karyawan dalam cell */
+.namaKaryawanCell {
+  font-size: 16px;
+  font-weight: 500;
+  color: #101828;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Jabatan karyawan dalam cell */
+.jabatanKaryawanCell {
+  font-size: 14px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 20px;
+}
+
+/* Container jenis izin dengan icon */
+.containerJenisIzin {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Icon jenis izin */
+.iconJenisIzin {
+  font-size: 20px;
+  color: #101828;
+  flex-shrink: 0;
+}
+
+/* Text jenis izin */
+.textJenisIzin {
+  font-size: 16px;
+  color: #101828;
+  line-height: 24px;
+}
+
+/* Text periode */
+.textPeriode {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Text durasi */
+.textDurasi {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+}
+
+/* Text tanggal diajukan */
+.textDiajukan {
+  font-size: 16px;
+  color: #4a5565;
+  margin: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+/* Tombol detail pengajuan */
+.tombolDetailPengajuan {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 32px;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: #4f39f6;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+/* Hover effect tombol detail */
+.tombolDetailPengajuan:hover {
+  background-color: rgba(79, 57, 246, 0.1);
+  color: #3d2ae3;
+  transform: translateY(-1px);
+}
+
+/* Active/pressed effect tombol detail */
+.tombolDetailPengajuan:active {
+  transform: translateY(0);
+}
+
+/* Icon pada tombol detail */
+.iconButtonDetail {
+  font-size: 16px;
+}
+
+/* Text pada tombol detail */
+.textButtonDetail {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Pesan tabel kosong */
+.pesanTabelKosong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 40px;
+  background-color: #f9fafb;
+}
+
+/* Container pesan kosong */
+.containerPesanKosong {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Icon pesan kosong */
+.iconPesanKosong {
+  font-size: 48px;
+  color: #d1d5db;
+}
+
+/* Text pesan kosong */
+.textPesanKosong {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0;
+  text-align: center;
+}
+
+/* Responsive: Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .reviewPengajuanHeader {
+    padding: 20px 24px;
+  }
+
+  .reviewPengajuanTitle {
+    font-size: 24px;
+  }
+
+  .containerDaftarPengajuan {
+    margin: 0 24px 24px 24px;
+  }
+
+  .cellHeaderTabel,
+  .cellTabel {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .cellKaryawan {
+    width: 160px;
+    min-width: 160px;
+  }
+
+  .cellJenisIzin {
+    width: 200px;
+    min-width: 200px;
+  }
+
+  .cellPeriode {
+    width: 200px;
+    min-width: 200px;
+  }
+
+  .cellDurasi {
+    width: 100px;
+    min-width: 100px;
+  }
+
+  .cellDiajukan {
+    width: 120px;
+    min-width: 120px;
+  }
+
+  .cellAksi {
+    width: 130px;
+    min-width: 130px;
+  }
+
+  .namaKaryawanCell {
+    font-size: 14px;
+  }
+
+  .jabatanKaryawanCell {
+    font-size: 12px;
+  }
+}
+
+/* Responsive: Mobile (< 768px) */
+@media (max-width: 768px) {
+  .reviewPengajuanHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 20px;
+  }
+
+  .reviewPengajuanTitle {
+    font-size: 20px;
+  }
+
+  .reviewPengajuanSubtitle {
+    font-size: 14px;
+  }
+
+  .containerDaftarPengajuan {
+    margin: 0 20px 20px 20px;
+    border-radius: 8px;
+  }
+
+  .headerDaftarPengajuan {
+    padding: 16px;
+  }
+
+  .judulDaftarPengajuan {
+    font-size: 16px;
+  }
+
+  .wrapperTabelPengajuan {
+    max-height: 400px;
+  }
+
+  .cellHeaderTabel,
+  .cellTabel {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .cellKaryawan {
+    width: 120px;
+    min-width: 120px;
+  }
+
+  .cellJenisIzin {
+    width: 150px;
+    min-width: 150px;
+  }
+
+  .cellPeriode {
+    width: 160px;
+    min-width: 160px;
+  }
+
+  .cellDurasi {
+    width: 80px;
+    min-width: 80px;
+  }
+
+  .cellDiajukan {
+    width: 100px;
+    min-width: 100px;
+  }
+
+  .cellAksi {
+    width: 100px;
+    min-width: 100px;
+  }
+
+  .namaKaryawanCell {
+    font-size: 13px;
+  }
+
+  .jabatanKaryawanCell {
+    font-size: 11px;
+  }
+
+  .textPeriode,
+  .textDurasi,
+  .textDiajukan {
+    font-size: 12px;
+  }
+
+  .tombolDetailPengajuan {
+    height: 28px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .iconButtonDetail {
+    font-size: 12px;
+  }
+
+  .textButtonDetail {
+    display: none;
+  }
+
+  .rowTabelPengajuan {
+    height: auto;
+  }
+
+  .pesanTabelKosong {
+    min-height: 200px;
+    padding: 20px;
+  }
+
+  .iconPesanKosong {
+    font-size: 36px;
+  }
+
+  .textPesanKosong {
+    font-size: 14px;
+  }
+}
+
