@@ -174,5 +174,6 @@ function transformKePengajuanMendesak(daftarUserTerbaru, hariIniMulai, hariIniAk
 module.exports = {
   hitungRingkasanDashboard,
   ambilAktivitasTerbaru,
-  transformKePengajuanMendesak
+  transformKePengajuanMendesak,
+  hitungWaktuRelatif
 };
