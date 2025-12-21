@@ -25,6 +25,7 @@ const middlewareAuntenfikasi = async (req, res, next) => {
     req.userId = decoded.id;
     req.user = decoded;
     next();
+    console.log(req.userId);
   } catch (error) {
     res.status(401).json({ error: 'Token tidak valid' });
   }

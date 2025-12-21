@@ -1,0 +1,254 @@
+{{!-- 
+  Halaman Absensi Harian - NusaAttend
+  Fitur: Pencatatan Masuk/Pulang, Riwayat, dan Modal Konfirmasi
+--}}
+
+<div class="halaman-absensi-karyawan">
+    <div class="konten-absensi-karyawan">
+        
+        {{!-- ==================== HEADER HALAMAN ==================== --}}
+        <section class="bagian-header-absensi">
+            <p class="judul-halaman">Absensi Harian</p>
+            <p class="deskripsi-halaman">Catat kehadiran masuk dan pulang Anda</p>
+        </section>
+
+        {{!-- ==================== KARTU ABSENSI HARI INI ==================== --}}
+        <section class="kartu-utama-absensi">
+            <div class="header-kartu-hari-ini">
+                <div class="ikon-waktu"><i class="far fa-clock"></i></div>
+                <div class="info-hari-ini">
+                    <span class="label-hari">Absensi Hari Ini</span>
+                    <span class="tanggal-hari-ini"></span>
+                </div>
+            </div>
+
+            <div class="grid-tombol-absen">
+                {{!-- Kotak Jam Masuk --}}
+                <div class="kotak-absen">
+                    <div class="info-status-absen">
+                        <div class="ikon-box bg-hijau-muda"><i class="fas fa-sign-in-alt"></i></div>
+                        <div class="teks-status">
+                            <span class="label-box">Jam Masuk</span>
+                            <span class="waktu-box" id="display-jam-masuk">
+                                {{#if absen.jamMasuk}}{{absen.jamMasuk}}{{else}}Belum absen{{/if}}
+                            </span>
+                        </div>
+                    </div>
+                    <button id="btn-buka-modal-masuk" class="btn-absen btn-masuk" {{#if absen.jamMasuk}}disabled style ="display : none;"{{/if}}>
+                        Absen Masuk
+                    </button>
+                </div>
+
+                {{!-- Kotak Jam Pulang --}}
+                <div class="kotak-absen">
+                    <div class="info-status-absen">
+                        <div class="ikon-box bg-oranye-muda"><i class="fas fa-sign-out-alt"></i></div>
+                        <div class="teks-status">
+                            <span class="label-box">Jam Pulang</span>
+                            <span class="waktu-box">
+                                {{#if absen.jamPulang}}{{absen.jamPulang}}{{else}}Belum absen{{/if}}
+                            </span>
+                        </div>
+                    </div>
+                    {{#if absen.jamMasuk}}
+                        <button id="btn-buka-modal-pulang" class="btn-absen btn-pulang" {{#if absen.jamPulang}}disabled style ="display : none;"{{/if}}>
+                            Absen Pulang
+                        </button>
+                    {{else}}
+                        <button class="btn-absen btn-disabled" disabled>
+                            Absen Masuk Terlebih Dahulu
+                        </button>
+                    {{/if}}
+                </div>
+            </div>
+            {{!-- ==================== STATUS ABSENSI SELESAI ==================== --}}
+            {{#if absen.jamMasuk}}
+            {{#if absen.jamPulang}}
+                <div class="status-absensi-selesai">
+                <i class="far fa-check-circle"></i>
+                <span>Absensi hari ini sudah lengkap. Terima Kasih!</span>
+                </div>
+            {{/if}}
+            {{/if}}
+        </section>
+
+     {{!-- ==================== RIWAYAT ABSENSI ==================== --}}
+<section class="bagian-riwayat-absensi">
+
+  {{!-- Card Riwayat --}}
+  <div class="card card-riwayat-absensi">
+
+    {{!-- Header Card --}}
+    <div class="header-riwayat">
+      <i class="far fa-calendar ikon-kalender"></i>
+      <p class="label-riwayat">Riwayat Absensi</p>
+    </div>
+
+    {{!-- Tabel Riwayat --}}
+    <div class="wrapper-tabel">
+      <table class="tabel-riwayat">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Jam Masuk</th>
+            <th>Jam Pulang</th>
+            <th>Status</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each riwayatAbsensi}}
+          <tr>
+            <td>{{this.tanggalFormat}}</td>
+            <td>{{#if this.jam_masuk}}{{this.jam_masuk}}{{else}}-{{/if}}</td>
+            <td>{{#if this.jam_pulang}}{{this.jam_pulang}}{{else}}-{{/if}}</td>
+            <td>
+              <span class="badge-status status-{{this.status}}">
+                {{this.status}}
+              </span>
+            </td>
+            <td class="teks-muted">
+              {{#if this.keterangan}}{{this.keterangan}}{{else}}-{{/if}}
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+    {{!-- ==================== MODAL POPUP ABSEN MASUK ==================== --}}
+    <div id="modal-absen" class="modal-overlay hidden">
+        <div class="modal-konten">
+            <div class="modal-header-absen">
+                <p>Absen Masuk</p>
+            </div>
+            <br/>
+            <div class="modal-body">
+                <div class="info-group">
+                    <label>Waktu:</label>
+                    <p class="waktu-sekarang" id="modal-jam-skrg">--.--</p>
+                </div>
+                <br/>
+                <div class="form-group form-group-absen">
+                    <label>Keterangan (opsional)</label>
+                    <textarea id="keterangan-absen" rows="4" placeholder="Tambahkan keterangan jika diperlukan..."></textarea>
+                </div>
+            </div>
+            <br/>
+            <div class="modal-footer">
+                <button class="btn-batal" id="btn-tutup-modal">Batal</button>
+                <button class="btn-konfirmasi" id="btn-konfirmasi-absen-masuk">Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+    {{!-- ==================== MODAL POPUP ABSEN PULANG ==================== --}}
+    <div id="modal-absen-pulang" class="modal-overlay hidden">
+        <div class="modal-konten">
+            <div class="modal-header-absen">
+                <p>Absen Pulang</p>
+            </div>
+            <br/>
+            <div class="modal-body">
+                <div class="info-group">
+                    <label>Waktu:</label>
+                    <p class="waktu-sekarang" id="modal-jam-skrg-pulang">--.--</p>
+                </div>
+            </div>
+            <br/>
+            <div class="modal-footer">
+                <button class="btn-batal" id="btn-tutup-modal-pulang">Batal</button>
+                <button class="btn-konfirmasi" id="btn-konfirmasi-absen-pulang">Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {{!-- ==================== TANGGAL HARI INI ==================== --}}
+  const elemenTanggal = document.querySelector('.tanggal-hari-ini');
+
+  if (elemenTanggal) {
+    const sekarang = new Date();
+
+    const opsiFormat = {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    };
+
+    elemenTanggal.textContent = sekarang.toLocaleDateString('id-ID', opsiFormat);
+  }
+        const modal = document.getElementById('modal-absen');
+        const modalPulang = document.getElementById('modal-absen-pulang');
+        const btnBuka = document.getElementById('btn-buka-modal-masuk');
+        const btnBukaPulang = document.getElementById('btn-buka-modal-pulang');
+        const btnTutup = document.getElementById('btn-tutup-modal');
+        const btnTutupPulang = document.getElementById('btn-tutup-modal-pulang');
+        const btnKonfirmasiMasuk = document.getElementById('btn-konfirmasi-absen-masuk');
+        const btnKonfirmasiPulang = document.getElementById('btn-konfirmasi-absen-pulang');
+        const displayJamModal = document.getElementById('modal-jam-skrg');
+        const displayJamModalPulang = document.getElementById('modal-jam-skrg-pulang');
+
+        // Update Waktu Digital di Modal
+        function updateTime() {
+            const now = new Date();
+            displayJamModal.innerText = now.getHours().toString().padStart(2, '0') + '.' + 
+                                now.getMinutes().toString().padStart(2, '0');
+        }
+        function updateTimePulang() {
+            const now = new Date();
+            displayJamModalPulang.innerText = now.getHours().toString().padStart(2, '0') + '.' + 
+                                now.getMinutes().toString().padStart(2, '0');
+        }
+
+        // Buka Modal
+        if (btnBuka) {
+            btnBuka.addEventListener('click', () => {
+                updateTime();
+                modal.classList.remove('hidden');
+            });
+        }
+        if (btnBukaPulang) {
+            btnBukaPulang.addEventListener('click', () => {
+                updateTimePulang();
+                modalPulang.classList.remove('hidden');
+            });
+        }
+
+        // Tutup Modal
+        if (btnTutup) {
+            btnTutup.addEventListener('click', () => modal.classList.add('hidden'));
+        }
+        if (btnTutupPulang) {
+            btnTutupPulang.addEventListener('click', () => modalPulang.classList.add('hidden'));
+        }
+
+        // Konfirmasi
+        if (btnKonfirmasiMasuk){
+            btnKonfirmasiMasuk.addEventListener('click', async function() {
+                const ket = document.getElementById('keterangan-absen').value;
+            await fetch('/absensi/masuk',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({keterangan:ket})
+            });
+            location.reload();
+            });
+        }
+        if (btnKonfirmasiPulang){
+            btnKonfirmasiPulang.addEventListener('click', async function() {
+            await fetch('/absensi/pulang',{
+                method:'POST',
+            });
+            location.reload();
+            });
+        }
+
+        // Tutup modal jika klik di luar box
+        window.onclick = (event) => { if (event.target == modal) modal.classList.add('hidden'); }
+    });
+</script>

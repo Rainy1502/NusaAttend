@@ -7553,7 +7553,83 @@ select.input-form {
   }
 }
 
-/**
+    .halaman-absensi-karyawan { padding: 20px; }
+    .judul-halaman { font-size: 24px; color: #333; margin-bottom: 5px; }
+    .deskripsi-halaman { color: #666; margin-bottom: 30px; }
+
+    /* Kartu Utama Absensi*/
+    .kartu-utama-absensi, .bagian-riwayat-absensi {
+        background: white; border-radius: 12px; padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px;
+        border: 1px solid #edf2f7;
+    }
+    .header-kartu-hari-ini { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+    .ikon-waktu, .ikon-kalender{ color: #5d44f8; font-size: 20px; }
+    .label-hari, .label-riwayat { font-weight: 600; display: block; }
+    .tanggal-hari-ini { font-size: 14px; color: #718096; }
+    .teks-status span{display: block;}
+    /* Grid & Buttons  absen*/
+    .grid-tombol-absen { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .kotak-absen { border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; }
+    .info-status-absen { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+    .ikon-box { width: 45px; height: 45px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .bg-hijau-muda { background-color: #e6fffa; color: #38a169; }
+    .bg-oranye-muda { background-color: #fffaf0; color: #dd6b20; }
+    .btn-absen { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }
+    .btn-masuk { background-color: #00a651; color: white; }
+    .btn-pulang { background-color: #5d44f8; color: white; }
+    .btn-disabled { background-color: #cbd5e0; color: #718096; cursor: not-allowed; }
+
+    /* Modal */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.4); display: flex; justify-content: center; align-items: center; z-index: 1000;
+        backdrop-filter: blur(2px);
+    }
+    .modal-konten { background: white; width: 100%; max-width: 400px; border-radius: 15px; padding:25px;}
+    .waktu-sekarang { font-size: 18px; color: #2d3748; }
+    .modal-header-absen {border-bottom: 2px solid #f3f4f6; font-size: larger;}
+    .modal-footer { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-batal { flex: 1; padding: 10px; border: 1px solid #e2e8f0; background: white; border-radius: 8px; cursor: pointer; }
+    .btn-konfirmasi { flex: 1; padding: 10px; border: none; background: #5d44f8; color: white; border-radius: 8px; cursor: pointer; }
+    .hidden { display: none; }
+
+    .form-group-absen textarea{  width: 100%;
+  min-height: 122px;
+  padding: 12px 16px;
+  border: 1px solid #d1d5dc;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #0a0a0a;
+  background-color: #ffffff;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s ease;}
+      
+
+  /* Riwayat & Badge */
+    .header-riwayat {display: flex; flex-direction: row; gap: 5px; align-items: center;}
+    .badge-status { padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: 500; }
+    .status-hadir { background: #e6fffa; color: #2f855a; }
+    .status-izin { background: #ebf4ff; color: #3182ce; }
+    .tabel-riwayat { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .tabel-riwayat th, .tabel-riwayat td { padding: 12px; text-align: left; border-bottom: 1px solid #edf2f7; font-size: 14px; }
+.status-absensi-selesai {
+  margin-top: 20px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background-color: #B9F8DF;
+  color: #1e7f43;
+  border: 2px solid #2eea9f;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+
+
+    /**
  * Mobile (max-width: 768px)
  * Penyesuaian layout untuk layar mobile
  */
