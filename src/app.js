@@ -367,85 +367,27 @@ app.get('/dashboard', async (req, res) => {
   } else if (role === 'penanggung-jawab') {
     /**
      * [DASHBOARD PENANGGUNG JAWAB - Data Dinamis]
-     * Route dashboard penanggung jawab sekarang fetch data dari model User
-     * Mengambil ringkasan & aktivitas terbaru dari database
+     * Route dashboard penanggung jawab sekarang fetch data menggunakan shared utility
+     * Menghindari duplikasi logic dengan controller
      */
     try {
-      // Query data dashboard dari User model (sama seperti admin, tapi untuk semua user)
-      const User = require('./models/User');
+      const dashboardHelper = require('./utils/dashboardHelper');
       
-      // Hitung ringkasan
-      const totalKaryawan = await User.countDocuments({ role: 'karyawan' });
-      const totalPenanggungJawab = await User.countDocuments({ role: 'penanggung-jawab' });
-      const totalAkunAktif = await User.countDocuments({ adalah_aktif: true });
+      // Hitung ringkasan menggunakan utility function
+      const ringkasan = await dashboardHelper.hitungRingkasanDashboard();
       
-      // Hitung aktivitas hari ini
-      const hariIniMulai = new Date();
-      hariIniMulai.setHours(0, 0, 0, 0);
-      const hariIniAkhir = new Date();
-      hariIniAkhir.setHours(23, 59, 59, 999);
+      // Ambil aktivitas terbaru menggunakan utility function
+      const { daftarUserTerbaru } = await dashboardHelper.ambilAktivitasTerbaru(
+        ringkasan.hariIniMulai,
+        ringkasan.hariIniAkhir
+      );
       
-      const totalAktivitasHariIni = await User.countDocuments({
-        $or: [
-          { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
-          { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } }
-        ]
-      });
-      
-      // Ambil 5 aktivitas terbaru
-      const daftarUserTerbaru = await User.find()
-        .select('nama_lengkap jabatan email role adalah_aktif createdAt updatedAt')
-        .sort({ updatedAt: -1 })
-        .limit(5)
-        .lean();
-      
-      // Transform ke format pengajuan mendesak untuk dashboard penanggung jawab
-      const pengajuanMendesak = daftarUserTerbaru.map(user => {
-        const isNew = hariIniMulai <= user.createdAt && user.createdAt <= hariIniAkhir;
-        
-        // Tentukan jenis pengajuan berdasarkan role user
-        let jenisPengajuan = '';
-        if (user.role === 'karyawan') {
-          jenisPengajuan = isNew ? 'Pendaftaran Karyawan Baru' : 'Update Data Karyawan';
-        } else if (user.role === 'penanggung-jawab') {
-          jenisPengajuan = isNew ? 'Penambahan Penanggung Jawab' : 'Update Penanggung Jawab';
-        } else if (user.role === 'admin') {
-          jenisPengajuan = 'Update Admin Sistem';
-        }
-        
-        // Format tanggal pengajuan
-        const tanggalPengajuan = user.updatedAt.toLocaleDateString('id-ID', { 
-          year: 'numeric', 
-          month: 'short', 
-          day: 'numeric' 
-        });
-        
-        // Hitung waktu relatif
-        const waktuSekarang = new Date();
-        const selisihMs = waktuSekarang - user.updatedAt;
-        const selisihDetik = Math.floor(selisihMs / 1000);
-        const selisihMenit = Math.floor(selisihDetik / 60);
-        const selisihJam = Math.floor(selisihMenit / 60);
-        const selisihHari = Math.floor(selisihJam / 24);
-        
-        let waktuPengajuan = '';
-        if (selisihDetik < 60) {
-          waktuPengajuan = 'Diajukan baru saja';
-        } else if (selisihMenit < 60) {
-          waktuPengajuan = `Diajukan ${selisihMenit} menit lalu`;
-        } else if (selisihJam < 24) {
-          waktuPengajuan = `Diajukan ${selisihJam} jam lalu`;
-        } else {
-          waktuPengajuan = `Diajukan ${selisihHari} hari lalu`;
-        }
-        
-        return {
-          namaKaryawan: user.nama_lengkap,
-          jenisPengajuan: jenisPengajuan,
-          tanggalPengajuan: tanggalPengajuan,
-          waktuPengajuan: waktuPengajuan
-        };
-      });
+      // Transform ke format pengajuan mendesak untuk view
+      const pengajuanMendesak = dashboardHelper.transformKePengajuanMendesak(
+        daftarUserTerbaru,
+        ringkasan.hariIniMulai,
+        ringkasan.hariIniAkhir
+      );
       
       res.render('penanggung-jawab/dashboard', { 
         title: 'Dashboard Penanggung Jawab - NusaAttend',
@@ -453,10 +395,10 @@ app.get('/dashboard', async (req, res) => {
         layout: 'dashboard-layout',
         halaman: 'dashboard',
         // Data ringkasan - mapping ke frontend variables
-        jumlahMenungguReview: totalAktivitasHariIni,
-        jumlahDisetujuiBulanIni: totalKaryawan,
-        jumlahDitolakBulanIni: totalPenanggungJawab,
-        totalKaryawanTim: totalAkunAktif,
+        jumlahMenungguReview: ringkasan.totalAktivitasHariIni,
+        jumlahDisetujuiBulanIni: ringkasan.totalKaryawan,
+        jumlahDitolakBulanIni: ringkasan.totalPenanggungJawab,
+        totalKaryawanTim: ringkasan.totalAkunAktif,
         // Badge notification untuk sidebar
         totalKeberatan: 2,
         // Data kehadiran (dummy untuk sekarang)
