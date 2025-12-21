@@ -5,7 +5,7 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 // Import User model
-const User = require('../src/models/User');
+const Pengguna = require('../src/models/Pengguna');
 
 /**
  * Script untuk membuat data supervisor di database NusaAttend
@@ -66,7 +66,7 @@ async function buatSupervisor() {
     for (const dataSupervisor of daftarSupervisor) {
       try {
         // Cek apakah supervisor sudah ada
-        const supervisorAda = await User.findOne({
+        const supervisorAda = await Pengguna.findOne({
           email: dataSupervisor.email
         });
 
@@ -77,7 +77,7 @@ async function buatSupervisor() {
         }
 
         // Buat supervisor baru
-        const supervisorBaru = new User(dataSupervisor);
+        const supervisorBaru = new Pengguna(dataSupervisor);
         await supervisorBaru.save();
 
         console.log(

@@ -1,5 +1,5 @@
 const Keberatan = require('../models/Keberatan');
-const User = require('../models/User');
+const Pengguna = require('../models/Pengguna');
 
 /**
  * Controller untuk mengelola Keberatan Administratif

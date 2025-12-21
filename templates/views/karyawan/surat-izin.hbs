@@ -127,6 +127,7 @@
                     <option value="izin-sakit">Izin Sakit</option>
                     <option value="wfh">Work From Home (WFH)</option>
                 </select>
+                <div id="errorJenisIzin" class="errorMessageForm"></div>
             </div>
             
             <!-- Container untuk tanggal (2 kolom) -->
@@ -143,6 +144,7 @@
                         class="inputFieldForm" 
                         required
                     />
+                    <div id="errorTanggalMulai" class="errorMessageForm"></div>
                 </div>
                 
                 <!-- Field: Tanggal Selesai (Required) -->
@@ -157,6 +159,7 @@
                         class="inputFieldForm" 
                         required
                     />
+                    <div id="errorTanggalSelesai" class="errorMessageForm"></div>
                 </div>
             </div>
             
@@ -164,6 +167,7 @@
             <div class="grupFieldFormSuratIzin">
                 <label for="textareaAlasan" class="labelFieldForm">
                     Alasan <span class="asteriskRequired">*</span>
+                    <span id="counterAlasan" class="counterKata">(0/10 kata minimum)</span>
                 </label>
                 <textarea 
                     id="textareaAlasan" 
@@ -173,6 +177,7 @@
                     rows="5"
                     required
                 ></textarea>
+                <div id="errorAlasan" class="errorMessageForm"></div>
             </div>
             
             <!-- Tombol Aksi: Lanjut ke Preview (Dummy UI) -->
@@ -309,10 +314,25 @@
                 <canvas 
                     id="kanvasTandaTangan" 
                     class="kanvasTandaTangan" 
-                    width="800" 
-                    height="260"
+                    width="1200" 
+                    height="360"
                     aria-label="Canvas untuk tanda tangan"
                 ></canvas>
+            </div>
+            
+            <!-- ==================== CHECKBOX VERIFIKASI TANDA TANGAN ==================== -->
+            <!-- Checkbox untuk konfirmasi user sudah bertanda tangan -->
+            <div class="containerCheckboxTandaTangan">
+                <label for="checkboxSudahBertandaTangan" class="labelCheckboxTandaTangan">
+                    <input 
+                        type="checkbox" 
+                        id="checkboxSudahBertandaTangan" 
+                        name="checkboxSudahBertandaTangan"
+                        class="inputCheckboxTandaTangan"
+                        aria-label="Saya sudah bertanda tangan"
+                    />
+                    <span class="textCheckboxTandaTangan">Saya sudah bertanda tangan di atas</span>
+                </label>
             </div>
             
             <!-- ==================== TOMBOL AKSI ==================== -->
@@ -411,36 +431,36 @@
     
     /**
      * Fungsi Global: Toggle visibility antar step
-     * @param {number} targetStep - Nomor step yang ingin ditampilkan (1, 2, 3, atau 4)
+     * @param {number} langkahTarget - Nomor step yang ingin ditampilkan (1, 2, 3, atau 4)
      */
-    function navigateToStep(targetStep) {
+    function navigasiKeLangkah(langkahTarget) {
         const stepSatuIsiForm = document.getElementById('stepSatuIsiForm');
         const stepDuaPratinjau = document.getElementById('stepDuaPratinjau');
         const stepTigaTandaTangan = document.getElementById('stepTigaTandaTangan');
         const stepEmpatSelesai = document.getElementById('stepEmpatSelesai');
         
-        if (targetStep === 1) {
+        if (langkahTarget === 1) {
             stepSatuIsiForm.style.display = 'block';
             stepDuaPratinjau.style.display = 'none';
             if (stepTigaTandaTangan) stepTigaTandaTangan.style.display = 'none';
             if (stepEmpatSelesai) stepEmpatSelesai.style.display = 'none';
             updateStepperStatus(1);
             console.log('Navigasi ke STEP 1: Form Pengajuan');
-        } else if (targetStep === 2) {
+        } else if (langkahTarget === 2) {
             stepSatuIsiForm.style.display = 'none';
             stepDuaPratinjau.style.display = 'block';
             if (stepTigaTandaTangan) stepTigaTandaTangan.style.display = 'none';
             if (stepEmpatSelesai) stepEmpatSelesai.style.display = 'none';
             updateStepperStatus(2);
             console.log('Navigasi ke STEP 2: Preview Surat Izin');
-        } else if (targetStep === 3) {
+        } else if (langkahTarget === 3) {
             stepSatuIsiForm.style.display = 'none';
             stepDuaPratinjau.style.display = 'none';
             if (stepTigaTandaTangan) stepTigaTandaTangan.style.display = 'block';
             if (stepEmpatSelesai) stepEmpatSelesai.style.display = 'none';
             updateStepperStatus(3);
             console.log('Navigasi ke STEP 3: Tanda Tangan Digital');
-        } else if (targetStep === 4) {
+        } else if (langkahTarget === 4) {
             stepSatuIsiForm.style.display = 'none';
             stepDuaPratinjau.style.display = 'none';
             if (stepTigaTandaTangan) stepTigaTandaTangan.style.display = 'none';
@@ -452,19 +472,19 @@
     
     /**
      * Fungsi Global: Update stepper status untuk step tertentu
-     * @param {number} activeStep - Nomor step yang aktif (1-4)
+     * @param {number} langkahAktif - Nomor step yang aktif (1-4)
      */
-    function updateStepperStatus(activeStep) {
+    function updateStepperStatus(langkahAktif) {
         const itemStepper = document.querySelectorAll('.itemStepperSuratIzin');
         itemStepper.forEach((item, index) => {
             const stepNumber = index + 1;
             const badge = item.querySelector('.badgeStepperNomor');
             
-            if (stepNumber < activeStep) {
+            if (stepNumber < langkahAktif) {
                 item.classList.remove('itemStepperAktif');
                 badge.classList.remove('badgeStepperAktif');
                 badge.innerHTML = '<i class="fas fa-check iconCheckmarkStepper"></i>';
-            } else if (stepNumber === activeStep) {
+            } else if (stepNumber === langkahAktif) {
                 item.classList.add('itemStepperAktif');
                 badge.classList.add('badgeStepperAktif');
                 badge.innerHTML = `<span class="textBadgeStepperNomor">${stepNumber}</span>`;
@@ -480,11 +500,11 @@
      * Fungsi Global: Populate detail pengajuan di STEP 4
      */
     function populateDetailPengajuanSelesai() {
-        const inputJenisIzin = document.getElementById('inputJenisIzin');
+        const selectJenisIzin = document.getElementById('selectJenisIzin');
         const inputTanggalMulai = document.getElementById('inputTanggalMulai');
         const inputTanggalSelesai = document.getElementById('inputTanggalSelesai');
         
-        const jenisIzinValue = (inputJenisIzin && inputJenisIzin.value) ? inputJenisIzin.value : '-';
+        const jenisIzinValue = (selectJenisIzin && selectJenisIzin.value) ? selectJenisIzin.value : '-';
         const tanggalMulaiValue = (inputTanggalMulai && inputTanggalMulai.value) ? inputTanggalMulai.value : '-';
         const tanggalSelesaiValue = (inputTanggalSelesai && inputTanggalSelesai.value) ? inputTanggalSelesai.value : '-';
         
@@ -502,6 +522,85 @@
         });
     }
     
+    /**
+     * Fungsi Global: Reset seluruh form dan canvas untuk membuat surat baru
+     * Menghapus semua data yang sudah diisi dan kembali ke STEP 1
+     */
+    function resetFormUntukSuratBaru() {
+        console.log('Reset form untuk membuat surat baru...');
+        
+        // Ambil referensi elemen yang diperlukan
+        const formSuratIzin = document.getElementById('formSuratIzin');
+        
+        // 1. Clear semua field input di STEP 1
+        if (formSuratIzin) formSuratIzin.reset();
+        
+        // 2. Clear canvas di STEP 3
+        const kanvasTandaTangan = document.getElementById('kanvasTandaTangan');
+        if (kanvasTandaTangan) {
+            const kontekCanvas = kanvasTandaTangan.getContext('2d');
+            if (kontekCanvas) {
+                kontekCanvas.clearRect(0, 0, kanvasTandaTangan.width, kanvasTandaTangan.height);
+            }
+        }
+        
+        // Clear checkbox
+        const checkboxSudahBertandaTangan = document.getElementById('checkboxSudahBertandaTangan');
+        if (checkboxSudahBertandaTangan) {
+            checkboxSudahBertandaTangan.checked = false;
+        }
+        
+        // 3. Clear preview di STEP 2
+        document.getElementById('namaLengkapPreview').textContent = '-';
+        document.getElementById('jabatanPreview').textContent = '-';
+        document.getElementById('jenisIzinPreview').textContent = '-';
+        document.getElementById('tanggalMulaiPreview').textContent = '-';
+        document.getElementById('tanggalSelesaiPreview').textContent = '-';
+        document.getElementById('alasanPreview').textContent = '-';
+        document.getElementById('namaPenandatanganPreview').textContent = '-';
+        document.getElementById('tanggalPengajuanPreview').textContent = '-';
+        
+        // 4. Remove validasi visual dari form
+        if (formSuratIzin) formSuratIzin.classList.remove('wasValidated');
+        
+        // 5. Navigasi kembali ke STEP 1
+        navigasiKeLangkah(1);
+        
+        console.log('Form berhasil direset, siap untuk pengajuan baru');
+    }
+    
+    // ==================== FUNGSI: SIMPAN TANDA TANGAN KE BACKEND ====================
+    /**
+     * Mengirim Base64 tanda tangan ke backend API
+     * @param {string} base64Data - Base64 string dari canvas (data:image/png;base64,...)
+     * @returns {Promise} Response dari API dengan success status dan timestamp
+     */
+    async function simpanTandaTanganKeBackend(base64Data) {
+      try {
+        const response = await fetch('/api/karyawan/tanda-tangan', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tanda_tangan_data: base64Data
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Gagal menyimpan tanda tangan');
+        }
+
+        return result;
+
+      } catch (error) {
+        console.error('Error menyimpan tanda tangan:', error);
+        throw error;
+      }
+    }
+
     /**
      * Inisialisasi form surat izin dan navigasi antar step
      * Menangani:
@@ -528,6 +627,23 @@
         const inputTanggalMulai = document.getElementById('inputTanggalMulai');
         const inputTanggalSelesai = document.getElementById('inputTanggalSelesai');
         const textareaAlasan = document.getElementById('textareaAlasan');
+        
+        // Error message containers
+        const errorJenisIzin = document.getElementById('errorJenisIzin');
+        const errorTanggalMulai = document.getElementById('errorTanggalMulai');
+        const errorTanggalSelesai = document.getElementById('errorTanggalSelesai');
+        const errorAlasan = document.getElementById('errorAlasan');
+        const counterAlasan = document.getElementById('counterAlasan');
+        
+        // ==================== TRACKING FIELD INTERACTION (TOUCHED STATE) ====================
+        // Untuk menentukan field mana yang sudah user interact dengan
+        // Error messages hanya muncul untuk field yang sudah "touched"
+        const touchedFields = {
+            jenisIzin: false,
+            tanggalMulai: false,
+            tanggalSelesai: false,
+            alasan: false
+        };
         
         // Element untuk preview
         const jenisIzinPreview = document.getElementById('jenisIzinPreview');
@@ -617,38 +733,140 @@
             });
         }
         
-        // ==================== STEP 4 HELPER FUNCTIONS ====================
+        // ==================== FUNGSI: CEK DAN UPDATE STATUS TOMBOL LANJUT ====================
         /**
-         * Fungsi: Reset seluruh form dan canvas untuk membuat surat baru
-         * Menghapus semua data yang sudah diisi dan kembali ke STEP 1
+         * Cek validitas form dan update warna tombol "Lanjut ke Preview"
+         * Tombol berubah warna menjadi warna brand (#4f39f6) ketika semua field terisi
+         * 
+         * Validasi individual fields:
+         * - Jenis Izin: harus dipilih (hanya tampil error jika touched)
+         * - Tanggal Mulai: tidak boleh di masa lalu (hanya tampil error jika touched)
+         * - Tanggal Selesai: harus >= tanggal mulai (hanya tampil error jika touched)
+         * - Alasan: minimal 10 kata (hanya tampil error jika touched)
          */
-        function resetFormUntukSuratBaru() {
-            console.log('Reset form untuk membuat surat baru...');
+        function cekDanUpdateTombolLanjut() {
+            // Reset semua error messages (tapi hanya tampil jika field sudah di-touch)
+            errorJenisIzin.textContent = '';
+            errorJenisIzin.classList.remove('show');
+            errorTanggalMulai.textContent = '';
+            errorTanggalMulai.classList.remove('show');
+            errorTanggalSelesai.textContent = '';
+            errorTanggalSelesai.classList.remove('show');
+            errorAlasan.textContent = '';
+            errorAlasan.classList.remove('show');
             
-            // 1. Clear semua field input di STEP 1
-            formSuratIzin.reset();
+            let isFormValid = true;
             
-            // 2. Clear canvas di STEP 3
-            hapusKanvas();
+            // ==================== VALIDASI JENIS IZIN ====================
+            if (!selectJenisIzin.value) {
+                if (touchedFields.jenisIzin) {
+                    errorJenisIzin.textContent = '⚠️ Pilih jenis izin terlebih dahulu';
+                    errorJenisIzin.classList.add('show');
+                }
+                isFormValid = false;
+            }
             
-            // 3. Clear preview di STEP 2
-            document.getElementById('namaLengkapPreview').textContent = '-';
-            document.getElementById('jabatanPreview').textContent = '-';
-            document.getElementById('jenisIzinPreview').textContent = '-';
-            document.getElementById('tanggalMulaiPreview').textContent = '-';
-            document.getElementById('tanggalSelesaiPreview').textContent = '-';
-            document.getElementById('alasanPreview').textContent = '-';
-            document.getElementById('namaPenandatanganPreview').textContent = '-';
-            document.getElementById('tanggalPengajuanPreview').textContent = '-';
+            // ==================== VALIDASI TANGGAL MULAI ====================
+            if (!inputTanggalMulai.value) {
+                if (touchedFields.tanggalMulai) {
+                    errorTanggalMulai.textContent = '⚠️ Tanggal mulai harus diisi';
+                    errorTanggalMulai.classList.add('show');
+                }
+                isFormValid = false;
+            } else {
+                const tanggalMulai = new Date(inputTanggalMulai.value);
+                const hariIni = new Date();
+                hariIni.setHours(0, 0, 0, 0);
+                
+                if (tanggalMulai < hariIni) {
+                    if (touchedFields.tanggalMulai) {
+                        errorTanggalMulai.textContent = '⚠️ Tanggal mulai tidak boleh di masa lalu. Pilih dari hari ini atau yang akan datang.';
+                        errorTanggalMulai.classList.add('show');
+                    }
+                    isFormValid = false;
+                }
+            }
             
-            // 4. Remove validasi visual dari form
-            formSuratIzin.classList.remove('wasValidated');
+            // ==================== VALIDASI TANGGAL SELESAI ====================
+            if (!inputTanggalSelesai.value) {
+                if (touchedFields.tanggalSelesai) {
+                    errorTanggalSelesai.textContent = '⚠️ Tanggal selesai harus diisi';
+                    errorTanggalSelesai.classList.add('show');
+                }
+                isFormValid = false;
+            } else if (inputTanggalMulai.value) {
+                const tanggalMulai = new Date(inputTanggalMulai.value);
+                const tanggalSelesai = new Date(inputTanggalSelesai.value);
+                
+                if (tanggalSelesai < tanggalMulai) {
+                    if (touchedFields.tanggalSelesai) {
+                        errorTanggalSelesai.textContent = '⚠️ Tanggal selesai harus sama dengan atau setelah tanggal mulai.';
+                        errorTanggalSelesai.classList.add('show');
+                    }
+                    isFormValid = false;
+                }
+            }
             
-            // 5. Navigasi kembali ke STEP 1
-            navigateToStep(1);
+            // ==================== VALIDASI ALASAN ====================
+            const teksAlasan = textareaAlasan.value.trim();
+            const jumlahKata = teksAlasan ? teksAlasan.split(/\s+/).length : 0;
             
-            console.log('Form berhasil direset, siap untuk pengajuan baru');
+            console.log(`[DEBUG] Jumlah kata di alasan: ${jumlahKata}, teks: "${teksAlasan}"`);
+            
+            if (!teksAlasan) {
+                if (touchedFields.alasan) {
+                    errorAlasan.textContent = '⚠️ Alasan harus diisi minimal 10 kata';
+                    errorAlasan.classList.add('show');
+                }
+                counterAlasan.textContent = '(0/10 kata minimum)';
+                counterAlasan.classList.add('error');
+                isFormValid = false;
+            } else if (jumlahKata < 10) {
+                if (touchedFields.alasan) {
+                    errorAlasan.textContent = `⚠️ Alasan belum cukup. Anda sudah menulis ${jumlahKata} kata, butuh minimal 10 kata.`;
+                    errorAlasan.classList.add('show');
+                }
+                counterAlasan.textContent = `(${jumlahKata}/10 kata minimum)`;
+                counterAlasan.classList.remove('warning');
+                counterAlasan.classList.add('error');
+                isFormValid = false;
+            } else {
+                counterAlasan.textContent = `(${jumlahKata} kata ✓)`;
+                counterAlasan.classList.remove('error');
+                counterAlasan.classList.remove('warning');
+            }
+            
+            // ==================== UPDATE TOMBOL ====================
+            if (isFormValid) {
+                // Form valid: tambah class tombolAktif
+                tombolLanjutPreview.classList.add('tombolAktif');
+                console.log('✓ Form lengkap dan valid: tombol diaktifkan');
+            } else {
+                // Form belum lengkap: remove class tombolAktif
+                tombolLanjutPreview.classList.remove('tombolAktif');
+                console.log('✗ Form belum lengkap: ada validasi yang gagal');
+            }
         }
+        
+        // Event listener untuk setiap input field agar tombol berubah real-time
+        const allInputFields = formSuratIzin.querySelectorAll('input, select, textarea');
+        allInputFields.forEach(field => {
+            // Track saat field di-touch (user interact)
+            field.addEventListener('focus', function() {
+                if (field.id === 'selectJenisIzin') touchedFields.jenisIzin = true;
+                if (field.id === 'inputTanggalMulai') touchedFields.tanggalMulai = true;
+                if (field.id === 'inputTanggalSelesai') touchedFields.tanggalSelesai = true;
+                if (field.id === 'textareaAlasan') touchedFields.alasan = true;
+            });
+            
+            // Cek saat user mengetik/mengubah value
+            field.addEventListener('input', cekDanUpdateTombolLanjut);
+            field.addEventListener('change', cekDanUpdateTombolLanjut);
+            field.addEventListener('blur', cekDanUpdateTombolLanjut);
+        });
+        
+        // JANGAN jalankan validasi saat halaman load (untuk menghindari error muncul langsung)
+        // Validasi hanya muncul setelah user interact dengan field
 
         // ==================== EVENT LISTENER: TOMBOL LANJUT KE PREVIEW ====================
         /**
@@ -670,7 +888,7 @@
             // Form valid: update preview dan navigasi ke STEP 2
             console.log('Form valid. Melanjutkan ke preview...');
             updatePreviewDariForm();
-            navigateToStep(2);
+            navigasiKeLangkah(2);
         });
         
         // ==================== EVENT LISTENER: TOMBOL KEMBALI KE FORM ====================
@@ -681,7 +899,7 @@
         tombolKembaliKeForm.addEventListener('click', function(event) {
             event.preventDefault();
             console.log('Kembali ke form untuk edit...');
-            navigateToStep(1);
+            navigasiKeLangkah(1);
         });
         
         // ==================== EVENT LISTENER: TOMBOL LANJUT KE TANDA TANGAN ====================
@@ -692,7 +910,7 @@
         tombolLanjutTandaTangan.addEventListener('click', function(event) {
             event.preventDefault();
             console.log('Navigasi ke STEP 3: Tanda Tangan Digital...');
-            navigateToStep(3);
+            navigasiKeLangkah(3);
         });
     }
     
@@ -715,6 +933,9 @@
         const tombolHapusTandaTangan = document.getElementById('tombolHapusTandaTangan');
         const tombolKirimPengajuan = document.getElementById('tombolKirimPengajuan');
         
+        // Checkbox verifikasi tanda tangan
+        const checkboxSudahBertandaTangan = document.getElementById('checkboxSudahBertandaTangan');
+        
         // Stepper elements
         const itemStepper = document.querySelectorAll('.itemStepperSuratIzin');
         
@@ -732,6 +953,10 @@
             console.warn('Gagal mendapatkan 2D context dari canvas');
             return;
         }
+        
+        // Inisialisasi status tombol (disabled state karena canvas kosong)
+        tombolKirimPengajuan.disabled = true;
+        cekDanUpdateTombolKirim();
         
         /**
          * State untuk tracking drawing status
@@ -799,6 +1024,46 @@
         function hapusKanvas() {
             kontekCanvas.clearRect(0, 0, kanvasTandaTangan.width, kanvasTandaTangan.height);
             console.log('Canvas tanda tangan sudah dihapus');
+            // Update status tombol setelah clear canvas
+            cekDanUpdateTombolKirim();
+        }
+        
+        // ==================== FUNGSI: CEK DAN UPDATE STATUS TOMBOL KIRIM ====================
+        /**
+         * Cek apakah canvas memiliki konten tanda tangan DAN checkbox sudah dicek
+         * Update status disabled/enabled untuk tombol "Kirim Pengajuan"
+         * Tombol abu-abu jika canvas kosong atau checkbox belum dicek
+         * Tombol warna brand jika ada tanda tangan AND checkbox sudah dicek
+         */
+        function cekDanUpdateTombolKirim() {
+            // Ambil image data dari canvas
+            const imageData = kontekCanvas.getImageData(0, 0, kanvasTandaTangan.width, kanvasTandaTangan.height);
+            const data = imageData.data;
+            let adaTandaTangan = false;
+            
+            // Periksa alpha channel untuk deteksi apakah ada pixel yang digambar
+            for (let i = 3; i < data.length; i += 4) {
+                if (data[i] !== 0) {
+                    adaTandaTangan = true;
+                    break;
+                }
+            }
+            
+            // Cek apakah checkbox sudah dicek
+            const checkboxDicek = checkboxSudahBertandaTangan.checked;
+            
+            // Tombol baru bisa enable jika BOTH conditions terpenuhi
+            if (adaTandaTangan && checkboxDicek) {
+                tombolKirimPengajuan.disabled = false;
+                console.log('Tanda tangan terdeteksi + checkbox dicek: tombol diaktifkan');
+            } else {
+                tombolKirimPengajuan.disabled = true;
+                if (!adaTandaTangan) {
+                    console.log('Canvas masih kosong: tombol dinonaktifkan');
+                } else if (!checkboxDicek) {
+                    console.log('Checkbox belum dicek: tombol dinonaktifkan');
+                }
+            }
         }
         
         /**
@@ -831,17 +1096,17 @@
         
         /**
          * Fungsi: Toggle visibility antar step termasuk STEP 3
-         * @param {number} targetStep - Nomor step yang ingin ditampilkan (2 atau 3)
+         * @param {number} langkahTarget - Nomor step yang ingin ditampilkan (2 atau 3)
          */
-        function navigateToStep3(targetStep) {
-            if (targetStep === 2) {
+        function navigasiKeLangkah3(langkahTarget) {
+            if (langkahTarget === 2) {
                 // Tampilkan STEP 2 (Preview), sembunyikan STEP 3 (Tanda Tangan)
                 stepSatuIsiForm.style.display = 'none';
                 stepDuaPratinjau.style.display = 'block';
                 stepTigaTandaTangan.style.display = 'none';
                 updateStepperForStep2();
                 console.log('Navigasi ke STEP 2: Preview Surat Izin');
-            } else if (targetStep === 3) {
+            } else if (langkahTarget === 3) {
                 // Tampilkan STEP 3 (Tanda Tangan), sembunyikan STEP 2
                 stepSatuIsiForm.style.display = 'none';
                 stepDuaPratinjau.style.display = 'none';
@@ -914,6 +1179,7 @@
         kanvasTandaTangan.addEventListener('mouseup', function() {
             sedangMenggambar = false;
             kontekCanvas.closePath();
+            cekDanUpdateTombolKirim();
         });
         
         kanvasTandaTangan.addEventListener('mouseleave', function() {
@@ -963,6 +1229,21 @@
             event.preventDefault();
             sedangMenggambar = false;
             kontekCanvas.closePath();
+            cekDanUpdateTombolKirim();
+        });
+        
+        // ==================== EVENT LISTENER: CHECKBOX VERIFIKASI TANDA TANGAN ====================
+        /**
+         * Event listener untuk checkbox "Saya sudah bertanda tangan"
+         * Update status tombol saat checkbox berubah state
+         */
+        checkboxSudahBertandaTangan.addEventListener('change', function() {
+            cekDanUpdateTombolKirim();
+            if (this.checked) {
+                console.log('Checkbox dicek: verifikasi tanda tangan aktif');
+            } else {
+                console.log('Checkbox tidak dicek: verifikasi tanda tangan inactive');
+            }
         });
         
         // ==================== EVENT LISTENER: TOMBOL HAPUS TANDA TANGAN ====================
@@ -985,7 +1266,7 @@
         tombolKembaliDariTandaTangan.addEventListener('click', function(event) {
             event.preventDefault();
             console.log('Kembali ke STEP 2 (Preview)...');
-            navigateToStep3(2);
+            navigasiKeLangkah3(2);
         });
         
         // ==================== EVENT LISTENER: TOMBOL KIRIM PENGAJUAN ====================
@@ -997,20 +1278,18 @@
         // ==================== EVENT LISTENER: TOMBOL KIRIM PENGAJUAN ====================
         /**
          * Klik tombol "Kirim Pengajuan"
-         * Navigasi ke STEP 4 (Selesai)
-         * Menampilkan ringkasan detail pengajuan dan pesan keberhasilan
+         * Validasi backend (tanggal, durasi) dan kirim ke API
+         * Jika berhasil, navigasi ke STEP 4 (Selesai)
          * 
-         * CATATAN: Validasi tanda tangan di-skip untuk testing UI
-         * Akan diaktifkan kembali saat integrase backend
+         * Validasi Backend:
+         * - Tanggal mulai tidak boleh di masa lalu
+         * - Tanggal selesai >= tanggal mulai
+         * - Durasi <= 365 hari (1 tahun)
          */
-        tombolKirimPengajuan.addEventListener('click', function(event) {
+        tombolKirimPengajuan.addEventListener('click', async function(event) {
             event.preventDefault();
-            console.log('Kirim pengajuan ke STEP 4...');
+            console.log('Validasi dan kirim pengajuan ke backend...');
             
-            // TESTING: Skip validasi tanda tangan untuk melihat UI STEP 4
-            // Uncomment validasi di bawah saat siap untuk backend integration
-            
-            /*
             // Cek apakah ada tanda tangan di canvas
             const imageData = kontekCanvas.getImageData(0, 0, kanvasTandaTangan.width, kanvasTandaTangan.height);
             const data = imageData.data;
@@ -1029,13 +1308,69 @@
                 console.warn('User mencoba submit tanpa tanda tangan');
                 return;
             }
-            */
             
-            // Navigasi ke STEP 4 tanpa validasi (untuk testing)
-            navigateToStep(4);
-            alert('Menampilkan STEP 4 - cek halaman');
-            populateDetailPengajuanSelesai();
-            console.log('Pengajuan berhasil dikirim, menampilkan STEP 4: Selesai');
+            // Ambil data dari form untuk pengajuan
+            const jenisIzin = selectJenisIzin.value;
+            const tanggalMulai = inputTanggalMulai.value; // Format: YYYY-MM-DD
+            const tanggalSelesai = inputTanggalSelesai.value; // Format: YYYY-MM-DD
+            const alasan = textareaAlasan.value;
+            const tandaTanganBase64 = kanvasTandaTangan.toDataURL('image/png');
+            
+            // Validasi front-end (redundan dengan backend, tapi berguna untuk UX)
+            if (!jenisIzin || !tanggalMulai || !tanggalSelesai || !alasan) {
+                alert('Semua field form harus diisi');
+                return;
+            }
+            
+            // Parse tanggal untuk validasi durasi
+            const mulai = new Date(tanggalMulai);
+            const selesai = new Date(tanggalSelesai);
+            const durasi = Math.ceil((selesai - mulai) / (1000 * 60 * 60 * 24));
+            
+            try {
+                // Kirim pengajuan lengkap ke backend
+                const response = await fetch('/api/karyawan/pengajuan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        jenis_izin: jenisIzin,
+                        tanggal_mulai: tanggalMulai,
+                        tanggal_selesai: tanggalSelesai,
+                        alasan: alasan,
+                        tanda_tangan_base64: tandaTanganBase64
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    // Tangani error dari backend
+                    console.error('Error dari backend:', result);
+                    
+                    // Format pesan error yang user-friendly
+                    let pesanError = result.message || 'Pengajuan gagal diproses';
+                    
+                    if (result.errors && Array.isArray(result.errors)) {
+                        pesanError = result.errors.join('\n');
+                    }
+                    
+                    alert('❌ Gagal mengirim pengajuan:\n\n' + pesanError);
+                    return;
+                }
+                
+                console.log('✓ Pengajuan berhasil dikirim:', result);
+                
+                // Lanjut ke STEP 4 (Success)
+                populateDetailPengajuanSelesai();
+                navigasiKeLangkah(4);
+                
+            } catch (error) {
+                console.error('Error saat mengirim pengajuan:', error);
+                alert('❌ Terjadi kesalahan saat mengirim pengajuan. Silakan coba lagi.');
+                return;
+            }
         });
         
         // ==================== EVENT LISTENER: TOMBOL BUAT SURAT BARU ====================
@@ -1060,3 +1395,5 @@
         inisialisasiTandaTanganDigital();
     });
 </script>
+</div>
+<!-- END: MAIN CONTAINER -->

@@ -44,7 +44,20 @@ const rutDashboardPenanggungJawab = require('./routes/dashboardPenanggungJawab')
  * Menangani pengambilan daftar pengajuan yang menunggu review (read-only)
  */
 const rutReviewPengajuan = require('./routes/reviewPengajuan');
-// const rutPengajuan = require('./routes/pengajuan'); // Di-backup
+
+/**
+ * [FITUR BARU - Tanda Tangan Administratif]
+ * Router untuk API Tanda Tangan Digital Karyawan
+ * Menangani penyimpanan dan pengambilan tanda tangan administratif (Base64)
+ */
+const rutTandaTangan = require('./routes/tandaTangan');
+
+/**
+ * [FITUR BARU - Pengajuan Surat Izin]
+ * Router untuk API Pengajuan (Surat Izin) Karyawan
+ * Menangani CRUD pengajuan dengan validasi tanggal backend
+ */
+const rutPengajuan = require('./routes/pengajuan');
 // const rutAbsensi = require('./routes/absensi');     // Di-backup
 // const rutAdmin = require('./routes/admin');         // Di-backup
 // const rutChatbot = require('./routes/chatbot');     // Di-backup
@@ -84,6 +97,7 @@ const konfigurasiSession = {
   saveUninitialized: true,
   store: new MongoStore({
     mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/nusaattend',
+    collection: 'sesi',
     touchAfter: 24 * 3600 // Update session setiap 24 jam
   }),
   cookie: {
@@ -245,7 +259,27 @@ app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutDashboardPenanggungJ
  */
 app.use('/api/penanggung-jawab', middlewareAuntenfikasi, rutReviewPengajuan);
 
-// app.use('/api/pengajuan', middlewareAuntenfikasi, rutPengajuan); // Di-backup
+/**
+ * [FITUR BARU - Tanda Tangan Administratif]
+ * Daftarkan router tanda tangan dengan middleware autentikasi
+ * Endpoint: /api/karyawan/tanda-tangan
+ * Handler: tandaTanganController.js
+ * Sifat: Write-read (simpan tanda tangan administratif, ambil untuk review)
+ */
+app.use('/api/karyawan', middlewareAuntenfikasi, rutTandaTangan);
+
+/**
+ * [FITUR BARU - Pengajuan Surat Izin]
+ * Daftarkan router pengajuan dengan middleware autentikasi
+ * Endpoint: /api/karyawan/pengajuan
+ * Handler: pengajuanController.js
+ * Sifat: CRUD (buat, ambil, update status pengajuan)
+ * Validasi Backend:
+ * - Tanggal mulai >= hari ini
+ * - Tanggal selesai >= tanggal mulai
+ * - Durasi <= 365 hari (1 tahun)
+ */
+app.use('/api/karyawan', middlewareAuntenfikasi, rutPengajuan);
 // app.use('/api/absensi', middlewareAuntenfikasi, rutAbsensi);     // Di-backup
 // app.use('/api/chatbot', rutChatbot);                             // Di-backup
 // app.use('/api/admin', middlewareAuntenfikasi, rutAdmin);         // Di-backup
@@ -271,12 +305,12 @@ app.get('/dashboard', async (req, res) => {
      */
     try {
       // Query data dashboard dari controller langsung (bypass API call)
-      const User = require('./models/User');
+      const Pengguna = require('./models/Pengguna');
       
       // Hitung ringkasan
-      const totalKaryawan = await User.countDocuments({ role: 'karyawan' });
-      const totalPenanggungJawab = await User.countDocuments({ role: 'penanggung-jawab' });
-      const totalAkunAktif = await User.countDocuments({ adalah_aktif: true });
+      const totalKaryawan = await Pengguna.countDocuments({ role: 'karyawan' });
+      const totalPenanggungJawab = await Pengguna.countDocuments({ role: 'penanggung-jawab' });
+      const totalAkunAktif = await Pengguna.countDocuments({ adalah_aktif: true });
       
       // Hitung aktivitas hari ini
       const hariIniMulai = new Date();
@@ -284,7 +318,7 @@ app.get('/dashboard', async (req, res) => {
       const hariIniAkhir = new Date();
       hariIniAkhir.setHours(23, 59, 59, 999);
       
-      const totalAktivitasHariIni = await User.countDocuments({
+      const totalAktivitasHariIni = await Pengguna.countDocuments({
         $or: [
           { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
           { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } }
@@ -292,7 +326,7 @@ app.get('/dashboard', async (req, res) => {
       });
       
       // Ambil 5 aktivitas terbaru
-      const daftarUserTerbaru = await User.find()
+      const daftarUserTerbaru = await Pengguna.find()
         .select('nama_lengkap jabatan email role adalah_aktif createdAt updatedAt')
         .sort({ updatedAt: -1 })
         .limit(5)
@@ -372,12 +406,12 @@ app.get('/dashboard', async (req, res) => {
      */
     try {
       // Query data dashboard dari User model (sama seperti admin, tapi untuk semua user)
-      const User = require('./models/User');
+      const Pengguna = require('./models/Pengguna');
       
       // Hitung ringkasan
-      const totalKaryawan = await User.countDocuments({ role: 'karyawan' });
-      const totalPenanggungJawab = await User.countDocuments({ role: 'penanggung-jawab' });
-      const totalAkunAktif = await User.countDocuments({ adalah_aktif: true });
+      const totalKaryawan = await Pengguna.countDocuments({ role: 'karyawan' });
+      const totalPenanggungJawab = await Pengguna.countDocuments({ role: 'penanggung-jawab' });
+      const totalAkunAktif = await Pengguna.countDocuments({ adalah_aktif: true });
       
       // Hitung aktivitas hari ini
       const hariIniMulai = new Date();
@@ -385,7 +419,7 @@ app.get('/dashboard', async (req, res) => {
       const hariIniAkhir = new Date();
       hariIniAkhir.setHours(23, 59, 59, 999);
       
-      const totalAktivitasHariIni = await User.countDocuments({
+      const totalAktivitasHariIni = await Pengguna.countDocuments({
         $or: [
           { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
           { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } }
@@ -393,7 +427,7 @@ app.get('/dashboard', async (req, res) => {
       });
       
       // Ambil 5 aktivitas terbaru
-      const daftarUserTerbaru = await User.find()
+      const daftarUserTerbaru = await Pengguna.find()
         .select('nama_lengkap jabatan email role adalah_aktif createdAt updatedAt')
         .sort({ updatedAt: -1 })
         .limit(5)
@@ -620,13 +654,13 @@ app.get('/admin/penanggung-jawab', middlewareAuntenfikasi, async (req, res) => {
   
   try {
     // Fetch data supervisor dari database
-    const User = require('./models/User');
-    const dataSupervisor = await User.find({ role: 'penanggung-jawab' }).select('-password');
+    const Pengguna = require('./models/Pengguna');
+    const dataSupervisor = await Pengguna.find({ role: 'penanggung-jawab' }).select('-password');
     
     // Hitung jumlah karyawan per supervisor
     const daftarSupervisor = await Promise.all(
       dataSupervisor.map(async (supervisor) => {
-        const jumlahKaryawan = await User.countDocuments({
+        const jumlahKaryawan = await Pengguna.countDocuments({
           penanggung_jawab_id: supervisor._id,
           role: 'karyawan'
         });

@@ -808,6 +808,8 @@ footer a:hover {
   flex-wrap: nowrap;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .menu-item i {
@@ -6591,6 +6593,69 @@ select.input-form {
 }
 
 /**
+ * State active untuk tombol Lanjut ke Preview
+ * Tombol berubah warna ketika semua field form sudah terisi
+ */
+.tombolLanjutPreview.tombolAktif {
+  background-color: #4f39f6;
+  color: #ffffff;
+}
+
+.tombolLanjutPreview.tombolAktif:hover {
+  background-color: #3f2fbf;
+  box-shadow: 0 4px 12px rgba(79, 57, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.tombolLanjutPreview.tombolAktif:active {
+  background-color: #3425a0;
+  box-shadow: 0 2px 6px rgba(79, 57, 246, 0.3);
+  transform: translateY(0);
+}
+
+/**
+ * Error messages untuk form fields
+ * Pesan error yang muncul di bawah input field
+ */
+.errorMessageForm {
+  display: none;
+  margin-top: 6px;
+  padding: 8px 12px;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+  animation: slideDown 0.2s ease-out;
+}
+
+.errorMessageForm.show {
+  display: block;
+}
+
+/**
+ * Counter untuk kata di alasan
+ */
+.counterKata {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: normal;
+}
+
+.counterKata.warning {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.counterKata.error {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/**
  * Validasi form
  * Styling untuk form yang sudah divalidasi (jika ada error)
  */
@@ -6982,17 +7047,65 @@ select.input-form {
 
 /**
  * Canvas element untuk menggambar tanda tangan
- * Responsive width, fixed height untuk drawing area
- * Background putih untuk kontras dengan garis tanda tangan
+ * Responsive width, fixed aspect ratio
+ * Ukuran asli: 1200x360 (2x resolution untuk retina clarity)
+ * Display: 600x180
  */
 .kanvasTandaTangan {
   display: block;
   width: 100%;
+  max-width: 1600px;
   height: auto;
+  aspect-ratio: 1200 / 360;
   background: #ffffff;
-  border: none;
   cursor: crosshair;
   border-radius: 4px;
+  image-rendering: crisp-edges;
+}
+
+/**
+ * Kontainer checkbox verifikasi tanda tangan
+ * Styling untuk checkbox "Saya sudah bertanda tangan"
+ */
+.containerCheckboxTandaTangan {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.labelCheckboxTandaTangan {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #364153;
+  margin: 0;
+}
+
+.inputCheckboxTandaTangan {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #4f39f6;
+  flex-shrink: 0;
+}
+
+.inputCheckboxTandaTangan:hover {
+  opacity: 0.8;
+}
+
+.inputCheckboxTandaTangan:checked {
+  background-color: #4f39f6;
+}
+
+.textCheckboxTandaTangan {
+  user-select: none;
+  white-space: nowrap;
 }
 
 /**
@@ -7103,6 +7216,22 @@ select.input-form {
 .tombolKirimPengajuan:active {
   background: #3425a0;
   box-shadow: 0 2px 6px rgba(79, 57, 246, 0.3);
+}
+
+/**
+ * State disabled untuk tombol Kirim Pengajuan
+ * Tombol menjadi abu-abu ketika canvas masih kosong (belum ada tanda tangan)
+ */
+.tombolKirimPengajuan:disabled {
+  background-color: #d1d5dc;
+  color: #9ca3af;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.tombolKirimPengajuan:disabled:hover {
+  background-color: #d1d5dc;
+  box-shadow: none;
 }
 
 /**
