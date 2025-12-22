@@ -1,3 +1,21 @@
+/**
+ * ==================== MIDDLEWARE AUTENTIKASI SOCKET.IO ====================
+ * 
+ * File: socketAuth.js
+ * Tujuan: Validasi token JWT untuk koneksi Socket.IO
+ * 
+ * Alur:
+ * 1. Periksa keberadaan token di handshake authentication
+ * 2. Verifikasi integritas & masa berlaku token JWT
+ * 3. Jika valid, ambil data pengguna dari database
+ * 4. Attach informasi pengguna ke object socket untuk digunakan di event handlers
+ * 
+ * Catatan Akademik:
+ * - Middleware ini memastikan hanya pengguna yang ter-autentikasi dapat berkomunikasi via Socket.IO
+ * - Fungsi ini bersifat auxiliary (pembantu) untuk sistem keamanan sesi
+ * - Tidak melakukan keputusan bisnis atau modifikasi data utama
+ */
+
 const jwt = require("jsonwebtoken");
 const Pengguna = require("../models/Pengguna");
 
@@ -5,24 +23,26 @@ module.exports = async (socket, next) => {
   try {
     const token = socket.handshake.auth.token;
 
+    /* ================= VALIDASI KEBERADAAN TOKEN ================= */
     if (!token) {
       console.error("❌ Socket Auth: Token tidak ditemukan");
       return next(new Error("Token diperlukan untuk socket connection"));
     }
 
-    // Verify token
-    let decoded;
+    /* ================= VERIFIKASI INTEGRITAS TOKEN JWT ================= */
+    let dekodeToken;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("✅ Token verified:", decoded);
+      dekodeToken = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret");
+      console.log("✅ Token verified:", dekodeToken);
     } catch (err) {
-      console.error("❌ Socket Auth: Token verification gagal:", err.message);
+      console.error("❌ Socket Auth: Verifikasi token gagal:", err.message);
       return next(new Error("Token tidak valid atau sudah expired"));
     }
 
-    // Jika token untuk socket auth saja (simple socket connection)
-    if (decoded.socketAuth && !decoded.id) {
-      console.log("✅ Socket auth granted (socket-only token)");
+    /* ================= HANDLE TOKEN SOCKET-ONLY (GUEST) ================= */
+    // Jika token hanya untuk socket auth tanpa id pengguna (guest token)
+    if (dekodeToken.socketAuth && !dekodeToken.id) {
+      console.log("✅ Socket auth granted (guest token)");
       socket.user = {
         id: "anonymous",
         nama: "Guest User",
@@ -31,27 +51,29 @@ module.exports = async (socket, next) => {
       return next();
     }
 
-    // Jika token memiliki user id, cari user berdasarkan id dari token
-    const user = await Pengguna.findById(decoded.id);
+    /* ================= AMBIL DATA PENGGUNA DARI DATABASE ================= */
+    // Token berisi id pengguna, maka cari di database untuk validasi tambahan
+    const pengguna = await Pengguna.findById(dekodeToken.id);
 
-    if (!user) {
-      console.error("❌ Socket Auth: User tidak ditemukan");
-      return next(new Error("User tidak ditemukan"));
+    if (!pengguna) {
+      console.error("❌ Socket Auth: Pengguna tidak ditemukan di database");
+      return next(new Error("Pengguna tidak ditemukan"));
     }
 
-    // Set user info di socket object
+    /* ================= ATTACH INFORMASI PENGGUNA KE SOCKET ================= */
+    // Simpan informasi pengguna di object socket untuk digunakan di event handlers
     socket.user = {
-      id: user._id,
-      nama: user.nama || user.nama_lengkap,
-      role: user.role,
+      id: pengguna._id,
+      nama: pengguna.nama || pengguna.nama_lengkap,
+      role: pengguna.role,
     };
 
     console.log(
-      `✅ Socket Auth Success: ${socket.user.nama} (${socket.user.role})`
+      `✅ Autentikasi Socket berhasil: ${socket.user.nama} (${socket.user.role})`
     );
     next();
   } catch (error) {
     console.error("❌ Socket Auth Error:", error.message);
-    next(new Error("Socket authentication failed: " + error.message));
+    next(new Error("Autentikasi socket gagal: " + error.message));
   }
 };

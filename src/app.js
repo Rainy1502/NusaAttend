@@ -356,6 +356,31 @@ app.use('/api/pengguna', middlewareAuntenfikasi, rutRiwayatPengajuan);
 // app.use('/api/chatbot', rutChatbot);                             // Di-backup
 // app.use('/api/admin', middlewareAuntenfikasi, rutAdmin);         // Di-backup
 
+// ==================== MIDDLEWARE: ENSURE SOCKET TOKEN ====================
+// Middleware untuk memastikan socketToken ada di session
+app.use((req, res, next) => {
+  if (req.session.user && !req.session.socketToken) {
+    // Generate socketToken jika belum ada
+    const socketToken = jwt.sign(
+      {
+        id: req.session.user.id,
+        email: req.session.user.email,
+        role: req.session.user.role,
+        socketAuth: true,
+      },
+      process.env.JWT_SECRET || "your_jwt_secret",
+      { expiresIn: "24h" }
+    );
+    req.session.socketToken = socketToken;
+    
+    // Save session
+    req.session.save((err) => {
+      if (err) console.error("⚠️ Session save error:", err);
+    });
+  }
+  next();
+});
+
 // ==================== DASHBOARD (BERBASIS ROLE) ====================
 // Rute dashboard dengan redirect berdasarkan role pengguna
 app.get("/dashboard", async (req, res) => {
