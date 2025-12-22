@@ -16,14 +16,20 @@ document.addEventListener('DOMContentLoaded', function() {
 /**
  * Fungsi: initializeModalLogout
  * 
- * Menginisialisasi event listener untuk modal konfirmasi logout
- * - Tombol Keluar (sidebar) → Buka modal konfirmasi
- * - Tombol Batal → Tutup modal
+ * Menginisialisasi event listener untuk modal konfirmasi logout dengan animasi
+ * - Tombol Keluar (sidebar) → Buka modal dengan animasi fade-in
+ * - Tombol Batal → Tutup modal dengan animasi fade-out
  * - Tombol Konfirmasi Keluar → Submit form logout
+ * 
+ * ANIMASI:
+ * - Modal masuk: fade-in + slide-up (400ms)
+ * - Modal keluar: fade-out + slide-down (300ms)
+ * - Overlay: tetap smooth tanpa hard switch
  */
 function initializeModalLogout() {
   // Ambil element modal dan tombol
   const lapisanOverlayLogout = document.getElementById('lapisanOverlayLogout');
+  const modalKonfirmasiLogout = document.querySelector('.modalKonfirmasiLogout');
   const tombolKeluarDashboard = document.getElementById('tombolKeluarDashboard');
   const tombolBatalLogout = document.getElementById('tombolBatalLogout');
   const tombolKonfirmasiLogout = document.getElementById('tombolKonfirmasiLogout');
@@ -36,19 +42,30 @@ function initializeModalLogout() {
 
   /**
    * Event: Klik tombol Keluar (sidebar)
-   * Aksi: Tampilkan modal konfirmasi logout
+   * Aksi: Tampilkan modal konfirmasi logout dengan animasi
    */
   tombolKeluarDashboard.addEventListener('click', function(e) {
     e.preventDefault();
+    console.log('🎬 Membuka modal logout dengan animasi...');
+    
+    // Step 1: Tampilkan overlay
     lapisanOverlayLogout.classList.add('aktif');
+    
+    // Step 2: Animasi modal masuk
+    if (modalKonfirmasiLogout) {
+      modalKonfirmasiLogout.classList.remove('modalAnimasiKeluar');
+      modalKonfirmasiLogout.classList.add('modalAnimasiMasuk');
+      console.log('✅ Modal logout dibuka dengan animasi fade-in + slide-up');
+    }
   });
 
   /**
    * Event: Klik tombol Batal
-   * Aksi: Tutup modal konfirmasi logout
+   * Aksi: Tutup modal dengan animasi fade-out
    */
   tombolBatalLogout.addEventListener('click', function() {
-    lapisanOverlayLogout.classList.remove('aktif');
+    console.log('🔒 Menutup modal logout dengan animasi...');
+    tutupModalLogoutDenganAnimasi();
   });
 
   /**
@@ -57,7 +74,8 @@ function initializeModalLogout() {
    */
   lapisanOverlayLogout.addEventListener('click', function(e) {
     if (e.target === lapisanOverlayLogout) {
-      lapisanOverlayLogout.classList.remove('aktif');
+      console.log('🔒 Menutup modal logout via overlay click...');
+      tutupModalLogoutDenganAnimasi();
     }
   });
 
@@ -74,13 +92,33 @@ function initializeModalLogout() {
 
   /**
    * Event: Keyboard (ESC key)
-   * Aksi: Tutup modal saat menekan tombol ESC
+   * Aksi: Tutup modal saat menekan tombol ESC dengan animasi
    */
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && lapisanOverlayLogout.classList.contains('aktif')) {
-      lapisanOverlayLogout.classList.remove('aktif');
+      console.log('🔒 Menutup modal logout via ESC key...');
+      tutupModalLogoutDenganAnimasi();
     }
   });
+
+  /**
+   * Helper function: Tutup modal logout dengan animasi
+   * Animasi: fade-out + slide-down (300ms)
+   */
+  function tutupModalLogoutDenganAnimasi() {
+    // Step 1: Animasi modal keluar
+    if (modalKonfirmasiLogout) {
+      modalKonfirmasiLogout.classList.remove('modalAnimasiMasuk');
+      modalKonfirmasiLogout.classList.add('modalAnimasiKeluar');
+      console.log('🎬 Modal logout animate out (fade-out + slide-down)');
+    }
+    
+    // Step 2: Tunggu animasi selesai, baru hide overlay
+    setTimeout(() => {
+      lapisanOverlayLogout.classList.remove('aktif');
+      console.log('✅ Modal logout ditutup setelah animasi');
+    }, 300); // Durasi animasi keluar
+  }
 }
 
 // Initialize Bootstrap components

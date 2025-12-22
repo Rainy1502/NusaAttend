@@ -67,7 +67,7 @@
                     <!-- Cell: Jenis Izin dengan Icon -->
                     <td class="cellTabel cellJenisIzin">
                         <div class="containerJenisIzin">
-                            <i class="fas fa-file-alt iconJenisIzin"></i>
+                            <i class="fas fa-clock iconJenisIzin"></i>
                             <span class="textJenisIzin">{{jenisIzin}}</span>
                         </div>
                     </td>
@@ -89,7 +89,16 @@
 
                     <!-- Cell: Tombol Aksi Detail -->
                     <td class="cellTabel cellAksi">
-                        <button type="button" class="tombolDetailPengajuan" title="Lihat detail pengajuan">
+                        <button type="button" class="tombolDetailPengajuan" title="Lihat detail pengajuan"
+                            data-id="{{_id}}"
+                            data-nama-pengguna="{{namaKaryawan}}"
+                            data-jabatan="{{jabatanKaryawan}}"
+                            data-jenis-izin="{{jenisIzin}}"
+                            data-periode="{{periode}}"
+                            data-durasi="{{durasi}}"
+                            data-tanggal-diajukan="{{tanggalDiajukan}}"
+                            data-alasan="{{alasan}}"
+                            onclick="bukaModalDetailPengajuan(this)">
                             <i class="fas fa-eye iconButtonDetail"></i>
                             <span class="textButtonDetail">Detail</span>
                         </button>
@@ -110,3 +119,1380 @@
         {{/unless}}
     </div>
 </div>
+<!-- ==================== MODAL DETAIL PENGAJUAN ==================== -->
+<!-- Modal untuk menampilkan detail pengajuan secara READ-ONLY -->
+<!-- Digunakan saat user mengklik tombol "Detail" di tabel pengajuan -->
+<div id="modalDetailPengajuan" class="containerOverlayModal" style="display: none;">
+    <!-- Overlay background (semi-transparent) -->
+    <div class="overlayBackgroundModal"></div>
+    
+    <!-- Modal container -->
+    <div class="containerModalDetailPengajuan">
+        <!-- Modal header dengan judul -->
+        <div class="headerModalDetailPengajuan">
+            <h2 class="judul ModalDetailPengajuan">Detail Pengajuan</h2>
+        </div>
+
+        <!-- Modal body - konten detail pengajuan -->
+        <div class="bodyModalDetailPengajuan">
+            <!-- Section: Informasi Dokumen Pengajuan -->
+            <div class="sectionInformasiDokumen">
+                <h3 class="judulJenisIzin" id="judulJenisIzin">SURAT CUTI TAHUNAN</h3>
+                <p class="subtitleDokumen">NusaAttend - Portal Administrasi Kehadiran</p>
+            </div>
+
+            <!-- Section: Detail Pengajuan (form-like display) -->
+            <div class="sectionDetailPengajuan">
+                <div class="containerInfoPengajuan">
+                    <!-- Intro text -->
+                    <p class="teksPengajuan">Yang bertanda tangan di bawah ini:</p>
+
+                    <!-- Data karyawan -->
+                    <div class="containerDataKaryawan">
+                        <p class="dataKaryawan"><strong>Nama:</strong> <span id="namaKaryawanDetail">-</span></p>
+                        <p class="dataKaryawan"><strong>Jabatan:</strong> <span id="jabatanKaryawanDetail">-</span></p>
+                    </div>
+
+                    <!-- Pernyataan pengajuan -->
+                    <p class="teksPernyataan">Dengan ini mengajukan <span id="jenisIzinPernyataan">cuti tahunan</span> pada tanggal <strong><span id="periodePernyataan">-</span></strong> dengan alasan:</p>
+
+                    <!-- Alasan pengajuan (dalam box) -->
+                    <div class="boxAlaasan">
+                        <p class="teksAlasan" id="teksAlasan">-</p>
+                    </div>
+
+                    <!-- Penutup surat -->
+                    <p class="teksPenutupSurat">Demikian surat ini dibuat dengan sebenarnya untuk dapat dipertimbangkan.</p>
+
+                    <!-- Section: Tanda tangan -->
+                    <div class="containerTandaTangan">
+                        <!-- Kolom kiri: Tanggal diajukan -->
+                        <div class="kolumTanggal">
+                            <p class="labelTanggal">Diajukan pada:</p>
+                            <p class="nilaiTanggal" id="tanggalDiajukanDetail">-</p>
+                        </div>
+
+                        <!-- Kolom kanan: Tanda tangan -->
+                        <div class="kolumTandaTangan">
+                            <p class="labelHormat">Hormat saya,</p>
+                            <div class="boxTandaTangan">
+                                <p class="teksPlaceholderTandaTangan">Tanda Tangan</p>
+                            </div>
+                            <p class="namaPerusahaan" id="namaPerusahaanTTD">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Informasi tambahan (sisa cuti & durasi) -->
+            <div class="containerInfoTambahan">
+                <!-- Box: Sisa cuti -->
+                <div class="boxSisaCuti">
+                    <p class="labelSisaCuti">Sisa Cuti Karyawan</p>
+                    <p class="nilaiSisaCuti" id="nilaiSisaCuti">-</p>
+                </div>
+
+                <!-- Box: Durasi pengajuan -->
+                <div class="boxDurasiPengajuan">
+                    <p class="labelDurasi">Durasi Pengajuan</p>
+                    <p class="nilaiDurasi" id="nilaiDurasi">-</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal footer dengan tombol aksi -->
+        <div class="footerModalDetailPengajuan">
+            <!-- Tombol Tutup (close modal) -->
+            <button type="button" class="tombolTutupModalFooter" id="tombolTutupModal" title="Tutup modal">
+                <i class="fas fa-times-circle iconButtonModal"></i>
+                <span class="textButtonModal">Tutup</span>
+            </button>
+            
+            <!-- Tombol Tolak (reject) dengan icon -->
+            <button type="button" class="tombolTolakPengajuan" id="tombolTolakPengajuan" title="Tolak pengajuan ini">
+                <i class="fas fa-times iconButtonModal"></i>
+                <span class="textButtonModal">Tolak</span>
+            </button>
+            
+            <!-- Tombol Setujui (approve) dengan icon -->
+            <button type="button" class="tombolSetujuiPengajuan" id="tombolSetujuiPengajuan" title="Setujui pengajuan ini">
+                <i class="fas fa-check iconButtonModal"></i>
+                <span class="textButtonModal">Setujui</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL TOLAK PENGAJUAN ==================== -->
+<!-- Modal konfirmasi penolakan pengajuan dengan input alasan penolakan -->
+<!-- Muncul saat pengguna menekan tombol "Tolak" pada modal detail pengajuan -->
+<div id="modalTolakPengajuan" class="containerOverlayModal" style="display: none;">
+    <!-- Overlay background (semi-transparent) -->
+    <div class="overlayBackgroundModal"></div>
+    
+    <!-- Modal container untuk tolak pengajuan -->
+    <div class="containerModalTolakPengajuan">
+        <!-- Modal header dengan judul -->
+        <div class="headerModalTolakPengajuan">
+            <h2 class="judulModalTolakPengajuan">Tolak Pengajuan</h2>
+        </div>
+
+        <!-- Modal body - konten penolakan -->
+        <div class="bodyModalTolakPengajuan">
+            <!-- Pernyataan konfirmasi penolakan -->
+            <div class="sectionKonfirmasiPenolakan">
+                <p class="teksKonfirmasiPenolakan">
+                    Anda akan menolak pengajuan <strong><span id="jenisIzinTolak">-</span></strong> 
+                    dari <strong><span id="namaPengggunaTolak">-</span></strong>.
+                </p>
+            </div>
+
+            <!-- Instruksi penolakan -->
+            <div class="sectionInstruksiPenolakan">
+                <p class="teksInstruksiPenolakan">Silakan berikan alasan penolakan.</p>
+            </div>
+
+            <!-- Form input alasan penolakan -->
+            <div class="containerFormAlasanPenolakan">
+                <!-- Label untuk input alasan -->
+                <label for="inputAlasanPenolakan" class="labelAlasanPenolakan">
+                    Alasan Penolakan <span class="teksWajib">*</span>
+                </label>
+                
+                <!-- Textarea untuk alasan penolakan -->
+                <textarea 
+                    id="inputAlasanPenolakan" 
+                    class="inputAlasanPenolakan"
+                    placeholder="Jelaskan alasan penolakan…"
+                    rows="5"></textarea>
+            </div>
+
+            <!-- Informasi tambahan untuk karyawan -->
+            <div class="sectionInformasiTambahan">
+                <p class="teksInformasiTambahan">
+                    Karyawan akan menerima notifikasi penolakan beserta alasan yang Anda berikan.
+                </p>
+            </div>
+        </div>
+
+        <!-- Modal footer dengan tombol aksi -->
+        <div class="footerModalTolakPengajuan">
+            <!-- Tombol Batal -->
+            <button type="button" class="tombolBatalPenolakan" id="tombolBatalPenolakan" title="Batal penolakan">
+                Batal
+            </button>
+            
+            <!-- Tombol Konfirmasi Penolakan -->
+            <button type="button" class="tombolKonfirmasiPenolakan" id="tombolKonfirmasiPenolakan" title="Konfirmasi penolakan pengajuan">
+                Konfirmasi Penolakan
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL SETUJUI PENGAJUAN ==================== -->
+<!-- Modal konfirmasi persetujuan dengan area tanda tangan digital -->
+<!-- Muncul saat pengguna menekan tombol "Setujui" pada modal detail pengajuan -->
+<div id="modalSetujuiPengajuan" class="containerOverlayModal" style="display: none;">
+    <!-- Overlay background (semi-transparent) -->
+    <div class="overlayBackgroundModal"></div>
+    
+    <!-- Modal container untuk setujui pengajuan -->
+    <div class="containerModalSetujuiPengajuan">
+        <!-- Modal header dengan judul -->
+        <div class="headerModalSetujuiPengajuan">
+            <h2 class="judulModalSetujuiPengajuan">Setujui Pengajuan</h2>
+        </div>
+
+        <!-- Modal body - konten persetujuan -->
+        <div class="bodyModalSetujuiPengajuan">
+            <!-- Section: Konfirmasi persetujuan dengan nama karyawan & jenis izin -->
+            <div class="sectionKonfirmasiSetujui">
+                <p class="teksKonfirmasiSetujui">
+                    Anda akan menyetujui pengajuan <strong><span id="jenisIzinSetujui">-</span></strong> 
+                    dari <strong><span id="namaKaryawanSetujui">-</span></strong>. 
+                    Silakan berikan tanda tangan digital Anda untuk menyelesaikan persetujuan.
+                </p>
+            </div>
+
+            <!-- Section: Area Tanda Tangan Digital -->
+            <div class="containerTandaTanganDigital">
+                <!-- Label untuk area tanda tangan -->
+                <label for="canvasTandaTanganSetujui" class="labelTandaTanganDigital">
+                    Tanda Tangan Digital
+                </label>
+                
+                <!-- Canvas untuk menggambar tanda tangan -->
+                <div class="wrapperCanvasTandaTangan">
+                    <canvas 
+                        id="canvasTandaTanganSetujui" 
+                        class="canvasTandaTangan"
+                        width="600"
+                        height="147">
+                        Browser Anda tidak mendukung Canvas element. Silakan gunakan browser modern.
+                    </canvas>
+                </div>
+
+                <!-- Tombol Hapus Tanda Tangan -->
+                <button type="button" class="tombolHapusTandaTangan" id="tombolHapusTandaTanganSetujui" title="Hapus tanda tangan digital">
+                    <i class="fas fa-eraser iconButtonSmall"></i>
+                    <span class="textButtonSmall">Hapus Tanda Tangan</span>
+                </button>
+            </div>
+
+            <!-- Section: Informasi catatan -->
+            <div class="sectionInformasiCatatan">
+                <p class="teksInformasiCatatan">
+                    Setelah disetujui, karyawan akan menerima notifikasi dan surat akan tersimpan dengan tanda tangan Anda.
+                </p>
+            </div>
+        </div>
+
+        <!-- Modal footer dengan tombol aksi -->
+        <div class="footerModalSetujuiPengajuan">
+            <!-- Tombol Batal -->
+            <button type="button" class="tombolBatalSetujui" id="tombolBatalSetujui" title="Batal persetujuan">
+                Batal
+            </button>
+            
+            <!-- Tombol Konfirmasi Persetujuan -->
+            <button type="button" class="tombolKonfirmasiSetujui" id="tombolKonfirmasiSetujui" title="Konfirmasi persetujuan pengajuan">
+                Konfirmasi Persetujuan
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SCRIPT: MODAL DETAIL PENGAJUAN & TOLAK PENGAJUAN ==================== -->
+<!-- 
+ALUR NAVIGASI MODAL:
+
+1. HALAMAN TABEL (Review Pengajuan)
+   ↓
+   User klik tombol "Detail" pada row pengajuan
+   ↓
+2. MODAL DETAIL PENGAJUAN (modalDetailPengajuan)
+   ├─ Menampilkan data lengkap pengajuan
+   ├─ Tombol "Tolak" → Buka Modal Tolak Pengajuan
+   ├─ Tombol "Setujui" → Submit approval ke backend
+   └─ Tombol "Tutup" / Klik overlay / Tekan ESC → Tutup modal
+   ↓
+3. MODAL TOLAK PENGAJUAN (modalTolakPengajuan)
+   ├─ Menampilkan konfirmasi & form alasan penolakan
+   ├─ Tombol "Batal" / Klik overlay / Tekan ESC → Kembali ke Modal Detail
+   └─ Tombol "Konfirmasi Penolakan" → Submit penolakan ke backend
+   ↓
+4. PROSES BACKEND (di luar scope frontend)
+   └─ Update status pengajuan & kirim notifikasi
+
+KEYBOARD SHORTCUTS:
+- ESC: Tutup modal yang sedang aktif (prioritas: tolak → detail)
+- Click Overlay: Tutup modal yang sedang aktif
+
+DATA FLOW:
+- Detail Modal ← Data dari button.dataset-* & API /api/pengguna/detail-pengajuan/:id
+- Tolak Modal ← Data dari elemen modal detail yang sedang aktif
+- Backend Submit ← POST /api/pengguna/pengajuan-tolak/:id dengan alasan
+-->
+<script>
+/**
+ * Variable untuk menyimpan ID pengajuan yang sedang dibuka di modal
+ */
+let idPengajuanAktif = null;
+
+/**
+ * FLAG: Canvas sudah di-init dengan event listener
+ * 
+ * Berguna untuk prevent duplicate event listener kalau initCanvasTandaTangan() dipanggil berkali-kali.
+ * Canvas tidak perlu di-clone, cukup clear background & pastikan listener terpasang SATU KALI.
+ */
+let canvasInitialized = false;
+
+/**
+ * Fungsi: tampilkanNotifikasi
+ * 
+ * Menampilkan notifikasi pop-up kepada user
+ * @param {string} pesan - Pesan yang akan ditampilkan
+ * @param {string} tipe - Tipe notifikasi: 'success', 'error', 'warning', 'info'
+ */
+function tampilkanNotifikasi(pesan, tipe = 'info') {
+    // Buat elemen notifikasi
+    const notifikasi = document.createElement('div');
+    notifikasi.className = `notifikasi notifikasi-${tipe}`;
+    notifikasi.textContent = pesan;
+    notifikasi.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        z-index: 10000;
+        animation: slideIn 3s ease;
+        max-width: 400px;
+        word-wrap: break-word;
+    `;
+    
+    // Set warna berdasarkan tipe
+    const warna = {
+        'success': { bg: '#10b981', text: '#fff' },
+        'error': { bg: '#ef4444', text: '#fff' },
+        'warning': { bg: '#f59e0b', text: '#fff' },
+        'info': { bg: '#3b82f6', text: '#fff' }
+    };
+    
+    const tema = warna[tipe] || warna['info'];
+    notifikasi.style.backgroundColor = tema.bg;
+    notifikasi.style.color = tema.text;
+    
+    // Tambah ke body
+    document.body.appendChild(notifikasi);
+    
+    // Hapus setelah 3 detik
+    setTimeout(() => {
+        notifikasi.style.animation = 'slideOut 3s ease';
+        setTimeout(() => {
+            notifikasi.remove();
+        }, 3000);
+    }, 3000);
+}
+
+/**
+ * HELPER FUNCTION: Matikan semua overlay modal
+ * 
+ * Ini adalah pola emas untuk multi-modal:
+ * - Hanya 1 overlay yang bisa aktif di satu waktu
+ * - Sebelum buka modal apapun, pastikan semua overlay mati dulu
+ * - Ini prevent ghost overlay dari menangkap klik
+ */
+function matikanSemuaOverlay() {
+    document.querySelectorAll('.overlayBackgroundModal').forEach(overlay => {
+        overlay.style.display = 'none';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.visibility = 'hidden';
+    });
+    console.log('⬛ SEMUA overlay dimatikan - prevent ghost overlay interference!');
+}
+
+/**
+ * HELPER FUNCTION: Aktifkan overlay spesifik untuk modal tertentu
+ * 
+ * @param {string} modalId - ID dari modal yang overlay-nya mau diaktifkan
+ */
+function aktifkanOverlayModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const overlay = modal.querySelector('.overlayBackgroundModal');
+        if (overlay) {
+            overlay.style.display = 'block';
+            overlay.style.visibility = 'visible';
+            overlay.style.pointerEvents = 'auto';
+            console.log(`✅ Overlay untuk ${modalId} DIAKTIFKAN`);
+        }
+    }
+}
+
+/**
+ * Membuka modal detail pengajuan dengan data dari tombol yang diklik
+ * @param {HTMLElement} button - Elemen tombol Detail yang diklik
+ */
+function bukaModalDetailPengajuan(button) {
+    console.log('📂 Membuka modal detail pengajuan...');
+    
+    // Simpan ID pengajuan untuk keperluan approval
+    idPengajuanAktif = button.dataset.id || null;
+    console.log('📌 ID pengajuan aktif:', idPengajuanAktif);
+    
+    // Ambil data dari data-* attributes pada button
+    const dataPengajuan = {
+        namaPengguna: button.dataset.namaPengguna || '-',
+        jabatan: button.dataset.jabatan || '-',
+        jenisIzin: button.dataset.jenisIzin || '-',
+        periode: button.dataset.periode || '-',
+        durasi: button.dataset.durasi || '-',
+        tanggalDiajukan: button.dataset.tanggalDiajukan || '-',
+        alasan: button.dataset.alasan || '-'
+    };
+    
+    console.log('📋 Data pengajuan dari button:', dataPengajuan);
+    
+    // Fetch detail lengkap dari API (termasuk sisa cuti & tanda tangan)
+    if (idPengajuanAktif) {
+        fetch(`/api/pengguna/detail-pengajuan/${idPengajuanAktif}`)
+            .then(response => response.json())
+            .then(result => {
+                console.log('📡 Response dari API:', result);
+                
+                if (result.success && result.data.detail_pengajuan) {
+                    // Gunakan data dari API (lebih lengkap)
+                    const dataAPI = result.data.detail_pengajuan;
+                    const dataLengkap = {
+                        namaPengguna: dataAPI.nama_pengguna || dataPengajuan.namaPengguna,
+                        jabatan: dataAPI.jabatan_pengguna || dataPengajuan.jabatan,
+                        jenisIzin: dataAPI.jenis_izin || dataPengajuan.jenisIzin,
+                        periode: dataAPI.periode_izin || dataPengajuan.periode,
+                        durasi: dataAPI.durasi_pengajuan || dataPengajuan.durasi,
+                        tanggalDiajukan: dataAPI.tanggal_diajukan || dataPengajuan.tanggalDiajukan,
+                        alasan: dataAPI.alasan_pengajuan || dataPengajuan.alasan,
+                        sisaCuti: dataAPI.sisa_cuti || '0',
+                        tandaTangan: dataAPI.tanda_tangan_administratif || '[TANDA TANGAN ADMINISTRATIF]'
+                    };
+                    
+                    console.log('✅ Data lengkap dari API:', dataLengkap);
+                    isianDataModalDetailPengajuan(dataLengkap);
+                } else {
+                    // Fallback ke data dari button jika API gagal
+                    console.warn('⚠️ API tidak mengembalikan data, gunakan button data');
+                    isianDataModalDetailPengajuan(dataPengajuan);
+                }
+                
+                // Tampilkan modal
+                tampilkanModal();
+            })
+            .catch(error => {
+                console.error('❌ Error fetch API:', error);
+                // Fallback ke data dari button
+                isianDataModalDetailPengajuan(dataPengajuan);
+                tampilkanModal();
+            });
+    } else {
+        // Jika tidak ada ID, gunakan data dari button
+        console.warn('⚠️ ID pengajuan tidak ditemukan, gunakan button data');
+        isianDataModalDetailPengajuan(dataPengajuan);
+        tampilkanModal();
+    }
+}
+
+/**
+ * Helper: Tampilkan modal setelah data siap dengan animasi
+ * 
+ * Animasi: Modal masuk dari bawah dengan fade in smooth
+ * Duration: 400ms dengan cubic-bezier bounce effect
+ */
+function tampilkanModal() {
+    const modal = document.getElementById('modalDetailPengajuan');
+    if (modal) {
+        // Step 1: Set display agar modal visible
+        modal.style.display = 'flex';
+        console.log('🎬 Modal detail pengajuan tampil...');
+        
+        // Step 2: Trigger animasi dengan menambah class (sedikit delay agar CSS transition berfungsi)
+        const container = modal.querySelector('.containerModalDetailPengajuan');
+        if (container) {
+            // Reset class (hapus kelas animasi keluar jika ada)
+            container.classList.remove('modalAnimasiKeluar');
+            // Tambah class animasi masuk
+            container.classList.add('modalAnimasiMasuk');
+            console.log('✅ Animasi slide in dimulai');
+        }
+        
+        console.log('✅ Modal detail pengajuan berhasil dibuka dengan animasi');
+    } else {
+        console.error('❌ Modal element tidak ditemukan');
+    }
+}
+
+/**
+ * Mengisi data pengajuan ke dalam form modal
+ * @param {Object} dataPengajuan - Object berisi data pengajuan
+ */
+function isianDataModalDetailPengajuan(dataPengajuan) {
+    console.log('📝 Mengisi data ke modal...');
+    
+    // Mapping data ke elemen DOM
+    const pemetaanData = {
+        'namaKaryawanDetail': dataPengajuan.namaPengguna,
+        'jabatanKaryawanDetail': dataPengajuan.jabatan,
+        'jenisIzinPernyataan': dataPengajuan.jenisIzin,
+        'periodePernyataan': dataPengajuan.periode,
+        'teksAlasan': dataPengajuan.alasan,
+        'tanggalDiajukanDetail': dataPengajuan.tanggalDiajukan,
+        'namaPerusahaanTTD': dataPengajuan.namaPengguna,
+        'nilaiDurasi': dataPengajuan.durasi,
+        'nilaiSisaCuti': dataPengajuan.sisaCuti || '0'
+    };
+    
+    // Loop dan set value ke setiap element
+    for (const [elementId, nilaiData] of Object.entries(pemetaanData)) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = nilaiData;
+            console.log(`✅ ${elementId} diisi dengan: ${nilaiData}`);
+        } else {
+            console.warn(`⚠️ Element dengan id "${elementId}" tidak ditemukan`);
+        }
+    }
+    
+    // Update judul jenis izin di bagian atas modal
+    const judulJenisIzin = document.getElementById('judulJenisIzin');
+    if (judulJenisIzin) {
+        judulJenisIzin.textContent = dataPengajuan.jenisIzin.toUpperCase();
+    }
+    
+    // Update tanda tangan (jika ada data, tampilkan; jika tidak, tampilkan placeholder)
+    const boxTandaTangan = document.querySelector('.boxTandaTangan');
+    if (boxTandaTangan && dataPengajuan.tandaTangan && dataPengajuan.tandaTangan !== '[TANDA TANGAN ADMINISTRATIF]') {
+        // Jika ada tanda tangan dari database, tampilkan sebagai image/text
+        boxTandaTangan.innerHTML = `<img src="${dataPengajuan.tandaTangan}" alt="Tanda Tangan" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+        console.log('✅ Tanda tangan berhasil ditampilkan');
+    } else {
+        // Fallback ke placeholder
+        boxTandaTangan.innerHTML = '<p class="teksPlaceholderTandaTangan">Tanda Tangan</p>';
+        console.log('⚠️ Tanda tangan placeholder ditampilkan');
+    }
+}
+
+/**
+ * Menutup modal detail pengajuan dengan animasi
+ * 
+ * Animasi: Modal keluar ke atas dengan fade out smooth
+ * Duration: 300ms dengan ease-in timing
+ */
+function tutupModalDetailPengajuan() {
+    console.log('🔒 Menutup modal detail pengajuan dengan animasi...');
+    
+    const modal = document.getElementById('modalDetailPengajuan');
+    if (modal) {
+        // Step 1: Trigger animasi keluar pada container
+        const container = modal.querySelector('.containerModalDetailPengajuan');
+        if (container) {
+            container.classList.remove('modalAnimasiMasuk');
+            container.classList.add('modalAnimasiKeluar');
+            console.log('🎬 Animasi slide out dimulai');
+        }
+        
+        // Step 2: Tunggu animasi selesai, baru hide element & clear classes
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.style.visibility = 'hidden';
+            // Clear animasi classes untuk mencegah conflict dengan modal lain
+            if (container) {
+                container.classList.remove('modalAnimasiKeluar');
+            }
+            idPengajuanAktif = null;
+            console.log('✅ Modal detail pengajuan berhasil ditutup setelah animasi');
+        }, 300); // Durasi animasi keluar
+    }
+}
+
+/**
+ * Menyetujui pengajuan dengan submit ke backend
+ */
+/**
+ * Fungsi: setujuiPengajuan
+ * 
+ * UPDATED: Fungsi ini sekarang membuka modal "Setujui Pengajuan" untuk konfirmasi
+ * dengan tanda tangan digital, daripada langsung POST ke backend.
+ * 
+ * Workflow sebelumnya:
+ * - User klik "Setujui" → Langsung POST ke /api/pengguna/pengajuan-setujui
+ * 
+ * Workflow sekarang:
+ * - User klik "Setujui" (di modal detail) → Buka modal Setujui Pengajuan
+ * - User berikan tanda tangan digital → Klik "Konfirmasi Persetujuan"
+ * - Baru POST ke /api/pengguna/pengajuan-setujui
+ * 
+ * Animation: Slide out detail → Slide in setujui (SAMA SEPERTI TOLAK PENGAJUAN)
+ * Overlay tetap visible dan tidak berubah (single container)
+ */
+function setujuiPengajuan() {
+    if (!idPengajuanAktif) {
+        console.error('❌ ID pengajuan tidak ditemukan');
+        alert('Terjadi kesalahan: ID pengajuan tidak ditemukan');
+        return;
+    }
+    
+    console.log('🟢 ROUTING: Detail Modal → Setujui Modal (Ganti View dengan Animasi)');
+    console.log('📌 ID Pengajuan:', idPengajuanAktif);
+    
+    // Step 1: Ambil data jenis izin dan nama pengguna dari modal detail yang aktif
+    const jenisIzin = document.getElementById('jenisIzinPernyataan')?.textContent || '-';
+    const namaPengguna = document.getElementById('namaKaryawanDetail')?.textContent || '-';
+    console.log('📋 Data yang diambil dari Modal Detail:', { jenisIzin, namaPengguna });
+    
+    // Step 2: Isi data ke modal setujui
+    document.getElementById('jenisIzinSetujui').textContent = jenisIzin;
+    document.getElementById('namaKaryawanSetujui').textContent = namaPengguna;
+    console.log('✅ Data diisi ke Modal Setujui');
+    
+    // Step 3: Clear canvas untuk tanda tangan baru
+    hapusTandaTanganDigital();
+    console.log('✅ Canvas dibersihkan');
+    
+    // Step 4: Animasi slide out untuk modal detail container
+    const modalDetail = document.getElementById('modalDetailPengajuan');
+    
+    if (modalDetail) {
+        // Tambah class animasi keluar HANYA pada container, bukan overlay
+        const containerDetail = modalDetail.querySelector('.containerModalDetailPengajuan');
+        if (containerDetail) {
+            containerDetail.classList.add('modalAnimasiKeluar');
+        }
+        console.log('🎬 Animasi detail modal container: slide out');
+        
+        // Tunggu animasi selesai, lalu ganti ke modal setujui
+        setTimeout(() => {
+            // Pastikan modal detail fully hidden
+            modalDetail.style.display = 'none';
+            modalDetail.style.visibility = 'hidden';
+            modalDetail.style.pointerEvents = 'none';
+            console.log('🔒 Modal Detail ditutup setelah animasi');
+            
+            // PENTING: Matikan SEMUA overlay sebelum buka modal setujui
+            matikanSemuaOverlay();
+            
+            // Step 5: Buka modal setujui dengan animasi slide in
+            const modalSetujui = document.getElementById('modalSetujuiPengajuan');
+            if (modalSetujui) {
+                // Aktifkan overlay setujui dengan tegas
+                aktifkanOverlayModal('modalSetujuiPengajuan');
+                
+                // Reset animation
+                const containerSetujui = modalSetujui.querySelector('.containerModalSetujuiPengajuan');
+                
+                if (containerSetujui) {
+                    containerSetujui.classList.remove('modalAnimasiKeluar');
+                    containerSetujui.classList.add('modalAnimasiMasuk');
+                }
+                
+                // Aktifkan modal container
+                modalSetujui.style.display = 'flex';
+                modalSetujui.style.visibility = 'visible';
+                modalSetujui.style.pointerEvents = 'auto';
+                
+                console.log('🎬 Animasi setujui modal container: slide in');
+                console.log('👁️  Modal Setujui AKTIF dengan overlay sendiri');
+                console.log('✅ HANYA overlay setujui yang bisa terima events!');
+                
+                // PENTING: Init canvas SETELAH modal visible (jadi offsetWidth valid)
+                // Delay 50ms untuk memastikan browser sudah render & recalculate layout
+                setTimeout(() => {
+                    initCanvasTandaTangan();
+                }, 50);
+            } else {
+                console.error('❌ Modal setujui pengajuan tidak ditemukan');
+            }
+        }, 300); // Durasi animasi keluar
+    }
+}
+
+/**
+ * Menampilkan modal tolak pengajuan dengan animasi smooth
+ * 
+ * ROUTING: Modal Detail Pengajuan → Modal Tolak Pengajuan (Single Display)
+ * 
+ * Trigger: Tombol "Tolak" pada modal detail
+ * Action: Tutup modal detail dengan animasi, ambil data, buka modal tolak dengan animasi
+ * 
+ * Animation: Slide out detail → Slide in tolak
+ * Overlay tetap visible dan tidak berubah
+ * 
+ * NOTE: Hanya satu modal yang tampil di satu waktu (bukan nested)
+ */
+function tolakPengajuan() {
+    if (!idPengajuanAktif) {
+        console.error('❌ ID pengajuan tidak ditemukan');
+        alert('Terjadi kesalahan: ID pengajuan tidak ditemukan');
+        return;
+    }
+    
+    console.log('🔴 ROUTING: Detail Modal → Tolak Modal (Ganti View dengan Animasi)');
+    console.log('📌 ID Pengajuan:', idPengajuanAktif);
+    
+    // Step 1: Ambil data jenis izin dan nama pengguna dari modal detail yang aktif
+    const jenisIzin = document.getElementById('jenisIzinPernyataan')?.textContent || '-';
+    const namaPengguna = document.getElementById('namaKaryawanDetail')?.textContent || '-';
+    console.log('📋 Data yang diambil dari Modal Detail:', { jenisIzin, namaPengguna });
+    
+    // Step 2: Isi data ke modal tolak
+    document.getElementById('jenisIzinTolak').textContent = jenisIzin;
+    document.getElementById('namaPengggunaTolak').textContent = namaPengguna;
+    console.log('✅ Data diisi ke Modal Tolak');
+    
+    // Step 3: Kosongkan textarea alasan penolakan
+    document.getElementById('inputAlasanPenolakan').value = '';
+    console.log('✅ Textarea dibersihkan');
+    
+    // Step 4: Animasi slide out untuk modal detail container
+    const modalDetail = document.getElementById('modalDetailPengajuan');
+    
+    if (modalDetail) {
+        // Tambah class animasi keluar HANYA pada container, bukan overlay
+        const containerDetail = modalDetail.querySelector('.containerModalDetailPengajuan');
+        if (containerDetail) {
+            containerDetail.classList.add('modalAnimasiKeluar');
+        }
+        console.log('🎬 Animasi detail modal container: slide out');
+        
+        // Tunggu animasi selesai, lalu ganti ke modal tolak
+        setTimeout(() => {
+            modalDetail.style.display = 'none';
+            modalDetail.style.visibility = 'hidden';
+            modalDetail.style.pointerEvents = 'none';
+            console.log('🔒 Modal Detail ditutup setelah animasi');
+            
+            // PENTING: Matikan SEMUA overlay sebelum buka modal tolak
+            matikanSemuaOverlay();
+            
+            // Step 5: Buka modal tolak dengan animasi slide in
+            const modalTolak = document.getElementById('modalTolakPengajuan');
+            if (modalTolak) {
+                // Aktifkan overlay tolak dengan tegas
+                aktifkanOverlayModal('modalTolakPengajuan');
+                
+                // Reset animation
+                const containerTolak = modalTolak.querySelector('.containerModalTolakPengajuan');
+                
+                if (containerTolak) {
+                    containerTolak.classList.remove('modalAnimasiKeluar');
+                    containerTolak.classList.add('modalAnimasiMasuk');
+                }
+                
+                // Aktifkan modal container
+                modalTolak.style.display = 'flex';
+                modalTolak.style.visibility = 'visible';
+                modalTolak.style.pointerEvents = 'auto';
+                
+                console.log('🎬 Animasi tolak modal container: slide in');
+                console.log('👁️  Modal Tolak AKTIF dengan overlay sendiri');
+                console.log('✅ HANYA overlay tolak yang bisa terima events!');
+            } else {
+                console.error('❌ Modal tolak pengajuan tidak ditemukan');
+            }
+        }, 300); // Durasi animasi keluar
+    }
+}
+
+/**
+ * Menutup modal tolak pengajuan dan kembali ke modal detail dengan animasi
+ * 
+ * ROUTING: Modal Tolak Pengajuan → Modal Detail Pengajuan (Single Display)
+ * 
+ * Trigger: Tombol "Batal", klik overlay, atau tekan ESC
+ * Action: Tutup modal tolak dengan animasi, buka modal detail kembali dengan animasi
+ * 
+ * Animation: Slide out tolak → Slide in detail
+ * Overlay tetap visible dan tidak berubah
+ * 
+ * NOTE: Hanya satu modal yang tampil di satu waktu (bukan nested)
+ */
+function tutupModalTolakPengajuan() {
+    console.log('🔒 ROUTING: Tolak Modal → Detail Modal (Ganti View dengan Animasi)');
+    
+    // Step 1: Animasi slide out untuk modal tolak container
+    const modalTolak = document.getElementById('modalTolakPengajuan');
+    
+    if (modalTolak) {
+        // Tambah class animasi keluar HANYA pada container, bukan overlay
+        const containerTolak = modalTolak.querySelector('.containerModalTolakPengajuan');
+        if (containerTolak) {
+            containerTolak.classList.remove('modalAnimasiMasuk');
+            containerTolak.classList.add('modalAnimasiKeluar');
+        }
+        console.log('🎬 Animasi tolak modal container: slide out');
+        
+        // Tunggu animasi selesai, lalu buka modal detail
+        setTimeout(() => {
+            // Pastikan modal tolak fully hidden
+            modalTolak.style.display = 'none';
+            modalTolak.style.visibility = 'hidden';
+            modalTolak.style.pointerEvents = 'none';
+            console.log('🔒 Modal Tolak ditutup dan tidak bisa di-interact');
+            
+            // PENTING: Matikan SEMUA overlay sebelum buka modal detail
+            matikanSemuaOverlay();
+            
+            // Step 2: Buka modal detail kembali dengan animasi slide in
+            const modalDetail = document.getElementById('modalDetailPengajuan');
+            if (modalDetail) {
+                // Aktifkan overlay detail dengan tegas
+                aktifkanOverlayModal('modalDetailPengajuan');
+                
+                // Reset animation
+                const containerDetail = modalDetail.querySelector('.containerModalDetailPengajuan');
+                
+                if (containerDetail) {
+                    containerDetail.classList.remove('modalAnimasiKeluar');
+                    containerDetail.classList.add('modalAnimasiMasuk');
+                }
+                
+                // Aktifkan modal container
+                modalDetail.style.display = 'flex';
+                modalDetail.style.visibility = 'visible';
+                modalDetail.style.pointerEvents = 'auto';
+                
+                console.log('🎬 Animasi detail modal container: slide in');
+                console.log('👁️  Modal Detail ditampilkan kembali dengan animasi');
+                console.log('✅ HANYA overlay detail yang bisa terima events!');
+            }
+        }, 300); // Durasi animasi keluar
+    }
+}
+
+/**
+ * Mengirim konfirmasi penolakan ke backend
+ * 
+ * ROUTING: Modal Tolak Pengajuan → Backend → Halaman Reload
+ * 
+ * Trigger: Tombol "Konfirmasi Penolakan"
+ * Action: Submit penolakan ke backend & reload halaman
+ * 
+ * Endpoint: POST /api/pengguna/pengajuan-tolak/:id
+ * Payload: { alasan_penolakan: string }
+ */
+async function konfirmasiPenolakan() {
+    if (!idPengajuanAktif) {
+        console.error('❌ ID pengajuan tidak ditemukan');
+        alert('Terjadi kesalahan: ID pengajuan tidak ditemukan');
+        return;
+    }
+    
+    // Ambil alasan penolakan dari textarea
+    const alasanPenolakan = document.getElementById('inputAlasanPenolakan').value.trim();
+    
+    console.log('❌ ROUTING: Submit Penolakan Pengajuan ke Backend');
+    console.log('📤 Data pengiriman:', { id: idPengajuanAktif, alasanPenolakan });
+    
+    // Disable button saat loading
+    const btn = document.getElementById('tombolKonfirmasiPenolakan');
+    const btnBatal = document.getElementById('tombolBatalPenolakan');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+    }
+    if (btnBatal) btnBatal.disabled = true;
+    
+    try {
+        const response = await fetch(`/api/pengguna/pengajuan-tolak/${idPengajuanAktif}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                alasan_penolakan: alasanPenolakan
+            })
+        });
+        
+        const result = await response.json();
+        console.log('📡 Response dari backend:', { status: response.status, success: result.success, message: result.message });
+        
+        if (response.ok && result.success) {
+            console.log('✅ Pengajuan berhasil ditolak di backend');
+            console.log('📍 ROUTE: Backend → Reload Halaman');
+            tampilkanNotifikasi('Pengajuan berhasil ditolak', 'warning');
+            
+            // Langsung reload halaman SEKARANG (tanpa delay)
+            setTimeout(() => {
+                location.reload();
+            }, 300);
+        } else {
+            console.error('❌ Error response:', result);
+            const pesan = result.message || 'Gagal menolak pengajuan';
+            tampilkanNotifikasi(pesan, 'error');
+            
+            // Re-enable button kalau gagal
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-times iconButtonModal"></i><span class="textButtonModal">Konfirmasi Penolakan</span>';
+            }
+            if (btnBatal) btnBatal.disabled = false;
+        }
+    } catch (error) {
+        console.error('❌ Error fetch:', error);
+        tampilkanNotifikasi('Terjadi kesalahan saat menolak pengajuan: ' + error.message, 'error');
+        
+        // Re-enable button kalau error
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-times iconButtonModal"></i><span class="textButtonModal">Konfirmasi Penolakan</span>';
+        }
+        if (btnBatal) btnBatal.disabled = false;
+    }
+}
+
+/**
+ * Fungsi: bukaModalSetujuiPengajuan
+ * 
+ * Membuka modal "Setujui Pengajuan" dengan data pengajuan yang akan disetujui.
+ * Fungsi ini dipanggil saat user klik tombol "Setujui" di modal detail pengajuan.
+ * 
+ * Workflow:
+ * 1. Ambil data jenis izin & nama karyawan dari modal detail
+ * 2. Tampilkan di modal setujui untuk konfirmasi
+ * 3. Init canvas untuk tanda tangan digital
+ * 4. Tampilkan modal dengan smooth
+ */
+function bukaModalSetujuiPengajuan() {
+    console.log('🎬 Membuka modal setujui pengajuan...');
+    
+    // Ambil data dari modal detail (yang sudah terbuka)
+    const jenisIzinElement = document.getElementById('judulJenisIzin');
+    const namaKaryawanDetailElement = document.getElementById('namaKaryawanDetail');
+    
+    // Ekstrak jenis izin (hapus "SURAT" prefix jika ada)
+    let jenisIzin = jenisIzinElement ? jenisIzinElement.textContent : '-';
+    if (jenisIzin.startsWith('SURAT ')) {
+        jenisIzin = jenisIzin.substring(6);
+    }
+    
+    // Ambil nama karyawan
+    const namaKaryawan = namaKaryawanDetailElement ? namaKaryawanDetailElement.textContent : '-';
+    
+    // Isi data ke modal setujui
+    const jenisIzinSetujuiElement = document.getElementById('jenisIzinSetujui');
+    const namaKaryawanSetujuiElement = document.getElementById('namaKaryawanSetujui');
+    
+    if (jenisIzinSetujuiElement) jenisIzinSetujuiElement.textContent = jenisIzin;
+    if (namaKaryawanSetujuiElement) namaKaryawanSetujuiElement.textContent = namaKaryawan;
+    
+    console.log(`📋 Data diisi: ${jenisIzin} dari ${namaKaryawan}`);
+    
+    // Init canvas untuk menggambar tanda tangan
+    initCanvasTandaTangan();
+    
+    // Tampilkan modal
+    const modalSetujui = document.getElementById('modalSetujuiPengajuan');
+    if (modalSetujui) {
+        // Clear old classes jika ada
+        const container = modalSetujui.querySelector('.containerModalSetujuiPengajuan');
+        if (container) {
+            container.classList.remove('modalAnimasiKeluar');
+        }
+        
+        // Set display flex untuk tampilkan modal
+        modalSetujui.style.display = 'flex';
+        modalSetujui.style.visibility = 'visible';
+        
+        // Trigger animasi masuk
+        if (container) {
+            container.classList.add('modalAnimasiMasuk');
+            console.log('✅ Modal setujui dibuka dengan animasi');
+        }
+    }
+}
+
+/**
+ * Fungsi: tutupModalSetujuiPengajuan
+ * 
+ * Menutup modal "Setujui Pengajuan" dengan animasi dan kembali ke modal detail.
+ */
+/**
+ * Fungsi: tutupModalSetujuiPengajuan
+ * 
+ * Menutup modal "Setujui Pengajuan" dan kembali ke modal detail dengan animasi.
+ * 
+ * ROUTING: Modal Setujui Pengajuan → Modal Detail Pengajuan (Single Display)
+ * 
+ * Trigger: Tombol "Batal", klik overlay, atau tekan ESC
+ * Action: Tutup modal setujui dengan animasi, buka modal detail dengan animasi
+ * 
+ * Animation: Slide out setujui → Slide in detail
+ * Overlay tetap visible dan tidak berubah
+ * 
+ * NOTE: Hanya satu modal yang tampil di satu waktu (bukan nested)
+ */
+function tutupModalSetujuiPengajuan() {
+    console.log('🔒 ROUTING: Setujui Modal → Detail Modal (Ganti View dengan Animasi)');
+    
+    // Step 1: Animasi slide out untuk modal setujui container
+    const modalSetujui = document.getElementById('modalSetujuiPengajuan');
+    
+    if (modalSetujui) {
+        // Tambah class animasi keluar HANYA pada container, bukan overlay
+        const containerSetujui = modalSetujui.querySelector('.containerModalSetujuiPengajuan');
+        if (containerSetujui) {
+            containerSetujui.classList.remove('modalAnimasiMasuk');
+            containerSetujui.classList.add('modalAnimasiKeluar');
+        }
+        console.log('🎬 Animasi setujui modal container: slide out');
+        
+        // Tunggu animasi selesai, lalu buka modal detail
+        setTimeout(() => {
+            // Pastikan modal setujui fully hidden
+            modalSetujui.style.display = 'none';
+            modalSetujui.style.visibility = 'hidden';
+            modalSetujui.style.pointerEvents = 'none';
+            
+            // RESET flag canvas initialization untuk session berikutnya
+            canvasInitialized = false;
+            console.log('🔒 Modal Setujui ditutup dan tidak bisa di-interact');
+            console.log('🔄 Canvas flag di-reset untuk session berikutnya');
+            
+            // PENTING: Matikan SEMUA overlay sebelum buka modal detail
+            matikanSemuaOverlay();
+            
+            // Step 2: Buka modal detail kembali dengan animasi slide in
+            const modalDetail = document.getElementById('modalDetailPengajuan');
+            if (modalDetail) {
+                // Aktifkan overlay detail dengan tegas
+                aktifkanOverlayModal('modalDetailPengajuan');
+                
+                // Reset animation
+                const containerDetail = modalDetail.querySelector('.containerModalDetailPengajuan');
+                
+                if (containerDetail) {
+                    containerDetail.classList.remove('modalAnimasiKeluar');
+                    containerDetail.classList.add('modalAnimasiMasuk');
+                }
+                
+                // Aktifkan modal container
+                modalDetail.style.display = 'flex';
+                modalDetail.style.visibility = 'visible';
+                modalDetail.style.pointerEvents = 'auto';
+                
+                console.log('🎬 Animasi detail modal container: slide in');
+                console.log('👁️  Modal Detail ditampilkan kembali dengan animasi');
+                console.log('✅ HANYA overlay detail yang bisa terima events!');
+            }
+        }, 300); // Durasi animasi keluar
+    }
+}
+
+/**
+ * Fungsi: initCanvasTandaTangan
+ * 
+ * Inisialisasi canvas element untuk menggambar tanda tangan digital.
+ * Support mouse events untuk desktop dan touch events untuk mobile.
+ * 
+ * PENTING: Canvas TIDAK PERLU di-clone. Cukup:
+ * 1. Clear background (canvas masih valid di DOM)
+ * 2. Gunakan FLAG untuk prevent duplicate listeners
+ * 3. Panggil setelah modal visible (offsetWidth valid)
+ */
+function initCanvasTandaTangan() {
+    const canvas = document.getElementById('canvasTandaTanganSetujui');
+    if (!canvas) {
+        console.warn('⚠️ Canvas element tidak ditemukan');
+        return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('❌ Tidak bisa mendapatkan canvas 2D context');
+        return;
+    }
+    
+    // Set canvas size (responsive) - SETELAH modal visible
+    const container = canvas.parentElement;
+    if (!container) {
+        console.warn('⚠️ Canvas container tidak ditemukan');
+        return;
+    }
+    
+    const containerWidth = container.offsetWidth - 36; // 36px untuk padding
+    const dpr = window.devicePixelRatio || 1; // High-DPI support (Retina displays)
+    
+    // Set canvas internal resolution (untuk drawing quality tinggi)
+    canvas.width = (containerWidth > 0 ? containerWidth : 600) * dpr;
+    canvas.height = 200 * dpr;
+    
+    // Scale context untuk compensate dengan DPR
+    if (dpr > 1) {
+        ctx.scale(dpr, dpr);
+    }
+    
+    console.log(`📐 Canvas size diatur: ${containerWidth}x200 (DPR: ${dpr}x)`);
+    
+    // Background putih - canvas sudah siap digambar
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, containerWidth > 0 ? containerWidth : 600, 200);
+    console.log(`⚪ Canvas background cleared (putih)`);
+    
+    // Skip jika event listener sudah terpasang
+    if (canvasInitialized) {
+        console.log('ℹ️ Canvas event listener sudah terpasang sebelumnya, skip rebind');
+        return;
+    }
+    
+    // Setup drawing state (closure scope)
+    let isDrawing = false;
+    
+    // Helper: Ambil koordinat dari mouse atau touch
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    }
+    
+    // Helper: Mulai menggambar
+    function start(e) {
+        isDrawing = true;
+        const { x, y } = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        console.log('🖌️ Mulai menggambar:', { x, y });
+    }
+    
+    // Helper: Gambar line dengan kualitas tinggi
+    function draw(e) {
+        if (!isDrawing) return;
+        
+        const { x, y } = getPos(e);
+        ctx.lineWidth = 2.5;           // Garis lebih tebal (dari 2 → 2.5) biar terlihat jelas
+        ctx.lineCap = 'round';          // Ujung garis melengkung (smooth)
+        ctx.lineJoin = 'round';         // Join point melengkung (smooth)
+        ctx.strokeStyle = '#101828';    // Warna gelap untuk kontras tinggi
+        ctx.globalAlpha = 1.0;          // Full opacity (tidak transparent)
+        ctx.lineTo(x, y);
+        ctx.stroke();
+    }
+    
+    // Helper: Stop menggambar
+    function stop() {
+        if (isDrawing) {
+            isDrawing = false;
+            ctx.closePath();
+            console.log('✋ Selesai menggambar');
+        }
+    }
+    
+    // PASANG EVENT LISTENER - SEKALI SAJA
+    // Mouse events
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stop);
+    canvas.addEventListener('mouseleave', stop);
+    console.log('🖱️ Mouse events terpasang');
+    
+    // Touch events (mobile)
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        start(e);
+    });
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        draw(e);
+    });
+    canvas.addEventListener('touchend', stop);
+    console.log('👆 Touch events terpasang');
+    
+    // Mark sebagai initialized
+    canvasInitialized = true;
+    console.log('✅ Canvas tanda tangan READY dan INTERACTIVE!');
+}
+
+/**
+ * Fungsi: hapusTandaTanganDigital
+ * 
+ * Menghapus semua gambar di canvas dan reset ke background putih.
+ * 
+ * Aman dipanggil kapan saja karena:
+ * - Canvas elemen tidak diganti (masih sama di DOM)
+ * - Hanya clear drawing, event listener tetap aktif
+ */
+function hapusTandaTanganDigital() {
+    const canvas = document.getElementById('canvasTandaTanganSetujui');
+    if (!canvas) {
+        console.warn('⚠️ Canvas tidak ditemukan saat hapus tanda tangan');
+        return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('❌ Tidak bisa mendapatkan context untuk hapus');
+        return;
+    }
+    
+    // Clear canvas & reset background putih
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    console.log('🗑️ Tanda tangan dihapus, canvas siap untuk gambar baru');
+}
+
+/**
+ * Fungsi: konfirmasiSetujuiPengajuan (wrapper async)
+ * 
+ * Mengirim approval ke backend setelah user konfirmasi.
+ * Fungsi ini mengganti setujuiPengajuan() yang sebelumnya langsung POST.
+ */
+async function konfirmasiSetujuiPengajuan() {
+    if (!idPengajuanAktif) {
+        console.error('❌ ID pengajuan tidak ditemukan');
+        alert('Terjadi kesalahan: ID pengajuan tidak ditemukan');
+        return;
+    }
+    
+    console.log('✅ Mengkonfirmasi persetujuan pengajuan:', idPengajuanAktif);
+    
+    // Disable button saat loading
+    const btn = document.getElementById('tombolKonfirmasiSetujui');
+    const btnBatal = document.getElementById('tombolBatalSetujui');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+    }
+    if (btnBatal) btnBatal.disabled = true;
+    
+    try {
+        const response = await fetch(`/api/pengguna/pengajuan-setujui/${idPengajuanAktif}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const result = await response.json();
+        console.log('📡 Response dari backend:', { status: response.status, success: result.success, message: result.message });
+        
+        if (response.ok && result.success) {
+            console.log('✅ Pengajuan berhasil disetujui');
+            tampilkanNotifikasi('Pengajuan berhasil disetujui', 'success');
+            
+            // Langsung reload halaman SEKARANG (tanpa delay)
+            setTimeout(() => {
+                location.reload();
+            }, 300);
+        } else {
+            console.error('❌ Error response:', result);
+            const pesan = result.message || 'Gagal menyetujui pengajuan';
+            tampilkanNotifikasi(pesan, 'error');
+            
+            // Re-enable button kalau gagal
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check iconButtonModal"></i><span class="textButtonModal">Konfirmasi Persetujuan</span>';
+            }
+            if (btnBatal) btnBatal.disabled = false;
+        }
+    } catch (error) {
+        console.error('❌ Error fetch:', error);
+        tampilkanNotifikasi('Terjadi kesalahan saat menyetujui pengajuan: ' + error.message, 'error');
+        
+        // Re-enable button kalau error
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check iconButtonModal"></i><span class="textButtonModal">Konfirmasi Persetujuan</span>';
+        }
+        if (btnBatal) btnBatal.disabled = false;
+    }
+}
+
+// Event listeners untuk modal
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Inisialisasi event listener untuk modal...');
+    
+    // Tombol tutup modal detail
+    const tombolTutup = document.getElementById('tombolTutupModal');
+    if (tombolTutup) {
+        tombolTutup.addEventListener('click', tutupModalDetailPengajuan);
+        console.log('✅ Event listener "tutup modal detail" terpasang');
+    }
+    
+    // Tombol tolak pengajuan (buka modal tolak)
+    const tombolTolak = document.getElementById('tombolTolakPengajuan');
+    if (tombolTolak) {
+        tombolTolak.addEventListener('click', tolakPengajuan);
+        console.log('✅ Event listener "buka modal tolak" terpasang');
+    }
+    
+    // Tombol setujui pengajuan
+    const tombolSetujui = document.getElementById('tombolSetujuiPengajuan');
+    if (tombolSetujui) {
+        tombolSetujui.addEventListener('click', setujuiPengajuan);
+        console.log('✅ Event listener "setujui pengajuan" terpasang');
+    }
+    
+    // Tombol batal pada modal tolak
+    const tombolBatalTolak = document.getElementById('tombolBatalPenolakan');
+    if (tombolBatalTolak) {
+        tombolBatalTolak.addEventListener('click', tutupModalTolakPengajuan);
+        console.log('✅ Event listener "batal tolak" terpasang');
+    }
+    
+    // Tombol konfirmasi penolakan
+    const tombolKonfirmasiTolak = document.getElementById('tombolKonfirmasiPenolakan');
+    if (tombolKonfirmasiTolak) {
+        tombolKonfirmasiTolak.addEventListener('click', konfirmasiPenolakan);
+        console.log('✅ Event listener "konfirmasi penolakan" terpasang');
+    }
+    
+    // ==================== EVENT LISTENERS MODAL SETUJUI PENGAJUAN ====================
+    
+    // Tombol batal pada modal setujui
+    const tombolBatalSetujui = document.getElementById('tombolBatalSetujui');
+    if (tombolBatalSetujui) {
+        tombolBatalSetujui.addEventListener('click', tutupModalSetujuiPengajuan);
+        console.log('✅ Event listener "batal setujui" terpasang');
+    }
+    
+    // Tombol konfirmasi persetujuan
+    const tombolKonfirmasiSetujui = document.getElementById('tombolKonfirmasiSetujui');
+    if (tombolKonfirmasiSetujui) {
+        tombolKonfirmasiSetujui.addEventListener('click', konfirmasiSetujuiPengajuan);
+        console.log('✅ Event listener "konfirmasi persetujuan" terpasang');
+    }
+    
+    // Tombol hapus tanda tangan
+    const tombolHapusTandaTangan = document.getElementById('tombolHapusTandaTanganSetujui');
+    if (tombolHapusTandaTangan) {
+        tombolHapusTandaTangan.addEventListener('click', hapusTandaTanganDigital);
+        console.log('✅ Event listener "hapus tanda tangan" terpasang');
+    }
+    
+    // Overlay background - tutup modal saat diklik
+    // Menggunakan event delegation untuk handle tiga overlay (detail & tolak & setujui)
+    // NOTE: Dalam single modal display, hanya ada satu modal yang terbuka
+    const overlayBgDetail = document.querySelectorAll('.overlayBackgroundModal');
+    overlayBgDetail.forEach((overlay, index) => {
+        overlay.addEventListener('click', function(e) {
+            // Jika modal setujui terbuka, tutup modal setujui dan kembali ke modal detail
+            const modalSetujui = document.getElementById('modalSetujuiPengajuan');
+            if (modalSetujui && modalSetujui.style.display !== 'none') {
+                tutupModalSetujuiPengajuan();
+                console.log('✅ Modal setujui ditutup via overlay, kembali ke detail');
+                return;
+            }
+            
+            // Jika modal tolak terbuka, tutup modal tolak dan kembali ke modal detail
+            const modalTolak = document.getElementById('modalTolakPengajuan');
+            if (modalTolak && modalTolak.style.display !== 'none') {
+                tutupModalTolakPengajuan();
+                console.log('✅ Modal tolak ditutup via overlay, kembali ke detail');
+            } 
+            // Jika hanya modal detail terbuka, tutup modal detail
+            else {
+                tutupModalDetailPengajuan();
+                console.log('✅ Modal detail ditutup via overlay');
+            }
+        });
+    });
+    console.log('✅ Event listener "overlay click" terpasang untuk tiga modal');
+    
+    // Escape key untuk tutup modal dan kembali
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            // Cek modal setujui terlebih dahulu
+            const modalSetujui = document.getElementById('modalSetujuiPengajuan');
+            if (modalSetujui && modalSetujui.style.display !== 'none') {
+                tutupModalSetujuiPengajuan();
+                console.log('✅ Modal setujui ditutup via Escape');
+                return;
+            }
+            
+            // Cek modal tolak
+            const modalTolak = document.getElementById('modalTolakPengajuan');
+            if (modalTolak && modalTolak.style.display !== 'none') {
+                tutupModalTolakPengajuan();
+                console.log('✅ Modal tolak ditutup via Escape, kembali ke detail');
+                return;
+            }
+            
+            // Jika tidak, cek modal detail
+            const modalDetail = document.getElementById('modalDetailPengajuan');
+            if (modalDetail && modalDetail.style.display !== 'none') {
+                tutupModalDetailPengajuan();
+                console.log('✅ Modal detail ditutup via Escape');
+            }
+        }
+    });
+    console.log('✅ Event listener "Escape key" terpasang untuk tiga modal (single display)');
+});
+</script>
+
+```

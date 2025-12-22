@@ -101,7 +101,7 @@ const kontrolerKaryawan = {
       }
 
       // Cek apakah email sudah terdaftar
-      const karyawanExisting = await User.findOne({ email });
+      const karyawanExisting = await Pengguna.findOne({ email });
       if (karyawanExisting) {
         return res.status(409).json({
           success: false,
@@ -118,7 +118,7 @@ const kontrolerKaryawan = {
       }
 
       // Buat object karyawan baru
-      const karyawanBaru = new User({
+      const karyawanBaru = new Pengguna({
         nama_lengkap: nama_lengkap.trim(),
         email: email.toLowerCase().trim(),
         jabatan: jabatan.trim(),
@@ -200,7 +200,7 @@ const kontrolerKaryawan = {
       }
 
       // Cari karyawan berdasarkan ID
-      const karyawan = await User.findById(id);
+      const karyawan = await Pengguna.findById(id);
       if (!karyawan) {
         return res.status(404).json({
           success: false,
@@ -219,7 +219,7 @@ const kontrolerKaryawan = {
       }
 
       // Hapus karyawan dari database
-      await User.findByIdAndDelete(id);
+      await Pengguna.findByIdAndDelete(id);
 
       // Response sukses
       res.status(200).json({
@@ -260,7 +260,7 @@ const kontrolerKaryawan = {
    */
   async ambilSemuaSupervisor(req, res) {
     try {
-      const semuaSupervisor = await User.find({ role: 'penanggung-jawab' }).select(
+      const semuaSupervisor = await Pengguna.find({ role: 'penanggung-jawab' }).select(
         'nama_lengkap email'
       );
 
@@ -300,7 +300,7 @@ const kontrolerKaryawan = {
       }
 
       // Cari karyawan berdasarkan ID dan populate penanggung_jawab_id
-      const karyawan = await User.findById(id)
+      const karyawan = await Pengguna.findById(id)
         .select('-password')
         .populate('penanggung_jawab_id', 'nama_lengkap email');
 
@@ -394,7 +394,7 @@ const kontrolerKaryawan = {
         }
 
         // Cek apakah email sudah digunakan oleh user lain
-        const cekEmail = await User.findOne({ email, _id: { $ne: id } });
+        const cekEmail = await Pengguna.findOne({ email, _id: { $ne: id } });
         if (cekEmail) {
           return res.status(400).json({
             success: false,
@@ -405,7 +405,7 @@ const kontrolerKaryawan = {
       }
 
       // Cari dan validasi karyawan
-      const karyawan = await User.findById(id);
+      const karyawan = await Pengguna.findById(id);
       if (!karyawan) {
         return res.status(404).json({
           success: false,

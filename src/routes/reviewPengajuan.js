@@ -1,16 +1,20 @@
 const express = require('express');
-const reviewPengajuanController = require('../controllers/reviewPengajuanController');
+const { ambilDaftarPengajuanReview } = require('../controllers/reviewPengajuanController');
 
 /**
- * Router untuk API Review Pengajuan (Penanggung Jawab)
- * Menangani endpoint pengambilan daftar pengajuan yang menunggu review
+ * ==================== ROUTER: REVIEW PENGAJUAN ====================
  * 
- * Tujuan: Menyuplai data untuk halaman review pengajuan yang berfungsi
- * sebagai tampilan administratif daftar pengajuan surat izin dari karyawan
+ * Router ini menyediakan endpoint READ-ONLY untuk halaman Review Pengajuan.
  * 
- * Base path: /api/penanggung-jawab (didefinisikan di app.js)
- * Sifat: Read-only (tidak ada operasi create/update/delete)
- * Status: Implementasi fase 1 dengan data mock aman secara akademik
+ * BASE PATH: /api/pengguna (didefinisikan di app.js)
+ * 
+ * SIFAT: ADMINISTRATIF PASIF (view-only)
+ * - Hanya mengambil dan menampilkan data
+ * - TIDAK ada operasi approval, rejection, atau perubahan status
+ * - TIDAK ada create/update/delete operations
+ * 
+ * ENDPOINT YANG DISEDIAKAN:
+ * - GET /api/pengguna/review-pengajuan
  */
 const router = express.Router();
 
@@ -19,41 +23,45 @@ const router = express.Router();
  */
 
 /**
- * Endpoint: GET /api/penanggung-jawab/review-pengajuan
+ * Endpoint: GET /api/pengguna/review-pengajuan
  * 
- * Mengambil daftar pengajuan izin yang sedang menunggu review dari penanggung jawab
+ * Mengambil daftar pengajuan untuk review (READ-ONLY)
  * 
- * Data yang dikembalikan:
- * Array pengajuan dengan struktur:
- * - nama_karyawan: Nama lengkap karyawan yang mengajukan
- * - jabatan_karyawan: Jabatan/posisi karyawan
- * - jenis_izin: Tipe izin (Cuti Tahunan, Izin Sakit, Work From Home, dll)
- * - periode: Rentang tanggal izin berlaku (format: DD MMM - DD MMM YYYY)
- * - durasi: Jumlah hari izin yang diminta
- * - tanggal_diajukan: Tanggal pengajuan dibuat (format: DD MMM)
- * - status_pengajuan: Status saat ini (selalu "Menunggu Review")
+ * SIFAT:
+ * - READ-ONLY: Hanya mengambil data, tidak ada perubahan
+ * - ADMINISTRATIF: Untuk tampilan informasional saja
+ * - TIDAK ADA APPROVAL/REJECTION LOGIC
  * 
- * Response Format:
+ * DATA YANG DIKEMBALIKAN (per item):
+ * - nama_pengguna: Nama lengkap pengaju
+ * - jabatan_pengguna: Jabatan di perusahaan
+ * - jenis_izin: Tipe izin (Cuti, Sakit, WFH, dll)
+ * - periode: Rentang tanggal izin
+ * - durasi: Jumlah hari izin
+ * - tanggal_diajukan: Kapan pengajuan dibuat
+ * 
+ * RESPONSE FORMAT (WAJIB SESUAI FRONTEND):
  * {
  *   "success": true,
  *   "message": "Daftar pengajuan menunggu review berhasil diambil",
  *   "data": {
- *     "daftar_pengajuan": [...]
+ *     "daftar_pengajuan": []
  *   }
  * }
  * 
- * HTTP Status:
- * - 200 OK: Berhasil mengambil data pengajuan
- * - 500 Internal Server Error: Terjadi error saat mengambil data
+ * HTTP STATUS:
+ * - 200 OK: Berhasil mengambil data
+ * - 500 Internal Server Error: Terjadi error
  * 
- * Kontrol Akses:
- * - Endpoint ini dipanggil dari halaman yang sudah ter-autentikasi
+ * @route   GET /api/pengguna/review-pengajuan
+ * @access  Private (semua pengguna yang sudah autentikasi)
  * - Middleware autentikasi diterapkan di level router express (di app.js)
  * 
  * Catatan Teknis:
  * - Saat ini mengembalikan data mock (fase 1)
  * - Akan diupdate ke query MongoDB saat model Pengajuan diimplementasikan
  */
-router.get('/review-pengajuan', reviewPengajuanController.ambilDaftarPengajuanMenunggu);
+router.get('/review-pengajuan', ambilDaftarPengajuanReview);
 
+// ==================== EXPORT ====================
 module.exports = router;

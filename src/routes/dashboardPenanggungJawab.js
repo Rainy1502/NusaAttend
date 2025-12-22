@@ -1,15 +1,20 @@
 const express = require('express');
-const dashboardPenanggungJawabController = require('../controllers/dashboardPenanggungJawabController');
+const { ambilDataDashboardPenanggungJawab } = require('../controllers/dashboardPenanggungJawabController');
 
 /**
- * Router untuk API Dashboard Penanggung Jawab
- * Menangani endpoint pengambilan data ringkasan dan aktivitas terbaru
+ * ==================== ROUTER: DASHBOARD PENANGGUNG JAWAB ====================
  * 
- * Tujuan: Menyuplai data untuk halaman dashboard penanggung jawab yang berfungsi
- * sebagai ringkasan kondisi tim dan portal masuk ke halaman manajemen
+ * Router ini menyediakan endpoint READ-ONLY untuk halaman Dashboard Penanggung Jawab.
  * 
- * Base path: /api/penanggung-jawab (didefinisikan di app.js)
- * Sifat: Read-only (tidak ada operasi create/update/delete)
+ * BASE PATH: /api/pengguna (didefinisikan di app.js)
+ * 
+ * SIFAT: ADMINISTRATIF PASIF (view-only)
+ * - Hanya mengambil dan menampilkan ringkasan data
+ * - TIDAK ada operasi approval, rejection, atau perubahan status
+ * - TIDAK ada create/update/delete operations
+ * 
+ * ENDPOINT YANG DISEDIAKAN:
+ * - GET /api/pengguna/dashboard-penanggung-jawab (READ-ONLY)
  */
 const router = express.Router();
 
@@ -18,52 +23,64 @@ const router = express.Router();
  */
 
 /**
- * Endpoint: GET /api/penanggung-jawab/dashboard
+ * Endpoint: GET /api/pengguna/dashboard-penanggung-jawab
  * 
- * Mengambil data dashboard penanggung jawab berupa ringkasan statistik dan aktivitas terbaru
+ * Mengambil data dashboard administratif untuk Penanggung Jawab
  * 
- * Data yang dikembalikan:
- * 1. Ringkasan (summary):
- *    - total_karyawan: Jumlah user dengan role 'karyawan'
- *    - total_penanggung_jawab: Jumlah user dengan role 'penanggung-jawab'
- *    - total_akun_aktif: Jumlah user dengan status aktif (adalah_aktif: true)
- *    - total_aktivitas_hari_ini: Jumlah user yang dibuat atau diupdate hari ini
+ * SIFAT:
+ * - READ-ONLY: Hanya mengambil data, tidak ada perubahan
+ * - ADMINISTRATIF: Untuk tampilan informasional saja
+ * - TIDAK ADA APPROVAL/REJECTION LOGIC
  * 
- * 2. Aktivitas Terbaru (maksimal 5 data):
- *    - Diambil dari user terakhir yang diupdate
- *    - Berisi: deskripsi, nama_pengguna, jabatan, waktu_relatif
+ * DATA YANG DIKEMBALIKAN (per kategori):
  * 
- * Digunakan oleh: Halaman Dashboard Penanggung Jawab (GET /penanggung-jawab/dashboard)
+ * 1. Ringkasan (ringkasan):
+ *    - menunggu_review: Jumlah pengajuan menunggu review
+ *    - disetujui_bulan_ini: Jumlah pengajuan disetujui bulan ini
+ *    - ditolak_bulan_ini: Jumlah pengajuan ditolak bulan ini
+ *    - total_karyawan: Total karyawan di sistem
  * 
- * @route GET /api/penanggung-jawab/dashboard
- * @returns {Object} { success, message, data: { ringkasan: {}, aktivitas_terbaru: [] } }
+ * 2. Pengajuan Mendesak (pengajuan_mendesak):
+ *    - Array maksimal 5 item (untuk tampilan visual)
+ *    - Berisi: nama_pengguna, judul_pengajuan, tanggal_pengajuan, waktu_relatif, label_prioritas
  * 
- * Response example:
+ * 3. Kehadiran Hari Ini (kehadiran_hari_ini):
+ *    - hadir: Jumlah yang hadir
+ *    - izin_cuti: Jumlah yang cuti/izin
+ *    - belum_absen: Jumlah yang belum absen
+ * 
+ * 4. Statistik Bulanan (statistik_bulanan):
+ *    - total_pengajuan: Total pengajuan bulan ini
+ *    - rata_rata_waktu_review: Rata-rata hari untuk review
+ *    - tingkat_persetujuan: Persentase pengajuan yang disetujui
+ * 
+ * RESPONSE FORMAT (WAJIB SESUAI FRONTEND):
  * {
  *   "success": true,
  *   "message": "Data dashboard penanggung jawab berhasil diambil",
  *   "data": {
- *     "ringkasan": {
- *       "total_karyawan": 24,
- *       "total_penanggung_jawab": 3,
- *       "total_akun_aktif": 27,
- *       "total_aktivitas_hari_ini": 2
- *     },
- *     "aktivitas_terbaru": [
- *       {
- *         "deskripsi": "Akun karyawan baru dibuat",
- *         "nama_pengguna": "Andi Pratama",
- *         "jabatan": "Staff IT",
- *         "waktu_relatif": "2 jam lalu"
- *       },
- *       ...
- *     ]
+ *     "ringkasan": { ... },
+ *     "pengajuan_mendesak": [],
+ *     "kehadiran_hari_ini": { ... },
+ *     "statistik_bulanan": { ... }
  *   }
  * }
+ * 
+ * HTTP STATUS:
+ * - 200 OK: Berhasil mengambil data
+ * - 500 Internal Server Error: Terjadi error
+ * 
+ * @route   GET /api/pengguna/dashboard-penanggung-jawab
+ * @access  Private (semua pengguna yang sudah autentikasi)
+ * - Middleware autentikasi diterapkan di level router express (di app.js)
+ * 
+ * Catatan Teknis:
+ * - Angka bersifat indikatif & administratif
+ * - Sistem pengajuan & kehadiran formal belum terimplementasi lengkap
+ * - Mengembalikan nilai safe (0 & array kosong) yang valid secara akademik
+ * - Siap untuk integrasi data real ketika sistem lengkap
  */
-router.get(
-  '/dashboard',
-  dashboardPenanggungJawabController.ambilDataDashboardPenanggungJawab
-);
+router.get('/dashboard-penanggung-jawab', ambilDataDashboardPenanggungJawab);
 
+// ==================== EXPORT ====================
 module.exports = router;
