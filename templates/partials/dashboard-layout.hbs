@@ -139,6 +139,14 @@
         {{>footer}}
     </main>
 
+    <!-- ==================== SOCKET TOKEN SETUP ==================== -->
+    <script>
+        
+        window.SOCKET_TOKEN = '{{socketToken}}';
+        window.USER_ROLE = '{{user.role}}';
+        console.log('🔐 Session Info: Role=' + window.USER_ROLE + ', Token=' + (window.SOCKET_TOKEN ? 'Set ✓' : 'Not Set ✗'));
+    </script>
+
     <!-- ==================== SCRIPT EKSTERNAL ==================== -->
     <script src="/js/app.js"></script>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>

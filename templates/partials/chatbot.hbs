@@ -1,0 +1,192 @@
+{{! ==================== CHATBOT WIDGET ==================== }}
+<div class="pembungkus-chat">
+  <button class="pemicu-chat" id="tombol-pemicu" type="button">
+    <i class="fas fa-comment-dots"></i>
+  </button>
+
+  <div class="wadah-chat tersembunyi" id="kotak-chat">
+    <div class="kepala-chat">
+      <div class="info-asisten">
+        <div class="avatar-bot">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="status-bot">
+          <span class="nama-bot">Asisten NusaAttend</span>
+          <span class="label-online">Aktif</span>
+        </div>
+      </div>
+      <button class="tombol-tutup" id="tombol-tutup-chat" type="button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="area-pesan-chat" id="konten-pesan">
+      <div class="pesan asisten">
+        <div class="balon-pesan">
+          Halo! Saya asisten virtual NusaAttend. Ada yang bisa saya bantu?
+        </div>
+      </div>
+
+      <div class="saran-pertanyaan">
+        <p class="label-saran">Pertanyaan yang sering ditanyakan:</p>
+        <div class="daftar-saran">
+          <button class="tombol-saran" type="button">Status pengajuan saya?</button>
+          <button class="tombol-saran" type="button">Berapa sisa cuti saya?</button>
+          <button class="tombol-saran" type="button">Cara mengajukan cuti?</button>
+          <button class="tombol-saran" type="button">Informasi absensi</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="area-input-chat">
+      <input
+        type="text"
+        id="input-chat-teks"
+        placeholder="Ketik pertanyaan Anda..."
+        autocomplete="off"
+      />
+      <button class="tombol-kirim" id="tombol-kirim-pesan" type="button">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+ <script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  /* ================= ROLE CHECK ================= */
+  if (!window.USER_ROLE || window.USER_ROLE !== 'karyawan') {
+    console.log(
+      '⚠️ Chatbot hanya tersedia untuk karyawan. Role Anda: ' +
+      (window.USER_ROLE || 'guest')
+    );
+
+    const pembungkus = document.querySelector('.pembungkus-chat');
+    if (pembungkus) pembungkus.style.display = 'none';
+    return; // STOP SCRIPT
+  }
+
+  /* ================= DOM ================= */
+  const tombolPemicu = document.getElementById('tombol-pemicu');
+  const kotakChat = document.getElementById('kotak-chat');
+  const tombolTutup = document.getElementById('tombol-tutup-chat');
+  const inputTeks = document.getElementById('input-chat-teks');
+  const tombolKirim = document.getElementById('tombol-kirim-pesan');
+  const kontenPesan = document.getElementById('konten-pesan');
+  const daftarSaran = document.querySelectorAll('.tombol-saran');
+
+  /* ================= POPUP UI (TIDAK TERGANTUNG SOCKET) ================= */
+  tombolPemicu.addEventListener('click', function () {
+    kotakChat.classList.toggle('tersembunyi');
+  });
+
+  tombolTutup.addEventListener('click', function () {
+    kotakChat.classList.add('tersembunyi');
+  });
+
+  document.addEventListener('click', function (e) {
+    if (
+      !kotakChat.contains(e.target) &&
+      !tombolPemicu.contains(e.target)
+    ) {
+      kotakChat.classList.add('tersembunyi');
+    }
+  });
+
+  /* ================= SOCKET ================= */
+  let socket = null;
+  let socketAktif = false;
+
+  if (window.io && window.SOCKET_TOKEN) {
+    socket = io({
+      auth: { token: window.SOCKET_TOKEN },
+      reconnection: true,
+      reconnectionAttempts: 5
+    });
+
+    socket.on('connect', function () {
+      socketAktif = true;
+      aktifkanChat();
+      console.log('✅ Socket terhubung');
+    });
+
+    socket.on('disconnect', function () {
+      socketAktif = false;
+      nonaktifkanChat();
+      console.log('❌ Socket terputus');
+    });
+
+    socket.on('chat:bot', function (balasan) {
+      tampilkanPesan(balasan, 'asisten');
+    });
+
+    socket.on('connect_error', function (err) {
+      console.error('❌ Socket error:', err.message);
+      nonaktifkanChat();
+    });
+
+  } else {
+    console.warn('⚠️ Socket tidak diaktifkan (SOCKET_TOKEN tidak ada)');
+    nonaktifkanChat();
+  }
+
+  /* ================= UI CHAT ================= */
+  function tampilkanPesan(teks, tipe) {
+    const div = document.createElement('div');
+    div.className = 'pesan ' + tipe;
+
+    const balon = document.createElement('div');
+    balon.className = 'balon-pesan';
+    // Parse newline (\n) menjadi <br> untuk display yang lebih rapi
+    const teksFormatted = teks.replace(/\n/g, '<br>');
+    balon.innerHTML = teksFormatted;
+
+    div.appendChild(balon);
+    kontenPesan.appendChild(div);
+    kontenPesan.scrollTop = kontenPesan.scrollHeight;
+  }
+
+  function kirimPesan() {
+    const teks = inputTeks.value.trim();
+    if (!teks) return;
+
+    tampilkanPesan(teks, 'user');
+    inputTeks.value = '';
+
+    if (socketAktif) {
+      socket.emit('chat:user', teks);
+    } else {
+      tampilkanPesan(
+        'Chatbot belum aktif. Silakan refresh atau login ulang.',
+        'asisten'
+      );
+    }
+  }
+
+  tombolKirim.addEventListener('click', kirimPesan);
+  inputTeks.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') kirimPesan();
+  });
+
+  daftarSaran.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      inputTeks.value = btn.textContent;
+      kirimPesan();
+    });
+  });
+
+  function nonaktifkanChat() {
+    inputTeks.disabled = true;
+    tombolKirim.disabled = true;
+  }
+
+  function aktifkanChat() {
+    inputTeks.disabled = false;
+    tombolKirim.disabled = false;
+  }
+
+});
+</script>
+
+
