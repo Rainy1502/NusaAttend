@@ -149,6 +149,7 @@ const absensiController = {
         halaman: 'absensi',
         user: req.session.user,
         absen,
+        socketToken: req.session.socketToken || "",
         riwayatAbsensi : riwayatAbsensiFormat
       });
 
