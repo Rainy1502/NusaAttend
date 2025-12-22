@@ -71,6 +71,14 @@ const rutPengajuan = require('./routes/pengajuan');
  * Menangani pengambilan data riwayat pengajuan surat izin (READ-ONLY)
 */
 const rutRiwayatPengajuan = require('./routes/riwayatPengajuan');
+
+/**
+ * [FITUR BARU - Dashboard Pengguna]
+ * Router untuk API Dashboard Pengguna (Karyawan)
+ * Menangani pengambilan data ringkasan administratif dashboard
+*/
+const rutDashboardPengguna = require('./routes/dashboardPengguna');
+
 // const rutAbsensi = require('./routes/absensi');     // Di-backup
 // const rutAdmin = require('./routes/admin');         // Di-backup
 // const rutChatbot = require('./routes/chatbot');     // Di-backup
@@ -352,6 +360,20 @@ app.use('/api/karyawan', middlewareAuntenfikasi, rutPengajuan);
  * Catatan: Endpoint ini bersifat informatif & administratif saja
 */
 app.use('/api/pengguna', middlewareAuntenfikasi, rutRiwayatPengajuan);
+
+/**
+ * [FITUR BARU - Dashboard Pengguna]
+ * Daftarkan router dashboard pengguna dengan middleware autentikasi
+ * Endpoint: /api/pengguna/dashboard
+ * Handler: dashboardPenggunaController.js
+ * Sifat: READ-ONLY (pengambilan data ringkasan kehadiran & pengajuan terbaru)
+ * Akses: Karyawan yang sudah ter-autentikasi
+ * Catatan: Backend ini menyediakan ringkasan administratif untuk dashboard
+ *          Semua nilai bersifat informatif, bukan perhitungan real sistem
+ *          Jika sistem detail belum lengkap, dikembalikan nilai default (0 atau array kosong)
+*/
+app.use('/api/pengguna', middlewareAuntenfikasi, rutDashboardPengguna);
+
 // app.use('/api/absensi', middlewareAuntenfikasi, rutAbsensi);     // Di-backup
 // app.use('/api/chatbot', rutChatbot);                             // Di-backup
 // app.use('/api/admin', middlewareAuntenfikasi, rutAdmin);         // Di-backup
@@ -652,24 +674,83 @@ app.get("/dashboard", async (req, res) => {
       });
     }
   } else {
-    console.log(
-      "📍 Karyawan Dashboard - Session socketToken:",
-      req.session.socketToken ? "SET ✓" : "NOT SET ✗"
-    );
-    console.log(
-      "📍 Karyawan Dashboard - Full Session:",
-      JSON.stringify({
-        socketToken: req.session.socketToken,
-        userId: req.session.userId,
-      })
-    );
-    res.render("karyawan/dashboard", {
-      title: "Dashboard Karyawan - NusaAttend",
-      user: req.session.user,
-      layout: "dashboard-layout",
-      halaman: "dashboard",
-      socketToken: req.session.socketToken || "",
-    });
+    /**
+     * [DASHBOARD KARYAWAN - Data Dinamis]
+     * Route dashboard karyawan sekarang fetch data dari API controller
+     * Mengambil ringkasan kehadiran & pengajuan terbaru dari database
+     */
+    try {
+      const dashboardPenggunaController = require('./controllers/dashboardPenggunaController');
+      
+      // Buat mock response untuk memanggil controller
+      const mockRes = {
+        json: function(data) {
+          this.data = data;
+        },
+        status: function(code) {
+          this.statusCode = code;
+          return this;
+        }
+      };
+
+      // Panggil controller function untuk ambil data dashboard
+      await dashboardPenggunaController.ambilDataDashboardPengguna(req, mockRes);
+
+      // Jika sukses, pass data ke view
+      let dataDashboard = {
+        ringkasan: {
+          sisa_cuti: 0,
+          kehadiran_bulan_ini: 0,
+          menunggu_persetujuan: 0,
+          tidak_hadir: 0
+        },
+        pengajuan_terbaru: []
+      };
+
+      if (mockRes.data && mockRes.data.success && mockRes.data.data) {
+        dataDashboard = mockRes.data.data;
+      }
+
+      // Transform data untuk template
+      const userDataWithStats = {
+        ...req.session.user,
+        sisaCuti: dataDashboard.ringkasan.sisa_cuti,
+        kehadiranBulanIni: dataDashboard.ringkasan.kehadiran_bulan_ini,
+        menungguPersetujuan: dataDashboard.ringkasan.menunggu_persetujuan,
+        tidakHadir: dataDashboard.ringkasan.tidak_hadir,
+        totalCuti: 12, // Default untuk display
+        hariKerja: 20 // Default untuk display
+      };
+
+      // Render dashboard dengan data dinamis
+      res.render('karyawan/dashboard', {
+        title: 'Dashboard Karyawan - NusaAttend',
+        user: userDataWithStats,
+        layout: 'dashboard-layout',
+        halaman: 'dashboard',
+        socketToken: req.session.socketToken || '',
+        pengajuanTerbaru: dataDashboard.pengajuan_terbaru
+      });
+    } catch (error) {
+      console.error('Error loading dashboard karyawan data:', error);
+      // Render dengan default values jika error
+      res.render('karyawan/dashboard', {
+        title: 'Dashboard Karyawan - NusaAttend',
+        user: {
+          ...req.session.user,
+          sisaCuti: 0,
+          kehadiranBulanIni: 0,
+          menungguPersetujuan: 0,
+          tidakHadir: 0,
+          totalCuti: 12,
+          hariKerja: 20
+        },
+        layout: 'dashboard-layout',
+        halaman: 'dashboard',
+        socketToken: req.session.socketToken || '',
+        pengajuanTerbaru: []
+      });
+    }
   }
 });
 

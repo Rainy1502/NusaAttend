@@ -28,17 +28,23 @@ const axios = require('axios');
 /**
  * Kirim pesan ke Groq API dan dapatkan respons berupa teks dari model AI
  * 
+ * Prinsip: DATA-FIRST & CONTEXT-ONLY
+ * - Kirim data AKTUAL pengguna ke model
+ * - Model akan menjawab berdasarkan data yang tersedia
+ * - Hindari spekulasi atau direktif yang menyuruh pengguna mencari di menu
+ * 
  * @param {string} pesan - Pesan atau pertanyaan dari pengguna
  * @param {object} infoUser - Informasi pengguna {nama, role}
- * @param {object} contextDB - Context dari database (absensi, pengajuan, dll)
+ * @param {object} contextDB - Context dari database (DATA AKTUAL pengguna)
  * @returns {string} - Respons dari model AI atau pesan error
  * 
  * @example
  * const respons = await kirimKeGroq(
- *   "Bagaimana cara membuat pengajuan cuti?",
+ *   "Berapa banyak pengajuan saya yang masih menunggu?",
  *   { nama: "Rendra Pratama", role: "karyawan" },
- *   { recentAbsensi: [...], recentPengajuan: [...] }
+ *   { pendingCount: 2, approvedCount: 5, recentPengajuan: [...] }
  * );
+ * // Model akan menjawab: "Menurut data Anda, terdapat 2 pengajuan yang masih menunggu persetujuan."
  */
 exports.kirimKeGroq = async (pesan, infoUser, contextDB) => {
   try {
@@ -145,55 +151,190 @@ exports.kirimKeGroq = async (pesan, infoUser, contextDB) => {
 /**
  * Buat system prompt untuk memberikan konteks kepada model AI
  * 
- * System prompt berisi:
- * - Deskripsi peran chatbot (asisten informatif)
- * - Informasi pengguna (nama, role)
- * - Batasan perilaku chatbot
- * - Fitur sistem yang tersedia di NusaAttend
- * - Context data dari database pengguna (opsional)
+ * Prinsip Utama (sesuai Prompt Chatbot):
+ * 
+ * 1. DATA-FIRST: Jika informasi tersedia dalam konteks, jawab langsung
+ *    menggunakan data actual. Jangan arahkan pengguna ke menu/halaman lain.
+ * 
+ * 2. CONTEXT-ONLY: Gunakan HANYA data yang tersedia. Jangan mengarang,
+ *    berasumsi, atau menyimpulkan status yang belum pasti.
+ * 
+ * 3. READ-ONLY & ADMINISTRATIF: Hanya presentasi data, tidak memproses
+ *    atau membuat keputusan. Jangan menyatakan pengajuan disetujui/ditolak.
+ * 
+ * 4. JANGAN ARAHKAN PENGGUNA: Hindari "cek di dashboard" atau "lihat menu"
+ *    jika data sudah tersedia dalam konteks.
+ * 
+ * 5. GAYA BAHASA: Formal, tenang, ringkas (max 150 kata). Jangan spekulatif.
  * 
  * @param {object} infoUser - Informasi pengguna {nama, role}
- * @param {object} contextDB - Context dari database
- * @returns {string} - System prompt yang siap dikirim ke model
+ * @param {object} contextDB - Context dari database: {absensi[], pengajuan[], infoPengguna}
+ * @returns {string} - System prompt untuk AI model
  */
 function buatPromptSistem(infoUser, contextDB = {}) {
   const namaRole = infoUser.role === 'karyawan' ? 'Karyawan' : 
                    infoUser.role === 'penanggung-jawab' ? 'Penanggung Jawab' : 'Administrator';
 
-  let prompt = `Anda adalah Asisten Virtual NusaAttend - sebuah sistem manajemen absensi dan pengajuan cuti untuk perusahaan.
+  let prompt = `Anda adalah Asisten Virtual NusaAttend - Asisten Data Administratif Mini.
 
-=== IDENTITAS PENGGUNA ===
+Peran Anda: Menjawab pertanyaan pengguna dengan FORMAT RINGKAS yang sesuai UI chat kecil.
+
+==================================================
+ATURAN WAJIB (TIDAK BOLEH DILANGGAR)
+==================================================
+
+1. SATU JAWABAN = SATU TOPIK
+2. Gunakan BARIS PENDEK (maks 1 informasi per baris)
+3. DILARANG membuat paragraf panjang
+4. Gunakan ikon kecil sebagai penanda konteks
+5. DILARANG menyuruh pengguna membuka menu lain JIKA data sudah ada di konteks
+6. Jangan mengulang kalimat pembuka yang tidak perlu
+7. Jawaban harus nyaman dibaca di layar kecil/mobile
+8. Maksimal 6-8 baris per jawaban
+
+==================================================
+IDENTITAS PENGGUNA
+==================================================
 Nama: ${infoUser.nama}
 Peran: ${namaRole}
 
-=== BATASAN & PEDOMAN PERILAKU ===
-1. Berikan respons yang ramah, ringkas, dan informatif (maksimal 150 kata per respons)
-2. Gunakan Bahasa Indonesia yang baik dan benar
-3. Fokus pada informasi teknis sistem NusaAttend (absensi, pengajuan, cuti, dll)
-4. Jika pengguna bertanya di luar scope sistem, redirect dengan halus ke topik terkait
-5. Berikan solusi praktis dan jelas berdasarkan konteks pengguna
-6. JANGAN membuat keputusan bisnis atau memberikan rekomendasi resmi
-7. Jika tidak tahu jawaban, sarankan pengguna menghubungi administrator
+==================================================
+DETEKSI INTENT & TEMPLATE RESPONS
+==================================================
 
-=== FITUR SISTEM NUSAATTEND YANG TERSEDIA ===
-• Absensi: Pencatatan waktu masuk dan pulang harian
-• Pengajuan: Permohonan cuti, izin tidak masuk kerja, izin sakit, atau WFH
-• Dashboard: Ringkasan data kehadiran dan aktivitas terbaru
-• Riwayat: Melihat histori pengajuan dan pencatatan absensi`;
+INTENT: STATUS PENGAJUAN / PENGAJUAN ANDA
+→ Gunakan format:
 
-  /* ================= TAMBAHKAN KONTEKS DATA PENGGUNA (OPSIONAL) ================= */
-  if (contextDB) {
-    if (contextDB.recentAbsensi && contextDB.recentAbsensi.length > 0) {
-      prompt += `\n\n=== DATA ABSENSI TERBARU ANDA ===
-Terakhir absen: ${contextDB.recentAbsensi[0]?.tanggal || 'Belum ada catatan'}`;
-    }
-    
-    if (contextDB.recentPengajuan && contextDB.recentPengajuan.length > 0) {
-      prompt += `\n\n=== DATA PENGAJUAN TERBARU ANDA ===
-Pengajuan menunggu persetujuan: ${contextDB.pendingCount || 0}
-Pengajuan sudah disetujui: ${contextDB.approvedCount || 0}`;
+📄 Status Pengajuan Anda
+Menunggu Persetujuan: X
+
+Jika ada pengajuan:
+• Jenis Izin
+  Periode: …
+  Status: …
+
+Jika tidak ada:
+• Tidak ada pengajuan menunggu saat ini.
+
+---
+
+INTENT: SISA CUTI / SISA LIBUR
+→ Gunakan format:
+
+🌴 Sisa Cuti Anda
+• Sisa cuti: X hari
+• Jenis: Cuti Tahunan
+
+---
+
+INTENT: ABSENSI / KEHADIRAN TERBARU
+→ Gunakan format:
+
+⏱️ Absensi Terakhir
+• Tanggal : …
+• Status  : …
+• Masuk   : …
+• Pulang  : …
+
+---
+
+INTENT: CARA / EDUKASI / BAGAIMANA
+→ Gunakan format ringkas:
+
+ℹ️ Cara Mengajukan Cuti
+1. Buka menu Pengajuan
+2. Pilih jenis izin
+3. Isi tanggal & alasan
+4. Kirim pengajuan
+
+(Jangan tambahkan penjelasan panjang)
+
+---
+
+INTENT: DATA TIDAK TERSEDIA
+→ Gunakan format:
+
+⚠️ Data tersebut belum tersedia saat ini.
+
+==================================================
+GAYA BAHASA (WAJIB)
+==================================================
+
+• Bahasa Indonesia formal & administratif
+• Tidak emotif / tidak bercanda
+• Tidak spekulatif
+• Tidak menambah kalimat tidak perlu
+
+==================================================
+DATA AKTUAL PENGGUNA (GUNAKAN SESUAI INTENT)
+==================================================`;
+
+  /* ================= PRESENT ACTUAL DATA FROM DATABASE ================= */
+  let dataAda = false;
+  
+  if (contextDB && contextDB.ringkasan) {
+    // Tampilkan ringkasan status pengguna
+    dataAda = true;
+    prompt += `\n\n📊 RINGKASAN STATUS ANDA:`;
+    prompt += `\n- Sisa Cuti: 12 hari (standar tahunan)`;
+    prompt += `\n- Kehadiran bulan ini: ${contextDB.ringkasan.hadiranBulanIni} hari`;
+    prompt += `\n- Total pengajuan: ${contextDB.ringkasan.totalPengajuan}`;
+    prompt += `\n  └─ Menunggu persetujuan: ${contextDB.ringkasan.menungguPersetujuan}`;
+    prompt += `\n  └─ Sudah disetujui: ${contextDB.ringkasan.disetujui}`;
+    if (contextDB.ringkasan.ditolak > 0) {
+      prompt += `\n  └─ Ditolak: ${contextDB.ringkasan.ditolak}`;
     }
   }
+  
+  // DATA PENGAJUAN DETAIL - jika ada
+  if (contextDB && contextDB.pengajuan && Array.isArray(contextDB.pengajuan) && contextDB.pengajuan.length > 0) {
+    dataAda = true;
+    prompt += `\n\n📋 DETAIL PENGAJUAN ANDA (Total: ${contextDB.pengajuan.length}):`;
+    contextDB.pengajuan.slice(0, 10).forEach((p, idx) => {
+      const jenis = p.jenis_izin || 'Pengajuan';
+      const tglMulai = p.tanggal_mulai ? new Date(p.tanggal_mulai).toLocaleDateString('id-ID') : 'N/A';
+      const tglSelesai = p.tanggal_selesai ? new Date(p.tanggal_selesai).toLocaleDateString('id-ID') : 'N/A';
+      const status = p.status || 'Unknown';
+      
+      // Translate status untuk user-friendly
+      let statusTerjemah = status;
+      if (status === 'menunggu') statusTerjemah = 'Menunggu Persetujuan';
+      else if (status === 'disetujui') statusTerjemah = 'Disetujui';
+      else if (status === 'ditolak') statusTerjemah = 'Ditolak';
+      
+      prompt += `\n${idx + 1}. ${jenis} | ${tglMulai} - ${tglSelesai} | ${statusTerjemah}`;
+    });
+  }
+  
+  // DATA ABSENSI DETAIL - jika ada
+  if (contextDB && contextDB.absensi && Array.isArray(contextDB.absensi) && contextDB.absensi.length > 0) {
+    dataAda = true;
+    prompt += `\n\n📅 RIWAYAT ABSENSI TERBARU:`;
+    contextDB.absensi.slice(0, 10).forEach((a, idx) => {
+      const tanggal = a.tanggal ? new Date(a.tanggal).toLocaleDateString('id-ID') : 'N/A';
+      const masuk = a.jam_masuk || '-';
+      const pulang = a.jam_pulang || '-';
+      const status = a.status || 'N/A';
+      
+      prompt += `\n${idx + 1}. ${tanggal} | ${status} | Masuk: ${masuk} | Pulang: ${pulang}`;
+    });
+  }
+  
+  // Jika tidak ada data konteks
+  if (!dataAda) {
+    prompt += `\n\n⚠️ Saat ini tidak ada data absensi atau pengajuan yang tercatat.`;
+  }
+  
+  prompt += `\n\n==================================================
+INSTRUKSI FINAL
+==================================================
+
+GUNAKAN TEMPLATE DI ATAS SESUAI INTENT PERTANYAAN.
+JANGAN MEMBUAT FORMAT BARU.
+JANGAN MEMBUAT PARAGRAF PANJANG.
+JANGAN MENAMBAH PENJELASAN YANG TIDAK PERLU.
+
+Tujuan Anda: Menjadi asisten data mini yang responsif & mudah dibaca.`;
 
   return prompt;
 }

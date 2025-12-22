@@ -138,7 +138,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const balon = document.createElement('div');
     balon.className = 'balon-pesan';
-    balon.textContent = teks;
+    // Parse newline (\n) menjadi <br> untuk display yang lebih rapi
+    const teksFormatted = teks.replace(/\n/g, '<br>');
+    balon.innerHTML = teksFormatted;
 
     div.appendChild(balon);
     kontenPesan.appendChild(div);
