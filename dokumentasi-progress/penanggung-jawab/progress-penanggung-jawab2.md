@@ -105,7 +105,284 @@ Sesi ini fokus pada implementasi fitur Review Pengajuan, penambahan modal konfir
 
 ---
 
-### Fase 7: Modal Konfirmasi Logout
+### Fase 7: Modal Sistem untuk Review Pengajuan (Detail + Tolak + Setujui)
+**Status:** ✅ Selesai  
+**File Dibuat:** `templates/views/penanggung-jawab/review-pengajuan.hbs` (expanded with modals)
+
+#### Struktur Modal (3 Modal Terintegrasi)
+
+**1️⃣ Modal Detail Pengajuan** (Primary Modal)
+**Tujuan:** Display lengkap data pengajuan yang akan di-review
+
+**Elemen HTML:**
+```html
+<div id="modalDetailPengajuan" class="overlayBackgroundModal">
+  <div class="containerModalDetailPengajuan">
+    <!-- Header dengan title -->
+    <!-- Close button (X) -->
+    
+    <!-- Content sections: -->
+    - Informasi Pemohon (Nama, Jabatan)
+    - Data Pengajuan (Jenis Izin, Periode, Durasi)
+    - Alasan Pengajuan (textarea readonly)
+    - Sisa Cuti (info display)
+    - Tanda Tangan Administratif (canvas element)
+    
+    <!-- Footer dengan buttons -->
+    - "Tolak" button → Buka Modal Tolak
+    - "Setujui" button → Buka Modal Setujui
+    - "Tutup" button → Close modal
+  </div>
+</div>
+```
+
+**Features:**
+- ✅ Data populated dari API `/api/pengguna/detail-pengajuan/:id`
+- ✅ Read-only form fields (no direct editing)
+- ✅ Canvas element untuk display tanda tangan (non-interactive)
+- ✅ Animated slide-down entrance
+- ✅ Overlay click to close
+- ✅ ESC key to close
+
+---
+
+**2️⃣ Modal Tolak Pengajuan** (Secondary Modal)
+**Tujuan:** Collect alasan penolakan dari penanggung jawab
+
+**Elemen HTML:**
+```html
+<div id="modalTolakPengajuan" class="overlayBackgroundModal">
+  <div class="containerModalTolakPengajuan">
+    <!-- Header -->
+    
+    <!-- Content -->
+    - Label: "Alasan Penolakan" (required field dengan *)
+    - Textarea input field untuk alasan
+    - Character counter (optional)
+    
+    <!-- Footer buttons -->
+    - "Batal" button → Kembali ke Modal Detail
+    - "Konfirmasi Penolakan" button → Submit ke backend
+  </div>
+</div>
+```
+
+**Features:**
+- ✅ Triggered dari tombol "Tolak" di Modal Detail
+- ✅ Textarea untuk input alasan (free text)
+- ✅ Required field validation
+- ✅ Can navigate back to Detail modal with "Batal"
+- ✅ Submit ke endpoint `POST /api/pengguna/pengajuan-tolak/:id`
+- ✅ Data dikirim: `{ alasan_penolakan: "..." }`
+
+---
+
+**3️⃣ Modal Setujui Pengajuan** (Secondary Modal)
+**Tujuan:** Display canvas untuk tanda tangan digital approval, confirm approval
+
+**Elemen HTML:**
+```html
+<div id="modalSetujuiPengajuan" class="overlayBackgroundModal">
+  <div class="containerModalSetujuiPengajuan">
+    <!-- Header -->
+    
+    <!-- Content -->
+    - Info: "Tanda Tangan Digital Persetujuan"
+    - Wrapper untuk canvas: 
+      <div class="wrapperCanvasTandaTangan">
+        <canvas id="canvasTandaTanganSetujui"></canvas>
+      </div>
+    - Canvas properties:
+      - Width: 100% responsive
+      - Height: 200px
+      - Background: white
+      - Border: 2px solid #d1d5dc
+      - Cursor: crosshair (drawing mode)
+    
+    <!-- Footer buttons -->
+    - "Hapus Tanda Tangan" button → Clear canvas
+    - "Batal" button → Kembali ke Modal Detail
+    - "Konfirmasi Setujui" button → Submit dengan signature
+  </div>
+</div>
+```
+
+**Features:**
+- ✅ Canvas initialized saat modal dibuka
+- ✅ Support mouse drawing (desktop)
+- ✅ Support touch drawing (mobile/tablet)
+- ✅ Canvas clear button untuk hapus signature
+- ✅ Data URL signature dikirim ke backend
+- ✅ Submit ke endpoint `POST /api/pengguna/pengajuan-setujui/:id`
+- ✅ Data dikirim: `{ tanda_tangan_persetujuan: "data:image/png;..." }`
+
+---
+
+#### JavaScript Modal Handler Functions
+
+**1️⃣ `bukaModalDetailPengajuan(button)`**
+```javascript
+/**
+ * Membuka modal detail dengan data dari button.dataset
+ * @param {HTMLElement} button - Tombol "Detail" yang diklik
+ */
+function bukaModalDetailPengajuan(button) {
+    // 1. Extract data from button.dataset-*
+    // 2. Fetch detail lengkap dari API
+    // 3. Populate form fields
+    // 4. Show modal dengan animasi
+    // 5. Set global idPengajuanAktif
+}
+```
+
+**Alur:**
+1. User click "Detail" button di tabel Review Pengajuan
+2. Extract ID dari `button.dataset.id`
+3. Fetch full data dari `/api/pengguna/detail-pengajuan/:id`
+4. Populate all form fields dengan data API
+5. Modal slide down dengan overlay
+6. User dapat klik "Tolak" atau "Setujui"
+
+---
+
+**2️⃣ `tolakPengajuan()`**
+```javascript
+/**
+ * Transition dari Modal Detail ke Modal Tolak
+ */
+function tolakPengajuan() {
+    // 1. Hide Detail modal
+    // 2. Show Tolak modal
+    // 3. Focus textarea untuk input alasan
+}
+```
+
+**Flow:**
+- User click "Tolak" di Modal Detail
+- Modal Detail fade out
+- Modal Tolak slide in
+- Textarea ready for input
+
+---
+
+**3️⃣ `setujuiPengajuan()`**
+```javascript
+/**
+ * Transition dari Modal Detail ke Modal Setujui
+ * Juga initialize canvas untuk signature
+ */
+function setujuiPengajuan() {
+    // 1. Hide Detail modal
+    // 2. Show Setujui modal
+    // 3. Initialize canvas:
+    //    - Set size dengan DPR support (high-DPI display)
+    //    - Attach event listeners (mouse + touch)
+    //    - Clear background ke white
+    // 4. Canvas ready untuk drawing
+}
+```
+
+**Flow:**
+- User click "Setujui" di Modal Detail
+- Modal Detail fade out
+- Modal Setujui slide in
+- Canvas initialize dengan event listeners
+- User dapat draw signature
+
+---
+
+#### Modal Styling & CSS Classes
+
+**CSS Classes di styles.css:**
+```css
+/* Overlay & Container */
+.overlayBackgroundModal           /* Semi-transparent dark background */
+.containerModalDetailPengajuan    /* Detail modal main container */
+.containerModalTolakPengajuan     /* Tolak modal main container */
+.containerModalSetujuiPengajuan   /* Setujui modal main container */
+
+/* Animations */
+@keyframes modalAnimasiMasuk      /* Slide down + fade in */
+@keyframes modalAnimasiKeluar     /* Slide up + fade out */
+@keyframes overlayFadeOut         /* Overlay fade effect */
+
+/* Canvas wrapper */
+.wrapperCanvasTandaTangan         /* Border + padding untuk canvas */
+.canvasTandaTangan                /* Canvas element styling */
+
+/* Buttons & Forms */
+.tombolDetailPengajuan            /* "Detail" button di tabel */
+.tombolTolakPengajuan             /* "Tolak" button di modal detail */
+.tombolSetujuiPengajuan           /* "Setujui" button di modal detail */
+.tombolKonfirmasiPenolakan        /* Confirm tolak button */
+.tombolKonfirmasiSetujui          /* Confirm setujui button */
+```
+
+---
+
+#### Close/Navigation Functions
+
+**Close Functions:**
+- `tutupModalDetailPengajuan()` → Close Detail, clear data
+- `tutupModalTolakPengajuan()` → Close Tolak, return to Detail
+- `tutupModalSetujuiPengajuan()` → Close Setujui, clear canvas, return to Detail
+
+**Helper Functions:**
+- `matikanSemuaOverlay()` → Ensure only 1 modal visible at a time
+- `aktifkanOverlayModal(modalId)` → Activate specific modal overlay
+
+---
+
+#### Keyboard & Accessibility Support
+
+**Keyboard Shortcuts:**
+- `ESC` → Close current modal (priority: Tolak/Setujui → Detail)
+- Tab navigation untuk form fields
+- Enter di textarea tidak submit (prevent accident)
+
+**Multi-Modal Pattern:**
+- Only 1 overlay visible at time (prevent ghost overlay)
+- Before open new modal, disable all previous overlays
+- Clear focus saat close modal
+
+---
+
+#### Data Flow Diagram
+
+```
+Halaman Review Pengajuan
+        ↓
+User click "Detail" button (row tabel)
+        ↓
+bukaModalDetailPengajuan() triggered
+        ↓
+Fetch API: /api/pengguna/detail-pengajuan/:id
+        ↓
+Modal Detail tampil ← Data dari API
+        ↓
+   ┌─────┴─────┐
+   ↓           ↓
+Klik "Tolak"  Klik "Setujui"
+   ↓           ↓
+Modal Tolak   Modal Setujui
+   ↓           ↓
+Input alasan  Draw signature
+   ↓           ↓
+Click "Konfirmasi" pada masing-masing
+   ↓           ↓
+POST tolak    POST setujui
+   ↓           ↓
+Backend process (update DB, send email)
+   ↓           ↓
+Show toast (success/error)
+   ↓           ↓
+   └─────┬─────┘
+      Reload halaman
+```
+
+---
+
+### Fase 8: Modal Konfirmasi Logout
 **Status:** ✅ Selesai  
 **Referensi:** Dashboard layout sidebar
 

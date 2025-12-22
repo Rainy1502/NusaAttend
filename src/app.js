@@ -79,7 +79,35 @@ const rutRiwayatPengajuan = require('./routes/riwayatPengajuan');
 */
 const rutDashboardPengguna = require('./routes/dashboardPengguna');
 
-// const rutAbsensi = require('./routes/absensi');     // Di-backup
+/**
+ * [FITUR BARU - Detail Pengajuan Modal]
+ * Router untuk API Detail Pengajuan (READ-ONLY)
+ * Menangani pengambilan data detail pengajuan untuk keperluan tampilan modal
+ * Tidak melakukan persetujuan, penolakan, atau perubahan data
+ */
+const rutDetailPengajuan = require('./routes/detailPengajuan');
+
+/**
+ * [FITUR BARU - Tolak & Setujui Pengajuan]
+ * Router untuk API Tolak dan Setujui Pengajuan (WRITE TERBATAS)
+ * Menangani proses review dengan alasan administratif
+ * - Tolak Pengajuan: Mengubah status → "ditolak" + simpan alasan
+ * - Setujui Pengajuan: Mengubah status → "disetujui"
+ * Sifat: Administratif internal, non-hukum, defensif
+ */
+const rutTolakPengajuan = require('./routes/tolakPengajuan');
+
+/**
+ * Routes: Setujui Pengajuan (READ-ONLY)
+ * 
+ * Menyediakan endpoint untuk modal "Setujui Pengajuan"
+ * - Mengambil data administratif pengajuan
+ * - Menyediakan informasi identitas pengguna & pengajuan
+ * - Memberikan placeholder tanda tangan administratif
+ * Sifat: READ-ONLY, administratif, non-hukum, defensif
+ */
+const rutSetujuiPengajuan = require('./routes/setujuiPengajuan');
+
 // const rutAdmin = require('./routes/admin');         // Di-backup
 // const rutChatbot = require('./routes/chatbot');     // Di-backup
 
@@ -307,26 +335,32 @@ app.use("/api/admin", middlewareAuntenfikasi, rutAdminKeberatan);
 app.use("/api/admin", middlewareAuntenfikasi, rutDashboardAdmin);
 
 /**
- * [FITUR BARU - Dashboard Penanggung Jawab]
- * Daftarkan router dashboard penanggung jawab dengan middleware autentikasi
- * Endpoint: /api/penanggung-jawab/dashboard
- * Handler: dashboardPenanggungJawabController.js
- * Sifat: Read-only (pengambilan data ringkasan dan aktivitas tim)
+ * ==================== ROUTER: DASHBOARD PENANGGUNG JAWAB ====================
+ * 
+ * READ-ONLY API untuk halaman Dashboard Penanggung Jawab
+ * 
+ * - Sifat: Administratif & Informasional (view-only)
+ * - Operasi: Pengambilan ringkasan data & indikator kondisi sistem
+ * - TIDAK ada approval, rejection, atau perubahan status
+ * - Controller: dashboardPenanggungJawabController.js
+ * 
+ * ENDPOINT:
+ * GET /api/pengguna/dashboard-penanggung-jawab
  */
-app.use(
-  "/api/penanggung-jawab",
-  middlewareAuntenfikasi,
-  rutDashboardPenanggungJawab
-);
+app.use("/api/pengguna", middlewareAuntenfikasi, rutDashboardPenanggungJawab);
 
 /**
- * [FITUR BARU - Review Pengajuan]
- * Daftarkan router review pengajuan dengan middleware autentikasi
- * Endpoint: /api/penanggung-jawab/review-pengajuan
- * Handler: reviewPengajuanController.js
- * Sifat: Read-only (pengambilan daftar pengajuan yang menunggu review)
+ * ==================== ROUTER: REVIEW PENGAJUAN ====================
+ * 
+ * READ-ONLY API untuk halaman Review Pengajuan
+ * - Sifat: Administratif & Informasional (view-only)
+ * - Operasi: Pengambilan daftar pengajuan TANPA approval/rejection
+ * - Controller: reviewPengajuanController.js
+ * 
+ * ENDPOINT:
+ * GET /api/pengguna/review-pengajuan
  */
-app.use("/api/penanggung-jawab", middlewareAuntenfikasi, rutReviewPengajuan);
+app.use("/api/pengguna", middlewareAuntenfikasi, rutReviewPengajuan);
 
 /**
  * [FITUR BARU - Tanda Tangan Administratif]
@@ -373,6 +407,49 @@ app.use('/api/pengguna', middlewareAuntenfikasi, rutRiwayatPengajuan);
  *          Jika sistem detail belum lengkap, dikembalikan nilai default (0 atau array kosong)
 */
 app.use('/api/pengguna', middlewareAuntenfikasi, rutDashboardPengguna);
+
+/**
+ * [FITUR BARU - Detail Pengajuan Modal]
+ * Daftarkan router detail pengajuan dengan middleware autentikasi
+ * Endpoint: /api/pengguna/detail-pengajuan/:id
+ * Handler: detailPengajuanController.js
+ * Sifat: READ-ONLY (pengambilan data detail pengajuan untuk tampilan modal)
+ * Akses: Penanggung jawab yang sudah ter-autentikasi
+ * Catatan: Backend HANYA menyuplai data administratif pengajuan
+ *          Tidak melakukan persetujuan, penolakan, atau perubahan status
+ *          Tanda tangan bersifat administratif visual, bukan bukti hukum
+ */
+app.use('/api/pengguna', middlewareAuntenfikasi, rutDetailPengajuan);
+
+/**
+ * [FITUR BARU - Tolak & Setujui Pengajuan]
+ * Daftarkan router tolak & setujui pengajuan dengan middleware autentikasi
+ * Endpoint: 
+ *   POST /api/pengguna/pengajuan-tolak/:id
+ *   POST /api/pengguna/pengajuan-setujui/:id
+ * Handler: tolakPengajuanController.js
+ * Sifat: WRITE TERBATAS (hanya mengubah status & alasan)
+ * Akses: Penanggung jawab yang sudah ter-autentikasi
+ * Catatan: Backend mengubah status & menyimpan alasan penolakan administratif
+ *          Bersifat non-hukum, hanya pertimbangan internal penanggung jawab
+ *          Tidak ada workflow otomatis, notifikasi, atau operasi lain
+ */
+app.use('/api/pengguna', middlewareAuntenfikasi, rutTolakPengajuan);
+
+/**
+ * [FITUR BARU - Modal Setujui Pengajuan]
+ * Daftarkan router setujui pengajuan dengan middleware autentikasi
+ * Endpoint:
+ *   GET /api/pengguna/setujui-pengajuan/:id
+ * Handler: setujuiPengajuanController.js
+ * Sifat: READ-ONLY (hanya mengambil data administratif)
+ * Akses: Penanggung jawab yang sudah ter-autentikasi
+ * Catatan: Backend HANYA menyediakan data untuk presentasi modal
+ *          TIDAK ada persetujuan real, TIDAK ada penyimpanan tanda tangan
+ *          Tanda tangan adalah placeholder visual untuk administratif
+ *          Tidak ada perubahan status pengajuan di endpoint ini
+ */
+app.use('/api/pengguna', middlewareAuntenfikasi, rutSetujuiPengajuan);
 
 // app.use('/api/absensi', middlewareAuntenfikasi, rutAbsensi);     // Di-backup
 // app.use('/api/chatbot', rutChatbot);                             // Di-backup
@@ -542,6 +619,7 @@ app.get("/dashboard", async (req, res) => {
     try {
       // Query data dashboard dari User model (sama seperti admin, tapi untuk semua user)
       const Pengguna = require("./models/Pengguna");
+      const Pengajuan = require("./models/Pengajuan");
 
       // Hitung ringkasan
       const totalKaryawan = await Pengguna.countDocuments({ role: "karyawan" });
@@ -565,44 +643,26 @@ app.get("/dashboard", async (req, res) => {
         ],
       });
 
-      // Ambil 5 aktivitas terbaru
-      const daftarUserTerbaru = await Pengguna.find()
-        .select(
-          "nama_lengkap jabatan email role adalah_aktif createdAt updatedAt"
-        )
-        .sort({ updatedAt: -1 })
+      // Ambil pengajuan mendesak (status menunggu, sorted by tanggal_mulai terdekat)
+      const daftarPengajuanMendesak = await Pengajuan.find({ status: 'menunggu' })
+        .populate('karyawan_id', 'nama_lengkap')
+        .sort({ tanggal_mulai: 1 })  // Paling dekat dulu
         .limit(5)
-        .lean();
+        .lean()
+        .exec();
 
-      // Transform ke format pengajuan mendesak untuk dashboard penanggung jawab
-      const pengajuanMendesak = daftarUserTerbaru.map((user) => {
-        const isNew =
-          hariIniMulai <= user.createdAt && user.createdAt <= hariIniAkhir;
-
-        // Tentukan jenis pengajuan berdasarkan role user
-        let jenisPengajuan = "";
-        if (user.role === "karyawan") {
-          jenisPengajuan = isNew
-            ? "Pendaftaran Karyawan Baru"
-            : "Update Data Karyawan";
-        } else if (user.role === "penanggung-jawab") {
-          jenisPengajuan = isNew
-            ? "Penambahan Penanggung Jawab"
-            : "Update Penanggung Jawab";
-        } else if (user.role === "admin") {
-          jenisPengajuan = "Update Admin Sistem";
-        }
-
-        // Format tanggal pengajuan
-        const tanggalPengajuan = user.updatedAt.toLocaleDateString("id-ID", {
+      // Transform ke format display untuk dashboard
+      const pengajuanMendesak = daftarPengajuanMendesak.map((pengajuan) => {
+        // Format tanggal pengajuan (kapan diajukan)
+        const tanggalPengajuan = new Date(pengajuan.dibuat_pada).toLocaleDateString("id-ID", {
           year: "numeric",
           month: "short",
           day: "numeric",
         });
 
-        // Hitung waktu relatif
+        // Hitung waktu relatif (berapa lama lalu diajukan)
         const waktuSekarang = new Date();
-        const selisihMs = waktuSekarang - user.updatedAt;
+        const selisihMs = waktuSekarang - new Date(pengajuan.dibuat_pada);
         const selisihDetik = Math.floor(selisihMs / 1000);
         const selisihMenit = Math.floor(selisihDetik / 60);
         const selisihJam = Math.floor(selisihMenit / 60);
@@ -619,13 +679,30 @@ app.get("/dashboard", async (req, res) => {
           waktuPengajuan = `Diajukan ${selisihHari} hari lalu`;
         }
 
+        // Format jenis izin
+        const jenisIzinMap = {
+          'cuti-tahunan': 'Cuti Tahunan',
+          'izin-tidak-masuk': 'Izin Tidak Masuk',
+          'izin-sakit': 'Izin Sakit',
+          'wfh': 'Work From Home'
+        };
+
+        const tanggalMulai = new Date(pengajuan.tanggal_mulai).toLocaleDateString("id-ID", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+
         return {
-          namaKaryawan: user.nama_lengkap,
-          jenisPengajuan: jenisPengajuan,
+          namaKaryawan: pengajuan.karyawan_id?.nama_lengkap || 'Unknown',
+          jenisPengajuan: `${jenisIzinMap[pengajuan.jenis_izin] || pengajuan.jenis_izin} - ${tanggalMulai}`,
           tanggalPengajuan: tanggalPengajuan,
           waktuPengajuan: waktuPengajuan,
         };
       });
+
+      // Hitung pengajuan menunggu review
+      const menungguReview = await Pengajuan.countDocuments({ status: 'menunggu' });
 
       res.render("penanggung-jawab/dashboard", {
         title: "Dashboard Penanggung Jawab - NusaAttend",
@@ -634,7 +711,7 @@ app.get("/dashboard", async (req, res) => {
         halaman: "dashboard",
         socketToken: req.session.socketToken || "",
         // Data ringkasan - mapping ke frontend variables
-        jumlahMenungguReview: totalAktivitasHariIni,
+        jumlahMenungguReview: menungguReview,
         jumlahDisetujuiBulanIni: totalKaryawan,
         jumlahDitolakBulanIni: totalPenanggungJawab,
         totalKaryawanTim: totalAkunAktif,
@@ -770,12 +847,73 @@ app.get('/pengajuan', middlewareAuntenfikasi, async (req, res) => {
     });
   } else if (role === "penanggung-jawab") {
     // Penanggung jawab melihat pengajuan untuk direview
-    res.render("penanggung-jawab/review-pengajuan", {
-      title: "Review Pengajuan - NusaAttend",
-      user: req.session.user,
-      layout: "dashboard-layout",
-      halaman: "pengajuan",
-    });
+    try {
+      const Pengajuan = require('./models/Pengajuan');
+      
+      // Ambil semua pengajuan dengan status "menunggu" review
+      const daftarPengajuan = await Pengajuan.find({ status: 'menunggu' })
+        .populate('karyawan_id', 'nama_lengkap jabatan email')
+        .sort({ dibuat_pada: -1 })
+        .lean()
+        .exec();
+
+      // Transform data untuk frontend display
+      const pengajuanFormatted = daftarPengajuan.map(pengajuan => {
+        const durasi = Math.ceil(
+          (new Date(pengajuan.tanggal_selesai) - new Date(pengajuan.tanggal_mulai)) / 
+          (1000 * 60 * 60 * 24)
+        );
+
+        // Format tanggal untuk display
+        const tanggalMulai = new Date(pengajuan.tanggal_mulai).toLocaleDateString('id-ID', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+        
+        const tanggalSelesai = new Date(pengajuan.tanggal_selesai).toLocaleDateString('id-ID', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+
+        const tanggalDiajukan = new Date(pengajuan.dibuat_pada).toLocaleDateString('id-ID', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+
+        return {
+          _id: pengajuan._id,
+          namaKaryawan: pengajuan.karyawan_id?.nama_lengkap || 'Unknown',
+          emailKaryawan: pengajuan.karyawan_id?.email || 'Unknown',
+          jabatanKaryawan: pengajuan.karyawan_id?.jabatan || 'Unknown',
+          jenisIzin: pengajuan.jenis_izin,
+          periode: `${tanggalMulai} - ${tanggalSelesai}`,
+          durasi: `${durasi} hari`,
+          tanggalDiajukan: tanggalDiajukan,
+          status: pengajuan.status,
+          alasan: pengajuan.alasan
+        };
+      });
+
+      res.render("penanggung-jawab/review-pengajuan", {
+        title: "Review Pengajuan - NusaAttend",
+        user: req.session.user,
+        layout: "dashboard-layout",
+        halaman: "pengajuan",
+        daftarPengajuan: pengajuanFormatted
+      });
+    } catch (error) {
+      console.error('Error loading review pengajuan:', error);
+      res.render("penanggung-jawab/review-pengajuan", {
+        title: "Review Pengajuan - NusaAttend",
+        user: req.session.user,
+        layout: "dashboard-layout",
+        halaman: "pengajuan",
+        daftarPengajuan: []
+      });
+    }
   } else {
     // Karyawan melihat riwayat pengajuan mereka
     // Fetch data riwayat pengajuan dari controller

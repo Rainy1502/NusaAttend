@@ -549,17 +549,17 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(`Karyawan ${nama_lengkap} berhasil ditambahkan!`);
+                    tampilkanNotifikasi(`Karyawan ${nama_lengkap} berhasil ditambahkan`, 'sukses');
                     tutupModalTambahKaryawan();
                     // Reload daftar karyawan tanpa refresh halaman
                     muatSemuaKaryawan();
                 } else {
-                    alert('Gagal menambah karyawan: ' + data.message);
+                    tampilkanNotifikasi('Gagal menambah karyawan: ' + data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat menambah karyawan');
+                tampilkanNotifikasi('Terjadi kesalahan saat menambah karyawan', 'error');
             });
         });
     }
@@ -616,7 +616,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Validasi input dasar
             if (!nama_lengkap || !email || !jabatan || !penanggung_jawab_id) {
-                alert('Mohon lengkapi semua field yang diperlukan');
+                tampilkanNotifikasi('Mohon lengkapi semua field yang diperlukan', 'error');
                 return;
             }
             
@@ -637,17 +637,17 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(`Data karyawan ${nama_lengkap} berhasil diperbarui!`);
+                    tampilkanNotifikasi(`Data karyawan ${nama_lengkap} berhasil diperbarui`, 'sukses');
                     tutupModalEditKaryawan();
                     // Reload daftar karyawan tanpa refresh halaman
                     muatSemuaKaryawan();
                 } else {
-                    alert('Gagal memperbarui data karyawan: ' + data.message);
+                    tampilkanNotifikasi('Gagal memperbarui data karyawan: ' + data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat memperbarui data karyawan');
+                tampilkanNotifikasi('Terjadi kesalahan saat memperbarui data karyawan', 'error');
             });
         });
     }
@@ -658,3 +658,44 @@ document.addEventListener('DOMContentLoaded', function() {
         menuItem.classList.add('active');
     }
 });
+
+// ==================== FUNGSI NOTIFIKASI TOAST ==================== //
+
+/**
+ * Menampilkan notifikasi toast dengan berbagai tipe
+ * @function tampilkanNotifikasi
+ * @param {string} pesan - Pesan notifikasi
+ * @param {string} tipe - Tipe notifikasi: 'sukses', 'error', 'info', 'loading'
+ */
+function tampilkanNotifikasi(pesan, tipe = 'info') {
+  // Hapus notifikasi lama jika ada
+  const notifikasiLama = document.querySelector('.notifikasi-toast');
+  if (notifikasiLama) {
+    notifikasiLama.remove();
+  }
+
+  // Buat elemen notifikasi
+  const notifikasi = document.createElement('div');
+  notifikasi.className = `notifikasi-toast notifikasi-${tipe}`;
+  notifikasi.innerHTML = `
+    <div class="konten-notifikasi">
+      <span class="pesan-notifikasi">${pesan}</span>
+    </div>
+  `;
+
+  // Tambahkan ke body
+  document.body.appendChild(notifikasi);
+
+  // Trigger animasi
+  setTimeout(() => {
+    notifikasi.classList.add('tampil');
+  }, 10);
+
+  // Hapus otomatis setelah 4 detik (kecuali loading)
+  if (tipe !== 'loading') {
+    setTimeout(() => {
+      notifikasi.classList.remove('tampil');
+      setTimeout(() => notifikasi.remove(), 300);
+    }, 4000);
+  }
+}
