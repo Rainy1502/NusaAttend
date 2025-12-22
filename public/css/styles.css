@@ -7816,15 +7816,6 @@ select.input-form {
   }
 }
 
-<<<<<<< HEAD
-.halaman-absensi-karyawan { 
-  padding: 20px;
-  display: flow-root;
-  margin-bottom: 2rem;
-}
-.judul-halaman { font-size: 24px; color: #333; margin-bottom: 5px; }
-.deskripsi-halaman { color: #666; margin-bottom: 30px; }
-=======
 .halaman-absensi-karyawan {
   padding: 20px;
 }
@@ -7837,7 +7828,6 @@ select.input-form {
   color: #666;
   margin-bottom: 30px;
 }
->>>>>>> 2b8ab5591ec4a8eaa0d672d1cbb3c27166535ac5
 
 /* Kartu Utama Absensi*/
 .kartu-utama-absensi,
