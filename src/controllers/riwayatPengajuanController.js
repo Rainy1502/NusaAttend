@@ -131,12 +131,13 @@ exports.ambilRiwayatPengajuanPengguna = async (req, res) => {
     // ==================== LOGIKA DATA READ-ONLY ====================
     /**
      * Query pengajuan dari database berdasarkan karyawan_id
-     * - Seleksi fields: jenis_izin, tanggal_mulai, tanggal_selesai, status, dibuat_pada
+     * - Seleksi fields: jenis_izin, tanggal_mulai, tanggal_selesai, status, dibuat_pada,
+     *   alasan (alasan pengajuan), keterangan_review (alasan penolakan), tanggal_direview
      * - Sort: descending berdasarkan tanggal dibuat (terbaru dulu)
      * - Lean: return plain objects bukan Mongoose documents
      */
     const daftarPengajuanDb = await Pengajuan.find({ karyawan_id: idPengguna })
-      .select('jenis_izin tanggal_mulai tanggal_selesai status dibuat_pada')
+      .select('jenis_izin tanggal_mulai tanggal_selesai status dibuat_pada alasan keterangan_review tanggal_direview')
       .sort({ dibuat_pada: -1 })
       .lean();
 
@@ -147,7 +148,10 @@ exports.ambilRiwayatPengajuanPengguna = async (req, res) => {
       periode: formatPeriode(pengajuan.tanggal_mulai, pengajuan.tanggal_selesai),
       durasi: hitungDurasi(pengajuan.tanggal_mulai, pengajuan.tanggal_selesai),
       tanggalPengajuan: formatTanggalIndonesia(pengajuan.dibuat_pada),
-      statusPengajuan: mapStatus(pengajuan.status)
+      statusPengajuan: mapStatus(pengajuan.status),
+      alasan: pengajuan.alasan || '',
+      tanggalPersetujuan: pengajuan.tanggal_direview ? formatTanggalIndonesia(pengajuan.tanggal_direview) : '',
+      alasanPenolakan: pengajuan.keterangan_review || ''
     }));
 
     return res.json({

@@ -929,6 +929,7 @@ app.get('/pengajuan', middlewareAuntenfikasi, async (req, res) => {
         user: req.session.user,
         layout: 'dashboard-layout',
         halaman: 'riwayat-pengajuan',
+        socketToken: req.session.socketToken || '',
         riwayatPengajuan: riwayatPengajuan
       });
     } catch (error) {
@@ -940,6 +941,7 @@ app.get('/pengajuan', middlewareAuntenfikasi, async (req, res) => {
         user: req.session.user,
         layout: 'dashboard-layout',
         halaman: 'riwayat-pengajuan',
+        socketToken: req.session.socketToken || '',
         riwayatPengajuan: []
       });
     }
