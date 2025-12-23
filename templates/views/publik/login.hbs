@@ -76,11 +76,73 @@
                         Masuk
                     </button>
 
-                    <!-- Link Lupa Password -->
+                    <!-- Link Lupa Password (Buka Modal) -->
                     <div class="forgot-password-container">
-                        <a href="/forgot-password" class="forgot-password-link">Lupa Password?</a>
+                        <button type="button" class="forgot-password-link" id="btnBukaModalLupaPassword">
+                            Lupa Password?
+                        </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    {{!-- ==================== MODAL LUPA PASSWORD ==================== --}}
+    <div id="modalLupaPassword" class="modal-backdrop" style="display: none;">
+        <div class="modal-lupa-password">
+            <div class="modal-header">
+                <h2 class="modal-title-lp">Lupa Password</h2>
+                <button type="button" class="modal-close-btn" id="btnTutupModalLupaPassword">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-info-lp"> 
+                    <div class="modal-info-lp-ikon">
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+                    <p class="modal-info-text">
+                        Masukkan email akun Anda. Kami akan mengirimkan link untuk mereset password.
+                    </p>
+                </div>
+
+                <form id="formLupaPassword" class="modal-form">
+                    <!-- Input Email -->
+                    <div class="form-group">
+                        <label class="form-label" for="emailLupaPassword">Email</label>
+                        <input 
+                            type="email" 
+                            id="emailLupaPassword" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="email@perusahaan.com"
+                            required
+                        />
+                    </div>
+
+                    <!-- Alert Area -->
+                    <div id="alertLupaPassword" class="alert" style="display: none;"></div>
+
+                    <!-- Buttons -->
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-submit-modal" id="btnKirimLinkReset">
+                            <span class="btn-text">Kirim Link Reset</span>
+                            <span class="btn-spinner" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
+                        <button type="button" class="btn-cancel-modal" id="btnBatalModal">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Security Info -->
+                <div class="modal-security-info">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Link reset password hanya berlaku 30 menit dan dapat digunakan sekali saja.</span>
+                </div>
             </div>
         </div>
     </div>
@@ -89,7 +151,133 @@
     {{> footer}}
 
     <script src="/js/app.js"></script>
+
     <script>
+        /**
+         * ==================== MODAL LUPA PASSWORD FUNCTIONALITY ====================
+         * Handle pembukaan, penutupan, dan submit form lupa password via modal
+         */
+
+        // ==================== DOM ELEMENTS ====================
+        const modalLupaPassword = document.getElementById('modalLupaPassword');
+        const btnBukaModalLupaPassword = document.getElementById('btnBukaModalLupaPassword');
+        const btnTutupModalLupaPassword = document.getElementById('btnTutupModalLupaPassword');
+        const btnBatalModal = document.getElementById('btnBatalModal');
+        const formLupaPassword = document.getElementById('formLupaPassword');
+        const emailInput = document.getElementById('emailLupaPassword');
+        const alertArea = document.getElementById('alertLupaPassword');
+        const btnKirimLinkReset = document.getElementById('btnKirimLinkReset');
+        const btnText = btnKirimLinkReset.querySelector('.btn-text');
+        const btnSpinner = btnKirimLinkReset.querySelector('.btn-spinner');
+
+        // ==================== OPEN MODAL ====================
+        btnBukaModalLupaPassword.addEventListener('click', (e) => {
+            e.preventDefault();
+            modalLupaPassword.style.display = 'flex';
+            emailInput.focus();
+        });
+
+        // ==================== CLOSE MODAL ====================
+        function tutupModal() {
+            modalLupaPassword.style.display = 'none';
+            formLupaPassword.reset();
+            alertArea.style.display = 'none';
+            btnKirimLinkReset.disabled = false;
+            btnText.style.display = 'inline';
+            btnSpinner.style.display = 'none';
+        }
+
+        btnTutupModalLupaPassword.addEventListener('click', tutupModal);
+        btnBatalModal.addEventListener('click', tutupModal);
+
+        // Tutup modal saat klik area backdrop
+        modalLupaPassword.addEventListener('click', (e) => {
+            if (e.target === modalLupaPassword) {
+                tutupModal();
+            }
+        });
+
+        // ==================== FORM SUBMIT HANDLER ====================
+        formLupaPassword.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+
+            // Validasi email
+            if (!email) {
+                tampilkanAlert('error', 'Email tidak boleh kosong');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                tampilkanAlert('error', 'Format email tidak valid');
+                return;
+            }
+
+            // Set loading state
+            btnKirimLinkReset.disabled = true;
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline';
+
+            try {
+                const response = await fetch('/api/pemulihan/minta-reset-link', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    tampilkanAlert('success', '✓ Link reset telah dikirim. Periksa inbox Anda.');
+                    formLupaPassword.reset();
+
+                    setTimeout(() => {
+                        tutupModal();
+                    }, 2000);
+                } else {
+                    tampilkanAlert('error', data.message || 'Gagal mengirim link reset');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                tampilkanAlert('error', 'Terjadi kesalahan saat mengirim link reset');
+            } finally {
+                btnKirimLinkReset.disabled = false;
+                btnText.style.display = 'inline';
+                btnSpinner.style.display = 'none';
+            }
+        });
+
+        // ==================== HELPER FUNCTIONS ====================
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function tampilkanAlert(type, message) {
+            alertArea.innerHTML = `
+                <span class="alert-icon">${type === 'success' ? '✓' : '⚠️'}</span>
+                <span>${message}</span>
+            `;
+            alertArea.className = `alert alert-${type}`;
+            alertArea.style.display = 'flex';
+
+            if (type === 'error') {
+                setTimeout(() => {
+                    alertArea.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // ==================== KEYBOARD HANDLERS ====================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalLupaPassword.style.display !== 'none') {
+                tutupModal();
+            }
+        });
+
         /**
          * Handle form login menggunakan JavaScript
          * Mencegah default submit dan mengirim data ke API via fetch

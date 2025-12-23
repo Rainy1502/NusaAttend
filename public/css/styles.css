@@ -390,6 +390,9 @@ footer a:hover {
 }
 
 .forgot-password-link {
+  text-decoration: none;
+  border: none;
+  background: transparent;
   font-size: 14px;
   color: #4f39f6;
   text-decoration: none;
@@ -10085,6 +10088,236 @@ select.input-form {
   animation: overlayFadeOut 0.3s ease-in !important;
 }
 
+
+        /* ==================== MODAL LUPA PASSWORD STYLING ==================== */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-lupa-password {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            width: 90%;
+            animation: slideUp 0.3s ease-in-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title-lp {
+            margin: 0;
+            font-size: 20px;
+            font-weight:normal;
+            color: #333;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close-btn:hover {
+            color: #333;
+            background-color: #f5f5f5;
+            border-radius: 6px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-info-text {
+          text-align: center;
+            margin: 0 0 20px 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .modal-form {
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-submit-modal {
+            flex: 1;
+            padding: 12px 16px;
+            background: #4F39F6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit-modal:hover:not(:disabled) {
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .modal-info-lp{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .modal-info-lp-ikon{
+          background-color: #E0E7FF;
+          color: #4F39F6;
+          border-radius: 50%;
+          padding: 10px;
+        }
+        .modal-info-lp-ikon i {
+          font-size: 30px;
+        }
+
+        
+
+        .btn-submit-modal:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel-modal {
+            flex: 1;
+            padding: 12px 16px;
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel-modal:hover {
+            background: #e8e8e8;
+            border-color: #ccc;
+        }
+
+        .modal-security-info {
+            background-color: #f0f4ff;
+            border: 1px solid #e0e8ff;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #555;
+            margin-top: 16px;
+        }
+
+        .modal-security-info i {
+            color: #667eea;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-error {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+        }
+
+        .alert-success {
+            background-color: #efe;
+            border: 1px solid #cfc;
+            color: #3c3;
+        }
+
+        .alert-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .btn-spinner {
+            display: inline-block;
+        }
+
+        @media (max-width: 600px) {
+            .modal-lupa-password {
+                width: 95%;
+            }
+
+            .modal-header {
+                padding: 16px;
+            }
+
+            .modal-body {
+                padding: 16px;
+            }
+
+            .modal-buttons {
+                flex-direction: column-reverse;
+            }
+        }
 /* ==================== KEYFRAMES NOTIFIKASI ==================== */
 
 @keyframes slideIn {
