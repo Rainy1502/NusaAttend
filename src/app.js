@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const mongoose = require("mongoose")
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
@@ -246,6 +247,9 @@ app.engine(
         if (value == this._switch_value_) {
           return options.fn(this);
         }
+      },
+       gte(a, b) {
+        return a >= b;
       },
       // Bantu untuk default case dalam switch statement
       default: function (options) {
@@ -1038,6 +1042,132 @@ app.get("/admin/karyawan", middlewareAuntenfikasi, (req, res) => {
     halaman: "karyawan",
   });
 });
+// ==================== RUTE PENANGGUNG JAWAB ====================
+
+// Halaman manajemen karyawan
+app.get("/rekap-kehadiran", middlewareAuntenfikasi, async(req, res) => {
+
+  const role = req.session.user.role;
+  // Hanya penanggung jawab yang bisa mengakses rekap kehadiran
+  if (role !== "penanggung-jawab") {
+    return res.status(403).render("publik/404", {
+      title: "Akses Ditolak - NusaAttend",
+      message: "Anda tidak memiliki akses ke halaman rekap kehadiran.",
+    });
+  }
+
+
+  /**
+     * [REKAP KEHADIRAN PENANGGUNG JAWAB - Data Dinamis]
+     */
+    try {
+      // Query data pengguna
+      const Pengguna = require("./models/Pengguna");
+      // Hitung dataAbsensi
+      const dataKaryawanAbsensi = await Pengguna.aggregate([
+        {
+          $match:{
+          penanggung_jawab_id : new mongoose.Types.ObjectId(req.session.userId)
+          }
+        },
+        { 
+          $lookup: { 
+            from: "absensis", 
+            localField: "_id", 
+            foreignField: "id_pengguna", 
+            as: "absensi" 
+          } }, 
+          { 
+            $project: { 
+              nama_lengkap:1,
+              jabatan:1,
+              sisa_cuti : 1,
+              "absensi.status":1,
+              "absensi.tanggal" : 1
+            } }
+      ])
+
+
+      // Hitung hadir hari ini
+      const hariIni = new Date();
+      hariIni.setHours(0, 0, 0, 0);
+
+
+      let hariIniHadir = 0;
+      let hariIniIzin = 0;
+
+      const hariSama = (h1, h2) =>
+          h1.getFullYear() === h2.getFullYear() &&
+          h1.getMonth() === h2.getMonth() &&
+          h1.getDate() === h2.getDate();
+
+
+      const dataKaryawanAbsensiTotal = dataKaryawanAbsensi.map(k=>{
+        
+        
+          let izin = 0;
+          let hadir = 0;
+          let tidakHadir = 0;
+          (k.absensi ?? []).forEach(a => {
+            if (a.status === 'hadir') {
+              hadir++;
+              if (hariSama(a.tanggal, hariIni)) {
+                hariIniHadir++;
+              }
+            } else if (a.status === 'izin') {
+              izin++;
+              if (hariSama(a.tanggal, hariIni)) {
+                hariIniIzin++;
+              }
+            } else {
+              tidakHadir++;
+            }
+            });
+
+            const totalHari = hadir + izin + tidakHadir;
+            const persentase = totalHari === 0 ? 0 : (hadir / totalHari) * 100;
+
+        return {
+          nama_lengkap : k.nama_lengkap,
+          jabatan : k.jabatan,
+          sisa_cuti : k.sisa_cuti,
+          izin,
+          hadir,
+          tidakHadir,
+          persentase
+        }
+      })
+
+      const rataRataKehadiran =
+          dataKaryawanAbsensiTotal.reduce((sum, k) => sum + k.persentase, 0) / dataKaryawanAbsensiTotal.length;
+
+      const totalKaryawan = dataKaryawanAbsensiTotal.length;
+      
+
+    res.render("penanggung-jawab/rekap-kehadiran", {
+    title: "Rekap Kehadiran - NusaAttend",
+    user: req.session.user,
+    layout: "dashboard-layout",
+    karyawan:dataKaryawanAbsensiTotal,
+    rataRataKehadiran,
+    totalKaryawan,
+    hariIniHadir,
+    hariIniIzin,
+    halaman: "rekap-kehadiran",
+  });
+    } catch (error) {
+    console.error("Error loading dashboard penanggung jawab data:", error);
+    res.render("penanggung-jawab/rekap-kehadiran", {
+    title: "Rekap Kehadiran - NusaAttend",
+    user: req.session.user,
+    layout: "dashboard-layout",
+    halaman: "rekap-kehadiran",
+  });
+    }
+
+  
+});
+
 
 // ==================== HALAMAN MANAJEMEN PENANGGUNG JAWAB (SUPERVISOR) ====================
 
