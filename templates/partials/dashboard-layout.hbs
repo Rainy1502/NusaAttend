@@ -42,10 +42,6 @@
                     <i class="fas fa-user-tie"></i>
                     <span>Manajemen PJ</span>
                 </a>
-                <a href="/admin/log-keberatan" class="menu-item {{isActive 'log-keberatan' halaman}}">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Log Keberatan</span>
-                </a>
             {{else if (eq user.role 'penanggung-jawab')}}
                 <!-- Menu untuk Penanggung Jawab -->
                 <!-- Didasarkan pada Figma Design: node-id 4:6728 -->
@@ -56,11 +52,6 @@
                 <a href="/pengajuan" class="menu-item {{isActive 'pengajuan' halaman}}">
                     <i class="fas fa-file-invoice"></i>
                     <span>Review Pengajuan</span>
-                </a>
-                <a href="/keberatan" class="menu-item {{isActive 'keberatan' halaman}}">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span>Tinjauan Keberatan</span>
-                    {{#if totalKeberatan}}<span class="badge badge-alert">{{totalKeberatan}}</span>{{/if}}
                 </a>
                 <a href="/rekap-kehadiran" class="menu-item {{isActive 'rekap-kehadiran' halaman}}">
                     <i class="fas fa-users"></i>

@@ -2,6 +2,24 @@ const express = require('express');
 const keberatanController = require('../controllers/keberatanController');
 
 /**
+ * ⚠️ ROUTER KEBERATAN ADMINISTRATIF - STATUS LEGACY / TIDAK AKTIF DI UI
+ * 
+ * Router ini dipertahankan sebagai ARTEFAK BACKEND untuk alasan:
+ * 1. Stabilitas sistem - Backend tetap lengkap & fungsional
+ * 2. Referensi akademik - Dokumentasi implementasi fitur yang dihilangkan dari UI
+ * 3. Kemungkinan pengembangan lanjutan - Fitur bisa diaktifkan kembali jika diperlukan
+ * 
+ * ⚠️ PENTING:
+ * - UI TIDAK LAGI MEMANGGIL endpoint ini (halaman Log Keberatan Admin dihilangkan)
+ * - Menu "Tinjauan Keberatan" dihilangkan dari dashboard Penanggung Jawab
+ * - Tombol "Ajukan Keberatan" dihilangkan dari halaman Riwayat Pengajuan
+ * - Endpoint tetap aktif di backend untuk referensi dan stabilitas sistem
+ * 
+ * Fitur keberatan dalam NusaAttend adalah controlled feature deprecation,
+ * bukan technical debt atau incomplete feature.
+ */
+
+/**
  * Router untuk API Keberatan Administratif
  * Menangani semua endpoint terkait keberatan
  * Base path: /api/admin (didefinisikan di app.js)
@@ -15,9 +33,15 @@ const router = express.Router();
 /**
  * Endpoint: GET /api/admin/keberatan
  * 
- * Mengambil semua data keberatan
- * Digunakan oleh: Halaman Log Keberatan Admin
- * Response: Array keberatan dengan statistik
+ * Status: LEGACY - Tidak digunakan oleh UI aktif
+ * Mengambil semua data keberatan dari database
+ * 
+ * Alasan dipertahankan:
+ * - Backend menyimpan data keberatan untuk integritas sistem
+ * - Endpoint tetap aktif untuk debugging & audit
+ * - Memungkinkan reaktivasi fitur jika diperlukan di masa depan
+ * 
+ * Sebelumnya digunakan oleh: Halaman Log Keberatan Admin (dihilangkan)
  * 
  * @route GET /api/admin/keberatan
  * @returns {Object} { success, message, data: [], statistik: {} }
@@ -27,8 +51,10 @@ router.get('/keberatan', keberatanController.ambilSemuaKeberatan);
 /**
  * Endpoint: GET /api/admin/keberatan/:id
  * 
+ * Status: LEGACY - Tidak digunakan oleh UI aktif
  * Mengambil satu data keberatan berdasarkan ID
- * Digunakan oleh: Modal detail keberatan
+ * 
+ * Sebelumnya digunakan oleh: Modal detail keberatan (dihilangkan)
  * Response: Satu object keberatan
  * 
  * @route GET /api/admin/keberatan/:id
