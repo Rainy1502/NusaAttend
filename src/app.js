@@ -286,6 +286,51 @@ app.get("/register", (req, res) => {
   res.render("register", { title: "Register - NusaAttend" });
 });
 
+// ==================== DEBUG: TEST EMAIL ENDPOINT ====================
+/**
+ * Endpoint untuk testing Nodemailer integration
+ * Akses: GET http://localhost:3000/test-email?email=your@email.com
+ * 
+ * IMPORTANT: Endpoint ini hanya untuk development/debugging
+ * REMOVE atau PASSWORD-PROTECT sebelum production!
+ */
+app.get("/test-email", async (req, res) => {
+  try {
+    const { kirimEmailAkunBaru } = require('./utils/emailService');
+    const emailPenerima = req.query.email || 'test@example.com';
+    
+    console.log(`\n🧪 [DEBUG] Testing email sending ke: ${emailPenerima}`);
+    
+    const result = await kirimEmailAkunBaru(
+      emailPenerima,
+      'Test User',
+      'Karyawan',
+      'https://nusaattend.local'
+    );
+    
+    if (result) {
+      res.json({ 
+        success: true, 
+        message: `✅ Email test berhasil dikirim ke ${emailPenerima}`,
+        email: emailPenerima
+      });
+    } else {
+      res.json({ 
+        success: false, 
+        message: `❌ Email test GAGAL (lihat console untuk detail error)`,
+        email: emailPenerima
+      });
+    }
+  } catch (error) {
+    console.error('[DEBUG] Error di test-email endpoint:', error);
+    res.json({ 
+      success: false, 
+      message: error.message,
+      error: error.toString()
+    });
+  }
+});
+
 // Rute logout (menangani form POST)
 app.post("/logout", (req, res) => {
   req.session.destroy((err) => {

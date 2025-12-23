@@ -1,4 +1,5 @@
 const Pengguna = require('../models/Pengguna');
+const { kirimEmailAkunBaru } = require('../utils/emailService');
 
 /**
  * Controller untuk menangani operasi manajemen penanggung jawab (supervisor)
@@ -215,6 +216,26 @@ const kontrolerPenanggungJawab = {
         success: true,
         message: 'Supervisor berhasil ditambahkan',
         data: hasilSimpan
+      });
+
+      // ==================== PENGIRIMAN EMAIL NOTIFIKASI ====================
+      /**
+       * Email dikirim SETELAH data berhasil disimpan ke database
+       * Jika ada error pada pengiriman email, TIDAK MEMBLOK proses pembuatan akun
+       * Email bersifat informatif, bukan verifikasi atau OTP
+       * 
+       * Penanggung Jawab selalu mendapat email notifikasi akun baru
+       */
+      kirimEmailAkunBaru(
+        email,
+        nama_lengkap,
+        'Penanggung Jawab',
+        process.env.APP_URL || 'https://nusaattend.local',
+        password  // Kirim password yang diberikan
+      ).catch(error => {
+        // Error handling: jika email gagal, hanya log ke console
+        // Tidak perlu merespons karena akun sudah berhasil dibuat
+        console.error(`[PENANGGUNG JAWAB CONTROLLER] Error mengirim email ke ${email}:`, error);
       });
     } catch (error) {
       console.error('❁EError saat menambah supervisor:', error.message);

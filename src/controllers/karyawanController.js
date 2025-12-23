@@ -1,4 +1,5 @@
 const Pengguna = require('../models/Pengguna');
+const { kirimEmailAkunBaru } = require('../utils/emailService');
 
 /**
  * Controller untuk menangani operasi manajemen karyawan
@@ -143,9 +144,28 @@ const kontrolerKaryawan = {
         data: responseKaryawan
       });
 
-      // TODO: Kirim email dengan kredensial jika generatePassword === true
+      // ==================== PENGIRIMAN EMAIL NOTIFIKASI ====================
+      /**
+       * Email dikirim SETELAH data berhasil disimpan ke database
+       * Jika ada error pada pengiriman email, TIDAK MEMBLOK proses pembuatan akun
+       * Email bersifat informatif, bukan verifikasi atau OTP
+       * 
+       * Kondisi: Email hanya dikirim jika generatePassword === true (explicit opt-in)
+       */
       if (generatePassword) {
-        console.log(`📧 [TODO] Kirim email ke ${email} dengan password: ${passwordFinal}`);
+        // Kirim email notifikasi akun baru secara asinkron (fire-and-forget)
+        // Tidak perlu await karena email bukan blocking operation
+        kirimEmailAkunBaru(
+          email,
+          nama_lengkap,
+          'Karyawan',
+          process.env.APP_URL || 'https://nusaattend.local',
+          passwordFinal  // Kirim password yang sudah di-generate
+        ).catch(error => {
+          // Error handling: jika email gagal, hanya log ke console
+          // Tidak perlu merespons karena akun sudah berhasil dibuat
+          console.error(`[KARYAWAN CONTROLLER] Error mengirim email ke ${email}:`, error);
+        });
       }
     } catch (error) {
       // Handle error duplicate key email
