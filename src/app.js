@@ -1018,16 +1018,10 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
       res.render("karyawan/riwayat-pengajuan", {
         title: "Riwayat Pengajuan - NusaAttend",
         user: req.session.user,
-<<<<<<< HEAD
         layout: 'dashboard-layout',
         halaman: 'riwayat-pengajuan',
         socketToken: req.session.socketToken || '',
         riwayatPengajuan: riwayatPengajuan
-=======
-        layout: "dashboard-layout",
-        halaman: "riwayat-pengajuan",
-        riwayatPengajuan: riwayatPengajuan,
->>>>>>> c6be1e3b42ff98dfb716100b3b7253fd5adbe948
       });
     } catch (error) {
       console.error("Error dalam route riwayat pengajuan:", error);
@@ -1036,16 +1030,10 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
       res.render("karyawan/riwayat-pengajuan", {
         title: "Riwayat Pengajuan - NusaAttend",
         user: req.session.user,
-<<<<<<< HEAD
         layout: 'dashboard-layout',
         halaman: 'riwayat-pengajuan',
         socketToken: req.session.socketToken || '',
         riwayatPengajuan: []
-=======
-        layout: "dashboard-layout",
-        halaman: "riwayat-pengajuan",
-        riwayatPengajuan: [],
->>>>>>> c6be1e3b42ff98dfb716100b3b7253fd5adbe948
       });
     }
   }
