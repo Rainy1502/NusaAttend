@@ -2,18 +2,35 @@ const Keberatan = require('../models/Keberatan');
 const Pengguna = require('../models/Pengguna');
 
 /**
+ * ⚠️ CONTROLLER KEBERATAN - STATUS LEGACY / TIDAK AKTIF DI UI
+ * 
+ * Controller ini dipertahankan sebagai ARTEFAK BACKEND untuk alasan:
+ * 1. Stabilitas sistem - Semua fungsi tetap berfungsi
+ * 2. Referensi akademik - Dokumentasi lengkap untuk analisis
+ * 3. Kemungkinan pengembangan - Fitur bisa diaktifkan kembali
+ * 
+ * ⚠️ PENTING:
+ * - TIDAK ADA PEMANGGILAN dari UI saat ini
+ * - Endpoint backend tetap aktif untuk internal operations
+ * - Frontend sudah menghapus semua referensi UI ke fitur ini
+ * 
+ * Status: Fully Functional Backend, Inactive UI
+ */
+
+/**
  * Controller untuk mengelola Keberatan Administratif
  * Berisi fungsi-fungsi untuk CRUD keberatan dan perubahan status
  */
 
 /**
  * Fungsi: ambilSemuaKeberatan
+ * Status: LEGACY - Tidak dipanggil dari UI aktif
  * 
  * Mengambil seluruh data keberatan dari database
  * Diurutkan berdasarkan tanggal pengajuan (terbaru dulu)
  * Data dikembalikan dengan informasi pengaju dan penanggung jawab
  * 
- * Digunakan oleh: Halaman Log Keberatan Admin (GET /api/admin/keberatan)
+ * Sebelumnya digunakan oleh: Halaman Log Keberatan Admin (dihilangkan)
  * 
  * @param {Object} req - Request object dari Express
  * @param {Object} res - Response object dari Express

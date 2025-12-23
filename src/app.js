@@ -26,12 +26,6 @@ const rutAdminKaryawan = require("./routes/adminKaryawan");
  */
 const rutAdminPenanggungJawab = require("./routes/adminPenanggungJawab");
 /**
- * [FITUR BARU - Log Keberatan]
- * Router untuk API Keberatan Administratif
- * Menangani CRUD keberatan dan perubahan status
- */
-const rutAdminKeberatan = require("./routes/adminKeberatan");
-/**
  * [FITUR BARU - Dashboard Admin]
  * Router untuk API Dashboard Admin Sistem
  * Menangani pengambilan data ringkasan dan aktivitas terbaru (read-only)
@@ -316,14 +310,6 @@ app.use("/api/admin", middlewareAuntenfikasi, rutAdminKaryawan);
  */
 // Daftarkan router admin penanggung jawab dengan middleware autentikasi
 app.use("/api/admin", middlewareAuntenfikasi, rutAdminPenanggungJawab);
-
-/**
- * [FITUR BARU - Log Keberatan]
- * Daftarkan router keberatan administratif dengan middleware autentikasi
- * Endpoint: /api/admin/keberatan
- * Handler: keberatanController.js
- */
-app.use("/api/admin", middlewareAuntenfikasi, rutAdminKeberatan);
 
 /**
  * [FITUR BARU - Dashboard Admin]
@@ -715,8 +701,6 @@ app.get("/dashboard", async (req, res) => {
         jumlahDisetujuiBulanIni: totalKaryawan,
         jumlahDitolakBulanIni: totalPenanggungJawab,
         totalKaryawanTim: totalAkunAktif,
-        // Badge notification untuk sidebar
-        totalKeberatan: 2,
         // Data kehadiran (dummy untuk sekarang)
         jumlahHadir: 18,
         jumlahIzinCuti: 4,
@@ -740,7 +724,6 @@ app.get("/dashboard", async (req, res) => {
         jumlahDisetujuiBulanIni: 0,
         jumlahDitolakBulanIni: 0,
         totalKaryawanTim: 0,
-        totalKeberatan: 0,
         jumlahHadir: 0,
         jumlahIzinCuti: 0,
         jumlahBelumAbsen: 0,
@@ -1089,97 +1072,6 @@ app.get("/admin/laporan", middlewareAuntenfikasi, (req, res) => {
     layout: "dashboard-layout",
     halaman: "laporan",
   });
-});
-
-// ==================== HALAMAN LOG KEBERATAN ADMINISTRATIF ====================
-
-/**
- * [FITUR BARU]
- * Route untuk halaman Log Keberatan Administratif
- * Path: '/admin/log-keberatan'
- * Template: 'admin/log-keberatan.hbs'
- * Fitur: Admin dapat memonitor semua keberatan yang diajukan (view-only)
- */
-app.get("/admin/log-keberatan", middlewareAuntenfikasi, async (req, res) => {
-  const role = req.session.user.role;
-
-  /**
-   * Validasi akses: Hanya admin yang bisa melihat log keberatan
-   */
-  if (role !== "admin") {
-    return res.status(403).render("publik/404", {
-      title: "Akses Ditolak - NusaAttend",
-      message: "Anda tidak memiliki akses ke halaman log keberatan.",
-    });
-  }
-
-  try {
-    /**
-     * Query data keberatan dari database
-     * Populate data pengaju dan penanggung jawab untuk menampilkan nama lengkap
-     */
-    const Keberatan = require("./models/Keberatan");
-    const daftarKeberatan = await Keberatan.find()
-      .populate("pengaju", "nama_lengkap jabatan")
-      .populate("penanggung_jawab", "nama_lengkap")
-      .sort({ tanggal_pengajuan: -1 })
-      .lean();
-
-    /**
-     * Transform data untuk frontend
-     * Normalize nama field dari database ke template variable
-     */
-    const keberatanFormatted = daftarKeberatan.map((keberatan) => ({
-      _id: keberatan._id,
-      namaKaryawan: keberatan.pengaju?.nama_lengkap || "Tidak diketahui",
-      departemenKaryawan: keberatan.pengaju?.jabatan || "Tidak diketahui",
-      jenisKeberatan: keberatan.jenis_keberatan,
-      tanggalMulai: keberatan.tanggal_pengajuan?.toLocaleDateString("id-ID"),
-      tanggalSelesai: keberatan.tanggal_pembaruan?.toLocaleDateString("id-ID"),
-      namaPenanggungJawab:
-        keberatan.penanggung_jawab?.nama_lengkap || "Menunggu",
-      tanggalDiajukan: keberatan.tanggal_pengajuan?.toLocaleDateString("id-ID"),
-      status: keberatan.status_keberatan,
-      tanggalDisetujui:
-        keberatan.tanggal_pembaruan?.toLocaleDateString("id-ID"),
-      tanggalDitolak: keberatan.tanggal_pembaruan?.toLocaleDateString("id-ID"),
-    }));
-
-    /**
-     * Hitung statistik keberatan per status
-     */
-    const statistik = {
-      jumlahTotalKeberatan: daftarKeberatan.length,
-      jumlahMenunggu: daftarKeberatan.filter(
-        (k) => k.status_keberatan === "menunggu"
-      ).length,
-      jumlahDisetujui: daftarKeberatan.filter(
-        (k) => k.status_keberatan === "selesai"
-      ).length,
-      jumlahDitolak: 0, // Dapat diupdate jika ada field status detail (disetujui/ditolak)
-    };
-
-    /**
-     * Render halaman log keberatan dengan data
-     */
-    res.render("admin/log-keberatan", {
-      title: "Log Keberatan Administratif - NusaAttend",
-      user: req.session.user,
-      layout: "dashboard-layout",
-      halaman: "log-keberatan",
-      daftarKeberatan: keberatanFormatted,
-      jumlahTotalKeberatan: statistik.jumlahTotalKeberatan,
-      jumlahMenunggu: statistik.jumlahMenunggu,
-      jumlahDisetujui: statistik.jumlahDisetujui,
-      jumlahDitolak: statistik.jumlahDitolak,
-    });
-  } catch (error) {
-    console.error("Error loading log keberatan:", error);
-    res.status(500).render("publik/404", {
-      title: "Error - NusaAttend",
-      message: "Terjadi kesalahan saat memuat log keberatan.",
-    });
-  }
 });
 
 // ==================== RUTE PENANGGUNG JAWAB ====================
