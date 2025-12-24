@@ -772,7 +772,7 @@ kill -9 <PID>
 ## 📞 Kontak & Support
 
 **Project Contributors:**
-- 👨‍💻 **Rainy** - Backend & Database
+- 👨‍💻 **Fattan Naufan Islami** - Backend & Database
 - 👨‍💻 **Carli Tamba** - Frontend & UI/UX
 
 **Untuk pertanyaan atau issues:**
@@ -841,7 +841,7 @@ MIT License - Lihat file [LICENSE](./LICENSE) untuk detail lengkap
 
 <div align="center">
 
-**Made with ❤️ by Rainy & Carli Tamba**
+**Made by Fattan Naufan Islami & Carli Tamba**
 
 NusaAttend © 2025 - All rights reserved
 
