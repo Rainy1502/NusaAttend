@@ -680,25 +680,43 @@ app.get("/dashboard", async (req, res) => {
       const Pengajuan = require("./models/Pengajuan");
 
       // Hitung ringkasan
-      const totalKaryawan = await Pengguna.countDocuments({ role: "karyawan" });
+      // PENTING: totalKaryawan HANYA karyawan yang ditanggungjawabi user ini
+      const totalKaryawan = await Pengguna.countDocuments({ 
+        role: "karyawan",
+        penanggung_jawab_id: req.session.userId  // Filter: Hanya karyawan yang ditanggungjawabi
+      });
+      
+      // Hitung pengajuan menunggu review
+      const menungguReview = await Pengajuan.countDocuments({
+        status: "menunggu",
+      });
+
+      // Hitung pengajuan disetujui bulan ini
+      const bulanIniMulai = new Date();
+      bulanIniMulai.setDate(1);
+      bulanIniMulai.setHours(0, 0, 0, 0);
+
+      const bulanIniAkhir = new Date();
+      bulanIniAkhir.setMonth(bulanIniAkhir.getMonth() + 1);
+      bulanIniAkhir.setDate(0);
+      bulanIniAkhir.setHours(23, 59, 59, 999);
+
+      const disetujuiBulanIni = await Pengajuan.countDocuments({
+        status: "disetujui",
+        tanggal_direview: { $gte: bulanIniMulai, $lte: bulanIniAkhir }
+      });
+
+      // Hitung pengajuan ditolak bulan ini
+      const ditolakBulanIni = await Pengajuan.countDocuments({
+        status: "ditolak",
+        tanggal_direview: { $gte: bulanIniMulai, $lte: bulanIniAkhir }
+      });
+
       const totalPenanggungJawab = await Pengguna.countDocuments({
         role: "penanggung-jawab",
       });
       const totalAkunAktif = await Pengguna.countDocuments({
         adalah_aktif: true,
-      });
-
-      // Hitung aktivitas hari ini
-      const hariIniMulai = new Date();
-      hariIniMulai.setHours(0, 0, 0, 0);
-      const hariIniAkhir = new Date();
-      hariIniAkhir.setHours(23, 59, 59, 999);
-
-      const totalAktivitasHariIni = await Pengguna.countDocuments({
-        $or: [
-          { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
-          { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
-        ],
       });
 
       // Ambil pengajuan mendesak (status menunggu, sorted by tanggal_mulai terdekat)
@@ -767,11 +785,6 @@ app.get("/dashboard", async (req, res) => {
         };
       });
 
-      // Hitung pengajuan menunggu review
-      const menungguReview = await Pengajuan.countDocuments({
-        status: "menunggu",
-      });
-
       res.render("penanggung-jawab/dashboard", {
         title: "Dashboard Penanggung Jawab - NusaAttend",
         user: req.session.user,
@@ -780,9 +793,9 @@ app.get("/dashboard", async (req, res) => {
         socketToken: req.session.socketToken || "",
         // Data ringkasan - mapping ke frontend variables
         jumlahMenungguReview: menungguReview,
-        jumlahDisetujuiBulanIni: totalKaryawan,
-        jumlahDitolakBulanIni: totalPenanggungJawab,
-        totalKaryawanTim: totalAkunAktif,
+        jumlahDisetujuiBulanIni: disetujuiBulanIni,
+        jumlahDitolakBulanIni: ditolakBulanIni,
+        totalKaryawan: totalKaryawan,
         // Data kehadiran (dummy untuk sekarang)
         jumlahHadir: 18,
         jumlahIzinCuti: 4,
@@ -805,7 +818,7 @@ app.get("/dashboard", async (req, res) => {
         jumlahMenungguReview: 0,
         jumlahDisetujuiBulanIni: 0,
         jumlahDitolakBulanIni: 0,
-        totalKaryawanTim: 0,
+        totalKaryawan: 0,
         jumlahHadir: 0,
         jumlahIzinCuti: 0,
         jumlahBelumAbsen: 0,
