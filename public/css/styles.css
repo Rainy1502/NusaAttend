@@ -10279,6 +10279,166 @@ select.input-form {
                 flex-direction: column-reverse;
             }
         }
+
+
+.kontainer-rekap-kehadiran {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header-rekap-kehadiran {
+  margin-bottom: 25px;
+}
+
+.judul-rekap-kehadiran {
+  font-size: 24px;
+  margin: 0;
+  color: #1e293b;
+}
+
+.deskripsi-rekap-kehadiran {
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 5px;
+}
+
+/* Kartu Statistik */
+.baris-statistik-rekap-kehadiran {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.kartu-rekap-kehadiran {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.ikon-rekap-kehadiran {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.latar-biru { background-color: #eff6ff; color: #3b82f6; }
+.latar-hijau { background-color: #f0fdf4; color: #22c55e; }
+.latar-ungu { background-color: #f5f3ff; color: #8b5cf6; }
+.latar-kuning { background-color: #fffbeb; color: #f59e0b; }
+
+.label-rekap-kehadiran {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.angka-rekap-kehadiran {
+  font-size: 20px;
+  margin: 4px 0 0 0;
+  color: #1e293b;
+}
+
+/* Bagian Tabel */
+.bagian-tabel-rekap-kehadiran {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.judul-bagian-rekap-kehadiran {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+.tabel-rekap-kehadiran {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabel-rekap-kehadiran th {
+  text-align: left;
+  padding: 12px;
+  font-size: 13px;
+  color: #64748b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.tabel-rekap-kehadiran td {
+  padding: 16px 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #f8fafc;
+}
+
+/* Badge Angka */
+.badge-rekap-kehadiran {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-rekap-kehadiran.hijau { background-color: #f0fdf4; color: #22c55e; }
+.badge-rekap-kehadiran.biru { background-color: #eff6ff; color: #3b82f6; }
+.badge-rekap-kehadiran.merah { background-color: #fef2f2; color: #ef4444; }
+
+/* Warna Teks Persentase */
+.teks-rekap-kehadiran-hijau { color: #22c55e; font-weight: 600; }
+.teks-rekap-kehadiran-biru { color: #3b82f6; font-weight: 600; }
+.teks-rekap-kehadiran-kuning { color: #f59e0b; font-weight: 600; }
+.teks-rekap-kehadiran-merah { color: #ef4444; font-weight: 600; }
+
+/* Legenda */
+.legenda-rekap-kehadiran {
+  margin: 20px 0;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+
+.judul-legenda-rekap-kehadiran {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.baris-legenda-rekap-kehadiran {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-legenda-rekap-kehadiran {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.titik-rekap-kehadiran {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.bg-hijau { background-color: #22c55e; }
+.bg-biru { background-color: #3b82f6; }
+.bg-kuning { background-color: #f59e0b; }
+.bg-merah { background-color: #ef4444; }
 /* ==================== KEYFRAMES NOTIFIKASI ==================== */
 
 @keyframes slideIn {
