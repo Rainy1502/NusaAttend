@@ -1,415 +1,852 @@
-# NusaAttend - Portal Administrasi Kehadiran Tim
+# 📱 NusaAttend - Sistem Manajemen Absensi & Pengajuan Izin
 
-**Status Project**: � Admin Section Complete & Production Ready - Phase 1: Login & Admin Dashboard  
-**Last Updated**: December 21, 2025
+<div align="center">
 
-NusaAttend adalah portal administrasi internal berbasis website yang dirancang untuk membantu tim atau organisasi skala kecil hingga menengah dalam mengelola pengajuan administrasi kehadiran secara terpusat, terstruktur, dan real-time.
+![Version](https://img.shields.io/badge/version-1.2-blue.svg?style=flat-square)
+![Status](https://img.shields.io/badge/status-Production%20Ready-brightgreen.svg?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)
+![Last Updated](https://img.shields.io/badge/last%20updated-December%202025-informational.svg?style=flat-square)
 
-## 📋 Fitur yang Sudah Diimplementasi
+**Sistem Manajemen Absensi & Pengajuan Izin Berbasis Web Modern**
 
-- ✅ **Login Page**: Login dengan email dan password
-- ✅ **Session Management**: Session-based authentication dengan Express Session
-- ✅ **Password Hashing**: Secure password dengan Bcrypt
-- ✅ **Admin Dashboard**: Dashboard admin dengan real-time statistics dan activity log
-- ✅ **Log Keberatan**: System tracking pengajuan keberatan dengan CRUD lengkap
-- ✅ **Manajemen Karyawan**: Admin dapat mengelola akun karyawan
-- ✅ **Manajemen Penanggung Jawab**: Admin dapat mengelola akun supervisor/penanggung jawab
-- ✅ **Role-Based Access Control**: Akses terbatas berdasarkan role (admin, supervisor, karyawan)
-- ✅ **Frontend Standardization**: Semua halaman admin memiliki styling yang konsisten
-- ✅ **Real-time Data**: Database queries untuk statistik dan monitoring aktual
+[Fitur](#-fitur-utama) • [Tech Stack](#-teknologi-yang-digunakan) • [Instalasi](#-instalasi) • [Dokumentasi](#-dokumentasi) • [Progress](#-status-pengembangan)
 
-## 🔜 Fitur yang Akan Datang (Next Phase)
+</div>
 
-- 📝 **Sistem Surat Izin**: Pengajuan cuti tahunan, izin tidak masuk, izin sakit, dan WFH
-- 📋 **Absensi Harian**: Absen masuk dan pulang dengan integrasi surat izin
-- ✍️ **Tanda Tangan Digital**: Tanda tangan visual pada surat izin
-- 🔔 **Alur Persetujuan Real-time**: Approval oleh penanggung jawab dengan notifikasi socket
-- 🗓️ **Perhitungan Sisa Cuti**: Tracking otomatis sisa cuti tahunan
-- 📧 **Email Notifikasi**: Notifikasi email untuk pengajuan dan perubahan status
-- 💬 **Chatbot Bantuan**: Rule-based chatbot untuk menjawab pertanyaan umum
-- 📊 **Analytics Dashboard**: Dashboard analytics dengan visualisasi data
+---
 
-## 💻 Teknologi yang Digunakan
+## 🎯 Tentang Proyek
 
-- **Backend**: Express.js (Node.js)
-- **Database**: MongoDB
-- **Real-time**: Socket.io
-- **Frontend Template**: Handlebars (express-handlebars)
-- **Email**: Nodemailer
-- **Autentikasi**: Session-based + JWT
-- **Enkripsi Password**: Bcrypt
-- **Styling**: Custom CSS (No Framework)
-- **Icons**: Font Awesome 6.4.0
+**NusaAttend** adalah sistem manajemen absensi dan pengajuan izin karyawan yang komprehensif berbasis web modern. Dirancang khusus untuk organisasi skala kecil hingga menengah dengan fitur-fitur canggih seperti notifikasi real-time, chatbot AI, digital signature, dan perhitungan cuti otomatis.
+
+Sistem ini memungkinkan karyawan untuk mengajukan izin/cuti dengan mudah, penanggung jawab untuk melakukan review dan approval, serta admin untuk mengelola data sistem secara efisien.
+
+---
+
+## ✨ Fitur Utama
+
+### 🔐 **Sistem Autentikasi & Keamanan**
+- ✅ Login dengan email & password (Session-based authentication)
+- ✅ Password hashing dengan Bcrypt untuk keamanan tinggi
+- ✅ Role-based access control (Admin, Penanggung Jawab, Karyawan)
+- ✅ Session management dengan MongoDB (persistent)
+- ✅ ⭐ **Sistem Recovery Password** (Checkpoint 7)
+  - Email verification dengan token 30-menit
+  - Proteksi brute force (max 5 attempt/jam)
+  - Pencegahan email enumeration attack
+
+### 📊 **Dashboard & Analytics**
+- ✅ Dashboard karyawan dengan ringkasan statistik
+  - Sisa cuti tahunan
+  - Kehadiran bulan ini
+  - Pengajuan menunggu persetujuan
+  - Status tidak hadir
+  - Riwayat pengajuan terbaru
+- ✅ Dashboard penanggung jawab dengan pending requests
+- ✅ Dashboard admin dengan sistem monitoring lengkap
+  - Statistik pengguna
+  - Log keberatan/grievance
+  - Monitoring aktivitas sistem
+  - Real-time data dari database
+
+### 📋 **Sistem Absensi (Kehadiran)**
+- ✅ Checkin/checkout dengan timestamp otomatis
+- ✅ Durasi kerja otomatis terhitung
+- ✅ Status harian (hadir, terlambat, libur, izin, sakit, alpha)
+- ✅ Riwayat absensi dalam bentuk tabel
+- ✅ Integrasi dengan pengajuan surat izin
+
+### 📝 **Sistem Surat Izin (Leave Request)**
+- ✅ **4-Step Wizard** untuk pengajuan yang intuitif
+  1. **Step 1**: Isi form (jenis izin, tanggal, alasan)
+  2. **Step 2**: Preview surat izin resmi
+  3. **Step 3**: Tanda tangan digital (canvas draw)
+  4. **Step 4**: Konfirmasi & selesai
+  
+- ✅ Jenis izin yang didukung:
+  - Cuti Tahunan
+  - Izin Tidak Masuk
+  - Izin Sakit
+  - Work From Home (WFH)
+
+- ✅ ⭐ **Durasi Calculation dengan Inclusive Counting** (Checkpoint 8)
+  - Formula: `Math.ceil(durasi) + 1`
+  - Contoh: 24 Des - 24 Des = 1 hari (bukan 0)
+  - Validasi real-time di form
+
+- ✅ ⭐ **Real-time Sisa Cuti Display**
+  - Kalkulasi otomatis dari pengajuan yang disetujui
+  - Warning box saat durasi > sisa cuti
+  - Disable tombol jika melebihi jatah
+
+- ✅ **Validasi Komprehensif**
+  - Frontend validation
+  - Backend double-check
+  - Proteksi dari pengajuan ganda
+
+- ✅ **Pembuatan Surat Otomatis**
+  - Generate surat izin format resmi
+  - Data otomatis dari form
+  - Ready untuk print
+
+### ✍️ **Tanda Tangan Digital**
+- ✅ Canvas untuk menggambar tanda tangan
+- ✅ Support input mouse & touch
+- ✅ Tombol clear untuk hapus tanda tangan
+- ✅ Simpan sebagai Base64 di database
+- ✅ Display di modal detail pengajuan
+
+### 👁️ **Modal Detail Pengajuan**
+- ✅ **3 Status Variations**:
+  1. **Status Menunggu**: Badge kuning, info pengajuan
+  2. **Status Disetujui**: Box hijau, info persetujuan & signature
+  3. **Status Ditolak**: Box merah, alasan penolakan
+
+- ✅ ⭐ **Overlay State Management** (Checkpoint 8)
+  - Support reopen modal unlimited times
+  - Proper state reset saat close
+  - No ghost clicks atau stuck overlay
+
+- ✅ Responsive design untuk semua device
+- ✅ CSS Grid 2-kolom untuk tampilan info
+
+### 🤖 **Chatbot AI Terintegrasi** (Checkpoint 5)
+- ✅ Integrasi Groq AI dengan model cepat
+- ✅ Natural language understanding
+- ✅ Real-time messaging via Socket.io
+- ✅ Widget chatbot di dashboard
+- ✅ Database context dengan info pengguna
+- ✅ Support untuk pertanyaan tentang cuti & kebijakan
+
+### 🔔 **Notifikasi Real-time** (Socket.io)
+- ✅ Update status pengajuan langsung
+- ✅ Notifikasi persetujuan/penolakan
+- ✅ Konfirmasi checkin/checkout
+- ✅ Zero-latency komunikasi client-server
+
+### 👥 **Manajemen Pengguna** (Admin)
+- ✅ **Manajemen Karyawan**
+  - CRUD lengkap data karyawan
+  - Assign penanggung jawab
+  - Set jatah cuti tahunan
+  - Active/inactive status
+  - ⭐ Email notifikasi akun baru (Checkpoint 8 prep)
+
+- ✅ **Manajemen Penanggung Jawab**
+  - CRUD supervisor
+  - Edit profil & data kontak
+  - Assign karyawan yang dipandu
+  - Email notifikasi (ready)
+
+### 🗃️ **Log Keberatan (Grievance)**
+- ✅ Tracking pengajuan keberatan
+- ✅ CRUD lengkap untuk admin
+- ✅ Status monitoring keberatan
+- ✅ Catatan perkembangan case
+
+---
+
+## 🛠️ Teknologi yang Digunakan
+
+<table>
+<tr>
+  <td align="center">
+    <strong>Backend</strong>
+  </td>
+  <td align="center">
+    <strong>Frontend</strong>
+  </td>
+  <td align="center">
+    <strong>Database</strong>
+  </td>
+  <td align="center">
+    <strong>DevOps</strong>
+  </td>
+</tr>
+<tr>
+  <td>
+    • Node.js<br/>
+    • Express.js v4+<br/>
+    • Socket.io<br/>
+    • Nodemailer<br/>
+    • Bcrypt<br/>
+    • Groq AI API
+  </td>
+  <td>
+    • Handlebars (HBS)<br/>
+    • Vanilla CSS<br/>
+    • Vanilla JavaScript<br/>
+    • Font Awesome 6.4.0<br/>
+    • Fetch API<br/>
+    • Canvas API
+  </td>
+  <td>
+    • MongoDB Atlas<br/>
+    • connect-mongo<br/>
+    • Mongoose<br/>
+    • (flexible schema)
+  </td>
+  <td>
+    • npm<br/>
+    • Nodemon<br/>
+    • dotenv<br/>
+    • Git & GitHub<br/>
+    • VS Code
+  </td>
+</tr>
+</table>
+
+---
 
 ## 📁 Struktur Folder Project
 
 ```
 NusaAttend/
-├── src/
-│   ├── app.js                      # Main Express application
-│   ├── config/
-│   │   ├── database.js             # MongoDB connection
-│   │   └── socket.js               # Socket.io configuration
-│   ├── controllers/
-│   │   ├── authController.js       # ✅ Login/Register logic
-│   │   ├── dashboardAdminController.js  # ✅ Dashboard stats & activity
-│   │   ├── keberatanController.js  # ✅ Keberatan CRUD operations
-│   │   ├── karyawanController.js   # ✅ Employee management
-│   │   └── penanggungJawabController.js # ✅ Supervisor management
-│   ├── middleware/
-│   │   ├── auth.js                 # Authentication middleware
-│   │   └── errorHandler.js         # Error handling
-│   ├── models/
-│   │   ├── User.js                 # User schema dengan role enum
-│   │   └── Keberatan.js            # ✅ Keberatan schema
-│   ├── routes/
-│   │   ├── auth.js                 # ✅ Auth routes (login/logout)
-│   │   ├── dashboardAdmin.js       # ✅ Dashboard routes
-│   │   ├── adminKeberatan.js       # ✅ Keberatan routes
-│   │   ├── adminKaryawan.js        # ✅ Employee management routes
-│   │   └── adminPenanggungJawab.js # ✅ Supervisor management routes
-│   ├── services/                   # Business services
-│   └── utils/                      # Utility functions
 │
-├── public/
-│   ├── css/
-│   │   └── styles.css              # ✅ All styling (5000+ lines, unified)
-│   ├── img/                        # Images
-│   └── js/                         # Client-side scripts
+├── 📂 src/                              # Backend source code
+│   ├── app.js                           # Main Express application
+│   ├── index.js                         # Entry point
+│   ├── chatbotSocket.js                 # Socket.io chatbot handler
+│   │
+│   ├── 📂 config/                       # Configuration files
+│   │   ├── database.js                  # MongoDB connection
+│   │   └── socket.js                    # Socket.io config
+│   │
+│   ├── 📂 controllers/                  # Business logic (16 FILES)
+│   │   ├── authController.js            # Login & register
+│   │   ├── absensiController.js         # Checkin/checkout
+│   │   ├── chatbotController.js         # Chatbot logic
+│   │   ├── dashboardAdminController.js  # Admin dashboard
+│   │   ├── dashboardPenanggungJawabController.js
+│   │   ├── dashboardPenggunaController.js # Employee dashboard
+│   │   ├── detailPengajuanController.js
+│   │   ├── karyawanController.js        # Employee CRUD
+│   │   ├── kontrolerPemulihan.js        # Password recovery
+│   │   ├── penanggungJawabController.js # Supervisor CRUD
+│   │   ├── pengajuanController.js       # Leave request creation
+│   │   ├── reviewPengajuanController.js # Review logic
+│   │   ├── riwayatPengajuanController.js
+│   │   ├── setujuiPengajuanController.js # Approval logic
+│   │   ├── tandaTanganController.js     # Digital signature
+│   │   └── tolakPengajuanController.js  # Rejection logic
+│   │
+│   ├── 📂 middleware/                   # Express middleware
+│   │   ├── auth.js                      # Authentication check
+│   │   ├── errorHandler.js              # Error handling
+│   │   └── socketAuth.js                # Socket.io auth
+│   │
+│   ├── 📂 models/                       # MongoDB schemas (4 FILES)
+│   │   ├── Pengguna.js                  # User schema
+│   │   ├── Pengajuan.js                 # Leave request schema
+│   │   ├── Absensi.js                   # Attendance schema
+│   │   └── User.js                      # Alternative user model
+│   │
+│   ├── 📂 routes/                       # API routes (15 FILES)
+│   │   ├── auth.js                      # Auth endpoints
+│   │   ├── absensi.js
+│   │   ├── adminKaryawan.js
+│   │   ├── adminPenanggungJawab.js
+│   │   ├── dashboardAdmin.js
+│   │   ├── dashboardPenanggungJawab.js
+│   │   ├── dashboardPengguna.js
+│   │   ├── detailPengajuan.js
+│   │   ├── pengajuan.js
+│   │   ├── reviewPengajuan.js
+│   │   ├── riwayatPengajuan.js
+│   │   ├── rutPemulihan.js              # Recovery routes
+│   │   ├── setujuiPengajuan.js
+│   │   ├── tandaTangan.js
+│   │   └── tolakPengajuan.js
+│   │
+│   ├── 📂 services/                     # Business services
+│   │   └── (Helper functions)
+│   │
+│   └── 📂 utils/                        # Utility functions
+│       ├── chatbot.js                   # Groq AI integration
+│       ├── contextDataService.js        # AI context data
+│       ├── letterGenerator.js           # Surat izin generator
+│       └── formatters.js                # Data formatters
 │
-├── templates/
-│   ├── main.hbs                    # Layout template (untuk halaman umum)
-│   ├── dashboard-layout.hbs        # ✅ Dashboard layout (sidebar + main content)
-│   ├── views/
-│   │   ├── login.hbs               # ✅ Login page
-│   │   ├── register.hbs            # Register page (belum dimodifikasi)
-│   │   └── admin/
-│   │       ├── dashboard.hbs       # ✅ Admin dashboard dengan real-time data
-│   │       ├── log-keberatan.hbs   # ✅ Keberatan monitoring
-│   │       ├── manajemen-karyawan.hbs      # ✅ Employee management
-│   │       └── manajemen-penanggung-jawab.hbs  # ✅ Supervisor management
-│   └── partials/
-│       ├── header.hbs              # Header component
-│       ├── footer.hbs              # ✅ Global footer component
-│       └── (partials lainnya)
+├── 📂 public/                           # Static files (client-side)
+│   ├── 📂 css/
+│   │   └── styles.css                   # Master stylesheet (10000+ lines)
+│   ├── 📂 js/
+│   │   ├── app.js                       # Main client app
+│   │   ├── socket-client.js             # Socket.io client
+│   │   ├── socket-client-chatbot.js     # Chatbot socket
+│   │   ├── manajemen-karyawan.js        # Modal handling
+│   │   └── test-modal.js                # Testing utilities
+│   └── 📂 img/
+│       ├── Logo NusaAttend.png
+│       └── [images lainnya]
 │
-├── dokumentasi-progress/           # 📚 Documentation files
-│   ├── admin/
-│   │   ├── progress-admin-final.md # Final checkpoint documentation
-│   │   └── ...
-│   └── REFACTORING_REPORT.md       # Code audit & refactoring report
+├── 📂 templates/                        # Handlebars templates
+│   ├── main.hbs                         # Main layout (publik)
+│   ├── dashboard-layout.hbs             # Dashboard layout
+│   │
+│   ├── 📂 partials/
+│   │   ├── head.hbs
+│   │   ├── footer.hbs
+│   │   ├── dashboard-layout.hbs
+│   │   └── chatbot.hbs                  # Chatbot widget
+│   │
+│   └── 📂 views/
+│       ├── 📂 publik/
+│       │   ├── home.hbs                 # Landing page
+│       │   ├── login.hbs                # Login page
+│       │   ├── lupa-password.hbs        # Forgot password
+│       │   └── 404.hbs                  # Error page
+│       │
+│       ├── 📂 admin/
+│       │   ├── dashboard.hbs            # Admin dashboard
+│       │   ├── manajemen-karyawan.hbs
+│       │   └── manajemen-penanggung-jawab.hbs
+│       │
+│       ├── 📂 karyawan/
+│       │   ├── dashboard.hbs            # Employee dashboard
+│       │   ├── absensi.hbs              # Attendance page
+│       │   ├── surat-izin.hbs           # Leave request form
+│       │   └── riwayat-pengajuan.hbs    # History + modal
+│       │
+│       ├── 📂 penanggung-jawab/
+│       │   ├── dashboard.hbs            # Supervisor dashboard
+│       │   └── review-pengajuan.hbs     # Review page
+│       │
+│       └── reset-password-dengan-token.hbs
 │
-├── backup/                         # 🔐 Backup folder (referensi & tidak dipakai)
-│   └── (archived deprecated files)
+├── 📂 documentation/                    # Documentation
+│   ├── Kerangka.md                      # Project structure (English)
+│   ├── Kerangka_ID.md                   # Project structure (Indonesian)
+│   └── [dokumentasi lainnya]
 │
-├── dokumentasi-progress/           # Documentation & progress tracking
-├── package.json
-├── README.md                       # File ini
-└── .env                           # Environment variables
+├── 📂 dokumentasi-progress/             # Progress tracking
+│   ├── karyawan/
+│   │   ├── progress-karyawan1.md        # Feature 1-6
+│   │   └── progress-karyawan*.md
+│   ├── penanggung-jawab/
+│   │   └── progress-penanggung-jawab*.md
+│   └── admin/
+│       └── progress-admin.md
+│
+├── 📂 backup/                           # Archived files (tidak aktif)
+│   └── (Referensi untuk development)
+│
+├── 📂 node_modules/                     # Dependencies (auto)
+│
+├── 📄 package.json                      # Dependencies & scripts
+├── 📄 package-lock.json                 # Lock versions
+├── 📄 .env.example                      # Environment template
+├── 📄 .gitignore                        # Git ignore rules
+└── 📄 README.md                         # File ini
 ```
+
+---
 
 ## 🎯 File yang AKTIF di Project
 
 ✅ **Sudah dimodifikasi & digunakan untuk login, dashboard, dan admin features:**
 
-**Controllers (5 Active):**
-- `src/controllers/authController.js` - Login & authentication
-- `src/controllers/dashboardAdminController.js` - Admin dashboard dengan real-time stats
-- `src/controllers/keberatanController.js` - Log keberatan CRUD operations
-- `src/controllers/karyawanController.js` - Employee management
-- `src/controllers/penanggungJawabController.js` - Supervisor management
+**Controllers (16 Active):**
+- `authController.js`, `absensiController.js`, `chatbotController.js`
+- `dashboardAdminController.js`, `dashboardPenanggungJawabController.js`, `dashboardPenggunaController.js`
+- `detailPengajuanController.js`, `karyawanController.js`, `kontrolerPemulihan.js`
+- `penanggungJawabController.js`, `pengajuanController.js`, `reviewPengajuanController.js`
+- `riwayatPengajuanController.js`, `setujuiPengajuanController.js`, `tandaTanganController.js`, `tolakPengajuanController.js`
 
-**Routes (5 Active):**
-- `src/routes/auth.js` - Auth routing (/api/auth/*)
-- `src/routes/dashboardAdmin.js` - Dashboard admin (/api/admin/dashboard)
-- `src/routes/adminKeberatan.js` - Keberatan management (/api/admin/keberatan/*)
-- `src/routes/adminKaryawan.js` - Employee management (/api/admin/karyawan/*)
-- `src/routes/adminPenanggungJawab.js` - Supervisor management (/api/admin/penanggung-jawab/*)
+**Routes (15 Active):**
+- `auth.js`, `absensi.js`, `adminKaryawan.js`, `adminPenanggungJawab.js`
+- `dashboardAdmin.js`, `dashboardPenanggungJawab.js`, `dashboardPengguna.js`
+- `detailPengajuan.js`, `pengajuan.js`, `reviewPengajuan.js`, `riwayatPengajuan.js`
+- `rutPemulihan.js`, `setujuiPengajuan.js`, `tandaTangan.js`, `tolakPengajuan.js`
 
-**Models (2 Active):**
-- `src/models/User.js` - User schema dengan role validation
-- `src/models/Keberatan.js` - Keberatan schema dengan complete fields
+**Models (4 Active):**
+- `Pengguna.js`, `Pengajuan.js`, `Absensi.js`, `User.js`
 
-**Views (Admin - 4 Active):**
-- `templates/views/login.hbs` - Login page
-- `templates/views/admin/dashboard.hbs` - Main dashboard dengan dynamic data
-- `templates/views/admin/log-keberatan.hbs` - Grievance monitoring
-- `templates/views/admin/manajemen-karyawan.hbs` - Employee management
-- `templates/views/admin/manajemen-penanggung-jawab.hbs` - Supervisor management
+**Views (All Active):**
+- Admin: dashboard, manajemen-karyawan, manajemen-penanggung-jawab
+- Karyawan: dashboard, absensi, surat-izin, riwayat-pengajuan
+- Penanggung Jawab: dashboard, review-pengajuan
+- Publik: home, login, lupa-password, 404
 
-**Supporting Files:**
-- `src/app.js` - Main application setup
-- `src/middleware/auth.js` - Authentication middleware
-- `src/middleware/errorHandler.js` - Error handling
-- `src/config/database.js` - MongoDB connection
-- `src/config/socket.js` - Socket.io setup
-- `templates/dashboard-layout.hbs` - Dashboard layout dengan sidebar
-- `templates/partials/footer.hbs` - Dashboard footer
-- `public/css/styles.css` - All CSS (5000+ lines, unified styling)
+---
 
-## 🏗️ Tentang Views & Folder Organization
+## 🚀 Instalasi & Setup
 
-**publik/ folder**: Halaman publik yang tidak memerlukan autentikasi
-- `publik/home.hbs` - Landing page / beranda
-- `publik/login.hbs` - Login page dengan back button dan global footer
-- `publik/404.hbs` - Error page untuk access denied & not found
+### 1️⃣ Prerequisites
+Pastikan sudah terinstall:
+- **Node.js** v14+ ([Download](https://nodejs.org/))
+- **npm** v6+ (biasanya include dengan Node.js)
+- **MongoDB** v4.4+ ([Download](https://www.mongodb.com/try/download/community) atau pakai [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
+- **Git** ([Download](https://git-scm.com/))
+- **VS Code** atau editor pilihan Anda
 
-**admin/ folder**: Halaman khusus admin (memerlukan role: admin)
-- `admin/dashboard.hbs` - Dashboard admin dengan sidebar
-
-**karyawan/ folder**: Halaman khusus karyawan/employee (memerlukan login)
-- `karyawan/dashboard.hbs` - Dashboard karyawan dengan statistik:
-  - Sisa cuti tahunan (9/12)
-  - Kehadiran bulan ini (18/20)
-  - Menunggu persetujuan (2 pengajuan)
-  - Tidak hadir (1 hari)
-  - Tabel pengajuan terbaru dengan status badges
-
-**dashboard-layout.hbs**: Layout khusus untuk dashboard (dengan sidebar)
-- Struktur: sidebar + main-content + global footer
-- Digunakan untuk semua halaman protected (admin, karyawan, supervisor)
-
-**main.hbs**: Layout template utama untuk halaman umum (non-dashboard)
-- Include header dan footer partial
-- Digunakan untuk halaman register, error, dll
-- Belum banyak digunakan dalam phase ini
-
-## 🔐 Backup Folder
-
-Folder `backup/` berisi kerangka awal yang **TIDAK DIGUNAKAN** dalam project aktif:
-- Referensi untuk fitur-fitur yang akan dikembangkan (pengajuan, absensi, chatbot, supervisor)
-- Tidak boleh di-edit atau di-copy ke project root tanpa kebutuhan khusus
-- Lihat `backup/README.md` untuk detail lengkap
-```
-│   │   ├── absensi.js
-│   │   ├── admin.js
-│   │   └── chatbot.js
-│   ├── services/              # Business logic services
-│   │   ├── emailService.js
-│   │   ├── socketService.js
-│   │   ├── pengajuanService.js
-│   │   ├── absensiService.js
-│   │   └── chatbotService.js
-│   ├── middleware/            # Express middleware
-│   │   ├── auth.js
-│   │   ├── errorHandler.js
-│   │   └── validation.js
-│   └── utils/                 # Utility functions
-│       ├── letterGenerator.js # Generate surat izin
-│       ├── validators.js
-│       └── constants.js
-├── public/
-│   ├── css/
-│   │   └── styles.css
-│   ├── js/
-│   │   ├── socket-client.js
-│   │   ├── app.js
-│   │   └── chatbot.js
-│   └── img/
-├── templates/
-│   ├── partials/
-│   │   ├── header.hbs
-│   │   ├── footer.hbs
-│   │   └── navbar.hbs
-│   └── views/
-│       ├── index.hbs
-│       ├── login.hbs
-│       ├── register.hbs
-│       ├── dashboard.hbs
-│       ├── buat-surat-izin.hbs
-│       ├── preview-surat.hbs
-│       ├── tanda-tangan.hbs
-│       ├── riwayat-pengajuan.hbs
-│       ├── absensi.hbs
-│       ├── admin-dashboard.hbs
-│       ├── manajemen-pengajuan.hbs
-│       └── 404.hbs
-├── .env.example
-├── .gitignore
-├── package.json
-└── README.md
-```
-
-## Instalasi
-
-1. Clone atau copy folder project
+### 2️⃣ Clone Repository
 ```bash
+# Clone dari GitHub
+git clone https://github.com/username/NusaAttend.git
+
+# Masuk ke folder project
 cd NusaAttend
 ```
 
-2. Install dependencies
+### 3️⃣ Install Dependencies
 ```bash
 npm install
 ```
 
-3. Setup environment variables
+### 4️⃣ Setup Environment Variables
 ```bash
+# Copy template .env
 cp .env.example .env
+
 # Edit .env dengan konfigurasi Anda
+# Gunakan editor favorit (VS Code, Notepad++, dll)
 ```
 
-4. Setup MongoDB
-```bash
-# Pastikan MongoDB running
-# Default: mongodb://localhost:27017/nusaattend
-```
-
-5. Jalankan aplikasi
-```bash
-npm run dev     # Development mode dengan nodemon
-# atau
-npm start       # Production mode
-```
-
-6. Akses aplikasi
-```
-http://localhost:3000
-```
-
-## Struktur Database (MongoDB)
-
-### Koleksi: users
-- `_id`: ObjectId
-- `nama_lengkap`: String
-- `email`: String (unique)
-- `password`: String (hashed dengan bcrypt)
-- `jabatan`: String
-- `role`: String (employee, supervisor, admin)
-- `jatah_cuti_tahunan`: Number (default: 12)
-- `sisa_cuti`: Number
-- `created_at`: Date
-- `updated_at`: Date
-
-**Catatan**: Dalam dashboard karyawan, data statistik ditampilkan berdasarkan:
-- `sisa_cuti` / `jatah_cuti_tahunan` (Sisa Cuti)
-- Perhitungan kehadiran dari koleksi absensi (Kehadiran)
-- Pengajuan dengan status 'menunggu' (Menunggu Persetujuan)
-- Absensi dengan status 'tidak_hadir' (Tidak Hadir)
-
-### Koleksi: pengajuan
-- `_id`: ObjectId
-- `id_pengguna`: ObjectId (ref: users)
-- `jenis_pengajuan`: String (cuti, izin_tidak_masuk, izin_sakit, wfh)
-- `tanggal_mulai`: Date
-- `tanggal_selesai`: Date
-- `alasan`: String
-- `status`: String (menunggu_persetujuan, disetujui, ditolak)
-- `surat_izin`: Object (HTML surat)
-- `ttd_karyawan`: String (signature canvas/image)
-- `ttd_penanggung_jawab`: String (signature canvas/image)
-- `catatan_penolakan`: String
-- `created_at`: Date
-- `updated_at`: Date
-
-### Koleksi: absensi
-- `_id`: ObjectId
-- `id_pengguna`: ObjectId (ref: users)
-- `tanggal`: Date
-- `jam_masuk`: String
-- `jam_pulang`: String
-- `status`: String (hadir, izin, cuti, tidak_hadir)
-- `keterangan`: String
-- `created_at`: Date
-
-### Koleksi: chatbot_responses
-- `_id`: ObjectId
-- `keywords`: Array<String>
-- `response`: String
-- `created_at`: Date
-
-## Alur Aplikasi
-
-### Alur Surat Izin
-1. Karyawan login
-2. Buat surat izin (pilih jenis, tanggal, alasan)
-3. Sistem generate surat otomatis
-4. Karyawan memberikan tanda tangan digital
-5. Kirim pengajuan
-6. Penanggung jawab menerima notifikasi (socket)
-7. Penanggung jawab review dan approve/reject
-8. Sistem mengirim email hasil
-9. Status berubah real-time di dashboard karyawan
-
-### Alur Absensi
-1. Karyawan klik "Absen Masuk"
-2. Sistem catat jam masuk
-3. Karyawan klik "Absen Pulang"
-4. Sistem catat jam pulang
-5. Jika ada surat izin disetujui → status = izin
-6. Jika tidak absen & tidak izin → status = tidak hadir
-
-## API Endpoints
-
-### Auth
-- `POST /api/auth/register` - Register pengguna baru
-- `POST /api/auth/login` - Login pengguna
-- `POST /api/auth/logout` - Logout pengguna
-
-### Admin Dashboard
-- `GET /api/admin/dashboard` - Get dashboard statistics & activity (Real-time data dari database)
-
-### Keberatan Management
-- `GET /api/admin/keberatan` - List semua keberatan
-- `POST /api/admin/keberatan` - Buat keberatan baru
-- `GET /api/admin/keberatan/:id` - Detail keberatan
-- `PUT /api/admin/keberatan/:id` - Update keberatan
-- `DELETE /api/admin/keberatan/:id` - Delete keberatan
-
-### Employee Management (Karyawan)
-- `GET /api/admin/karyawan` - List semua karyawan
-- `POST /api/admin/karyawan` - Tambah karyawan baru
-- `GET /api/admin/karyawan/:id` - Detail karyawan
-- `PUT /api/admin/karyawan/:id` - Update data karyawan
-- `DELETE /api/admin/karyawan/:id` - Delete karyawan
-
-### Supervisor Management (Penanggung Jawab)
-- `GET /api/admin/penanggung-jawab` - List semua supervisor
-- `POST /api/admin/penanggung-jawab` - Tambah supervisor baru
-- `GET /api/admin/penanggung-jawab/:id` - Detail supervisor
-- `PUT /api/admin/penanggung-jawab/:id` - Update data supervisor
-- `DELETE /api/admin/penanggung-jawab/:id` - Delete supervisor
-
-### Fitur yang Akan Datang
-- `GET /api/pengajuan` - List pengajuan user
-- `POST /api/pengajuan` - Buat pengajuan baru
-- `POST /api/absensi/masuk` - Absen masuk
-- `POST /api/absensi/pulang` - Absen pulang
-- `POST /api/chatbot/ask` - Tanya chatbot
-
-## Socket.io Events
-
-### Client to Server
-- `pengajuan_baru` - Notifikasi pengajuan baru
-- `status_pengajuan_diubah` - Notifikasi status berubah
-- `absensi_tercatat` - Notifikasi absensi tercatat
-
-## Environment Variables
-
-```
-MONGODB_URI=mongodb://localhost:27017/nusaattend
+**Contoh `.env` yang sudah dikonfigurasi:**
+```env
+# Server
 PORT=3000
 NODE_ENV=development
-JWT_SECRET=your_jwt_secret_key_here
+
+# Database
+MONGODB_URI=mongodb://localhost:27017/nusaattend
+# Atau gunakan MongoDB Atlas:
+# MONGODB_URI=mongodb+srv://username:password@cluster0.mongodb.net/nusaattend
+
+# Session
+SESSION_SECRET=your_super_secret_session_key_12345
+
+# Email (untuk password recovery)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your_email@gmail.com
 SMTP_PASSWORD=your_app_password
-SMTP_FROM=noreply@nusaattend.com
-SESSION_SECRET=your_session_secret_key_here
+SMTP_FROM=NusaAttend <noreply@nusaattend.com>
+
+# AI Chatbot (Groq API)
+GROQ_API_KEY=gsk_your_groq_api_key_here
 ```
 
-## Catatan Pengembangan
+### 5️⃣ Jalankan Aplikasi
 
-- ✅ Admin section sudah lengkap dan production-ready (December 21, 2025)
-- ✅ Semua halaman admin memiliki styling yang konsisten dan unified
-- ✅ Dashboard menampilkan real-time data dari database
-- ✅ Code audit selesai, deprecated files sudah diarchive
-- ⏳ Phase 2: Sistem surat izin dan absensi (akan dikerjakan selanjutnya)
-- Aplikasi ini adalah sistem simulasi untuk keperluan akademis
-- Tanda tangan bersifat visual (bukan tanda tangan hukum)
-- Email menggunakan simulasi (dapat dikonfigurasi dengan Gmail/service lain)
-- Chatbot berbasis rule, bukan AI generatif
-- Sistem single-approval (tidak ada multi-level approval)
+**Development Mode (dengan auto-reload):**
+```bash
+npm run dev
+```
 
-## Author
-**NusaAttend** dikembangkan sebagai Final Project mata kuliah **Pemrograman Jaringan (Semester 5)** di Universitas Negeri padang.
+**Production Mode:**
+```bash
+npm start
+```
+
+**Output yang diharapkan:**
+```
+✓ Server running on http://localhost:3000
+✓ MongoDB connected to nusaattend
+✓ Socket.io initialized
+```
+
+### 6️⃣ Akses Aplikasi
+Buka browser dan kunjungi: `http://localhost:3000`
+
+---
+
+## 👤 Akun Default untuk Testing
+
+| Role | Email | Password | Fungsi |
+|------|-------|----------|--------|
+| Admin | admin@nusaattend.com | admin123 | Manage sistem & pengguna |
+| Supervisor | supervisor@nusaattend.com | super123 | Review pengajuan |
+| Karyawan | karyawan@nusaattend.com | kary123 | Submit pengajuan & absensi |
+
+**Catatan**: Akun ini adalah untuk testing. Di production, admin harus membuat akun baru melalui management panel.
+
+---
+
+## 🌐 API Endpoints
+
+### 🔐 Authentication
+```
+POST   /api/auth/login                    # Login
+POST   /api/auth/register                 # Register
+POST   /api/auth/logout                   # Logout
+GET    /lupa-password                     # Forgot password page
+POST   /api/pemulihan/minta-reset-link    # Request reset link
+POST   /api/pemulihan/reset-password-dengan-token  # Reset password
+```
+
+### 📊 Dashboard
+```
+GET    /admin/dashboard                   # Admin dashboard
+GET    /penanggung-jawab/dashboard        # Supervisor dashboard
+GET    /karyawan/dashboard                # Employee dashboard
+GET    /api/admin/dashboard               # Admin stats (JSON)
+```
+
+### 📋 Absensi
+```
+POST   /api/karyawan/absensi/checkin      # Checkin
+POST   /api/karyawan/absensi/checkout     # Checkout
+GET    /karyawan/absensi                  # Attendance page
+GET    /api/karyawan/absensi              # Attendance history (JSON)
+```
+
+### 📝 Pengajuan Surat Izin
+```
+GET    /pengajuan/buat                    # Create form page
+POST   /api/karyawan/surat-izin           # Submit leave request
+GET    /karyawan/riwayat-pengajuan        # History page
+GET    /api/karyawan/riwayat-pengajuan    # History data (JSON)
+```
+
+### 👁️ Review Pengajuan (Supervisor)
+```
+GET    /penanggung-jawab/review-pengajuan # Review page
+GET    /api/pengguna/review-pengajuan     # List requests (JSON)
+POST   /api/penanggung-jawab/pengajuan-setujui/:id   # Approve
+POST   /api/penanggung-jawab/pengajuan-tolak/:id     # Reject
+```
+
+### 👥 Manajemen Karyawan (Admin)
+```
+GET    /admin/karyawan                    # Management page
+GET    /api/admin/karyawan                # List employees (JSON)
+POST   /api/admin/karyawan                # Create employee
+PUT    /api/admin/karyawan/:id            # Update employee
+DELETE /api/admin/karyawan/:id            # Delete employee
+```
+
+### 👨‍💼 Manajemen Penanggung Jawab (Admin)
+```
+GET    /admin/penanggung-jawab            # Management page
+GET    /api/admin/penanggung-jawab        # List supervisors (JSON)
+POST   /api/admin/penanggung-jawab        # Create supervisor
+PUT    /api/admin/penanggung-jawab/:id    # Update supervisor
+DELETE /api/admin/penanggung-jawab/:id    # Delete supervisor
+```
+
+### 💬 Chatbot
+```
+Socket Events:
+  - connect                               # User connects
+  - chat-message                          # Send message
+  - bot-response                          # Receive response
+  - disconnect                            # User disconnects
+```
+
+---
+
+## 🔄 Alur Sistem
+
+### Alur Pengajuan Surat Izin
+```
+1. Karyawan Login
+   ↓
+2. Klik "Buat Surat Izin"
+   ↓
+3. Isi Form (Step 1)
+   - Pilih jenis izin
+   - Pilih tanggal mulai & selesai
+   - Input alasan
+   - ✓ Durasi otomatis terhitung
+   - ✓ Warning jika > sisa cuti
+   ↓
+4. Review Surat (Step 2)
+   - Lihat preview surat resmi
+   - Konfirmasi data
+   ↓
+5. Tanda Tangan Digital (Step 3)
+   - Gambar tanda tangan
+   - Clear jika perlu
+   ↓
+6. Konfirmasi Selesai (Step 4)
+   - Ringkasan pengajuan
+   - Status: Menunggu Persetujuan
+   ↓
+7. Penanggung Jawab Menerima Notifikasi (Socket.io)
+   ↓
+8. Supervisor Review & Approve/Reject
+   - Lihat detail pengajuan
+   - Tanda tangan approval
+   - Input alasan (jika reject)
+   ↓
+9. Karyawan Menerima Update Status
+   - Real-time via Socket.io
+   - Status: Disetujui / Ditolak
+   - Email notifikasi (jika enabled)
+   ↓
+10. Selesai
+```
+
+### Alur Absensi
+```
+1. Karyawan Login
+   ↓
+2. Klik "Checkin Masuk"
+   - Sistem catat waktu masuk
+   - Absen tercatat di database
+   ↓
+3. Karyawan Bekerja...
+   ↓
+4. Klik "Checkout Pulang"
+   - Sistem catat waktu pulang
+   - Durasi kerja otomatis terhitung
+   ↓
+5. Status Update:
+   - Jika ada izin yang disetujui → Status: Izin
+   - Jika normal checkin-checkout → Status: Hadir
+   - Jika terlambat → Status: Terlambat
+   - Jika tidak absen & tidak izin → Status: Tidak Hadir
+   ↓
+6. Riwayat Absensi Update
+```
+
+---
+
+## 📊 Database Schema
+
+### 👤 Users Collection
+```javascript
+{
+  _id: ObjectId,
+  nama_lengkap: String,
+  email: String (unique),
+  password: String (hashed - bcrypt),
+  nomor_identitas: String,
+  role: "admin" | "penanggung-jawab" | "karyawan",
+  departemen: String,
+  jabatan: String,
+  supervisor_id: ObjectId,
+  tanggal_bergabung: Date,
+  jatah_cuti: Number (default: 12),
+  sisa_cuti: Number,
+  status: "aktif" | "cuti" | "nonaktif",
+  
+  // Password recovery fields
+  reset_token: String,
+  reset_token_expiry: Date,
+  recovery_attempts: Number,
+  last_recovery_attempt: Date,
+  
+  created_at: Date,
+  updated_at: Date
+}
+```
+
+### 📝 Pengajuan Collection
+```javascript
+{
+  _id: ObjectId,
+  karyawan_id: ObjectId,
+  jenis_izin: "cuti-tahunan" | "izin-tidak-masuk" | "izin-sakit" | "wfh",
+  tanggal_mulai: Date,
+  tanggal_selesai: Date,
+  durasi: Number,
+  alasan: String,
+  status: "menunggu" | "disetujui" | "ditolak",
+  penanggung_jawab_id: ObjectId,
+  tanggal_direview: Date,
+  keterangan_review: String,
+  tanda_tangan: String (Base64),
+  dibuat_pada: Date,
+  diperbarui_pada: Date
+}
+```
+
+### ✅ Absensi Collection
+```javascript
+{
+  _id: ObjectId,
+  karyawan_id: ObjectId,
+  tanggal: Date,
+  jam_checkin: Date,
+  jam_checkout: Date,
+  durasi_kerja: Number,
+  status: "hadir" | "terlambat" | "izin" | "cuti" | "sakit" | "tidak_hadir" | "alpha",
+  keterangan: String,
+  ip_address: String,
+  created_at: Date,
+  updated_at: Date
+}
+```
+
+---
+
+## 🎨 Desain & UI/UX
+
+### Palet Warna
+```css
+Primary Color    : #4f39f6 (Ungu Muda - Brand)
+Secondary Color  : #9810fa (Ungu Tua - Accent)
+Success Color    : #4cd964 (Hijau - Success)
+Warning Color    : #ff9500 (Oranye - Warning)
+Danger Color     : #ef4444 (Merah - Error)
+Background       : #f9fafb (Abu-abu Muda)
+Text Dark        : #101828 (Hitam Pekat)
+Text Light       : #6a7282 (Abu-abu Medium)
+```
+
+### Responsive Design
+- ✅ Mobile-first approach
+- ✅ Breakpoints: 480px, 768px, 1024px, 1440px
+- ✅ Touch-friendly UI
+- ✅ Desktop optimization
+
+### Komponen UI
+- Modal dengan overlay state management
+- Form wizard 4-step
+- Data tables dengan sorting & filtering
+- Toast notifications (coming soon)
+- Loading states & spinners
+- Status badges & indicators
+
+---
+
+## 🧪 Testing
+
+### Manual Testing Checklist
+- [x] Login/Register flow
+- [x] Dashboard rendering
+- [x] Pengajuan form (4-step)
+- [x] Tanda tangan digital
+- [x] Absensi checkin/checkout
+- [x] Modal detail pengajuan
+- [x] Admin manajemen
+- [x] Chatbot integration
+- [x] Real-time notifications
+- [x] Password recovery
+
+### Browser Compatibility
+- ✅ Chrome/Chromium 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
+- ✅ Mobile browsers (Chrome, Safari iOS)
+
+---
+
+## 🔧 Troubleshooting
+
+### ❌ "Cannot find module 'express'"
+```bash
+# Solution: Install dependencies
+npm install
+```
+
+### ❌ "MongoDB connection failed"
+- Pastikan MongoDB service running
+- Check `MONGODB_URI` di `.env`
+- Untuk MongoDB Atlas, check network access & IP whitelist
+
+### ❌ "Port 3000 already in use"
+```bash
+# Kill process di port 3000
+# Windows:
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
+
+# Linux/Mac:
+lsof -i :3000
+kill -9 <PID>
+```
+
+### ❌ "Socket.io connection failed"
+- Check `SOCKET_TRANSPORTS` di config
+- Browser console for error messages
+- Check network tab in DevTools
+
+### ❌ "Email not sending"
+- Generate Gmail App Password (jika pakai Gmail)
+- Check SMTP credentials di `.env`
+- Verify firewall/antivirus tidak block port 587
+
+### ❌ "Durasi showing 0 hari"
+- Update ke Checkpoint 8+ (sudah fixed)
+- Clear browser cache
+- Check formula include `+1` untuk inclusive counting
+
+---
+
+## 📞 Kontak & Support
+
+**Project Contributors:**
+- 👨‍💻 **Rainy** - Backend & Database
+- 👨‍💻 **Carli Tamba** - Frontend & UI/UX
+
+**Untuk pertanyaan atau issues:**
+- 📧 Email: support@nusaattend.com (placeholder)
+- 🐛 Report bugs di [GitHub Issues](https://github.com/username/NusaAttend/issues)
+- 💬 Diskusi di [GitHub Discussions](https://github.com/username/NusaAttend/discussions)
+
+---
+
+## 📚 Dokumentasi Lengkap
+
+Untuk dokumentasi lebih detail, lihat:
+- 📖 **[Kerangka.md](./documentation/Kerangka.md)** - Struktur proyek (English)
+- 📖 **[Kerangka_ID.md](./documentation/Kerangka_ID.md)** - Struktur proyek (Indonesian)
+- 📋 **[Progress Karyawan](./dokumentasi-progress/karyawan/)** - Feature development tracking
+- 📋 **[Progress Penanggung Jawab](./dokumentasi-progress/penanggung-jawab/)** - Supervisor features
+- 📋 **[Progress Admin](./dokumentasi-progress/admin/)** - Admin features
+
+---
+
+## 🎓 Informasi Akademis
+
+**Project Details:**
+| Item | Detail |
+|------|--------|
+| **Mata Kuliah** | Pemrograman Jaringan (Praktikum) |
+| **Semester** | 5 (Lima) |
+| **Tahun Akademik** | 2024/2025 |
+| **Institusi** | Universitas Negeri Padang (UNP) |
+| **Type** | Full-Stack Web Application |
+| **Status** | ✅ Production Ready |
+
+**Catatan:**
+- Sistem ini adalah simulasi untuk keperluan akademis
+- Tanda tangan bersifat visual (bukan legal signature)
+- Email dapat dikonfigurasi dengan berbagai provider
+- Chatbot berbasis rule (dapat di-upgrade ke AI generatif)
+- Single-level approval (tidak ada multi-level flow)
+
+---
+
+## 📜 Lisensi
+
+MIT License - Lihat file [LICENSE](./LICENSE) untuk detail lengkap
+
+---
+
+## 🎉 Changelog
+
+### Version 1.2 (December 24, 2025) - Checkpoint 8
+- ✨ **Durasi Calculation Fix**: Inclusive counting formula `Math.ceil(...) + 1`
+- ✨ **Real-time Durasi Display**: Display & warning di form page
+- ✨ **Modal Overlay State Management**: Support reopen unlimited
+- 🐛 Fix: Absensi syntax error (extra `});`)
+- 📚 **Documentation**: Complete Indonesian translation (Kerangka_ID.md)
+
+### Version 1.1 (December 21, 2025) - Checkpoint 7
+- ✨ Password recovery system dengan email verification
+- ✨ Token-based reset password flow
+- ✨ Brute force protection (max 5 attempt/jam)
+
+### Version 1.0 (December 1, 2025) - Production Ready
+- ✨ Admin section complete
+- ✨ Dashboard & analytics
+- ✨ Role-based access control
+- ✨ Chatbot AI integration (Groq)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by Rainy & Carli Tamba**
+
+NusaAttend © 2025 - All rights reserved
+
+[⬆ Back to top](#-nusaattend---sistem-manajemen-absensi--pengajuan-izin)
+
+</div>

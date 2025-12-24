@@ -129,6 +129,44 @@ async function buatPengajuan(req, res) {
       });
     }
 
+    // ==================== VALIDASI SISA CUTI UNTUK CUTI TAHUNAN ====================
+
+    if (jenis_izin === 'cuti-tahunan') {
+      // Hitung sisa cuti real-time dari pengajuan disetujui
+      const jatahCutiAwal = 12;
+      const pengajuanDisetujui = await Pengajuan.find({
+        karyawan_id: userId,
+        status: 'disetujui',
+        jenis_izin: { $ne: 'wfh' }
+      }).select('tanggal_mulai tanggal_selesai');
+      
+      let hariDigunakan = 0;
+      pengajuanDisetujui.forEach(paj => {
+        const durasiHari = Math.ceil(
+          (new Date(paj.tanggal_selesai) - new Date(paj.tanggal_mulai)) / (1000 * 60 * 60 * 24)
+        ) + 1;
+        hariDigunakan += durasiHari;
+      });
+      
+      const sisaCuti = Math.max(0, jatahCutiAwal - hariDigunakan);
+      
+      console.log(`🔍 Validasi sisa cuti untuk user ${userId}`);
+      console.log(`   Jatah awal: ${jatahCutiAwal} hari`);
+      console.log(`   Hari digunakan: ${hariDigunakan} hari`);
+      console.log(`   Sisa cuti: ${sisaCuti} hari`);
+      
+      // Jika sisa cuti = 0, tolak pengajuan
+      if (sisaCuti <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Maaf, jatah cuti tahunan Anda sudah habis. Tidak dapat mengajukan cuti tahunan lagi.',
+          sisa_cuti: sisaCuti,
+          jatah_cuti_awal: jatahCutiAwal,
+          hari_digunakan: hariDigunakan
+        });
+      }
+    }
+
     if (user.role !== 'karyawan') {
       return res.status(403).json({
         success: false,

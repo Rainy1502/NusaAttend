@@ -46,7 +46,8 @@
                     {{#if riwayatPengajuan}}
                         {{#each riwayatPengajuan}}
                             {{!-- Baris tabel untuk setiap pengajuan --}}
-                            <tr class="baris-tabel">
+                            {{!-- Data attributes untuk modal: alasan, tanggal persetujuan, alasan penolakan --}}
+                            <tr class="baris-tabel" data-alasan="{{alasan}}" data-tanggal-persetujuan="{{tanggalPersetujuan}}" data-tanggal-penolakan="{{tanggalPersetujuan}}" data-alasan-penolakan="{{alasanPenolakan}}">
                                 {{!-- Kolom Jenis Izin --}}
                                 <td class="sel-tabel sel-jenis-izin">
                                     <div class="kontainer-jenis-izin">
@@ -108,14 +109,256 @@
     </div>
 </div>
 
+{{!-- ==================== MODAL DETAIL PENGAJUAN ==================== --}}
+{{!-- 
+    Modal untuk menampilkan detail pengajuan surat izin dalam bentuk read-only.
+    Mendukung 3 variasi status:
+    1. Menunggu Persetujuan - Menampilkan badge kuning + data pengajuan
+    2. Disetujui - Menampilkan badge hijau + data pengajuan + tanggal persetujuan
+    3. Ditolak - Menampilkan badge merah + data pengajuan + alasan penolakan
+--}}
+<div class="modal-detail-overlay" id="modalDetailPengajuan">
+    {{!-- Kontainer modal --}}
+    <div class="modal-dialog">
+        {{!-- Header modal dengan judul dan tombol tutup --}}
+        <div class="modal-header">
+            <h2 class="modal-title">Detail Pengajuan</h2>
+            <button type="button" class="tombol-tutup-modal" id="tombolTutupModal" aria-label="Tutup modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        {{!-- Konten modal --}}
+        <div class="modal-konten-detail-pengajuan">
+            {{!-- Section: Status Badge --}}
+            <div class="bagian-status-modal">
+                <div id="badgeStatusModal" class="lencana-status">
+                    <span class="teks-lencana" id="teksStatusModal">Menunggu Persetujuan</span>
+                </div>
+            </div>
+
+            {{!-- Section: Informasi Pengajuan --}}
+            <div class="bagian-info-pengajuan">
+                {{!-- Jenis Izin --}}
+                <div class="item-info-pengajuan">
+                    <label class="label-info">Jenis Izin</label>
+                    <div class="nilai-info" id="nilaiJenisIzin">-</div>
+                </div>
+
+                {{!-- Tanggal Mulai --}}
+                <div class="item-info-pengajuan">
+                    <label class="label-info">Tanggal Mulai</label>
+                    <div class="nilai-info" id="nilaiTanggalMulai">-</div>
+                </div>
+
+                {{!-- Tanggal Selesai --}}
+                <div class="item-info-pengajuan">
+                    <label class="label-info">Tanggal Selesai</label>
+                    <div class="nilai-info" id="nilaiTanggalSelesai">-</div>
+                </div>
+
+                {{!-- Durasi (Full Width) --}}
+                <div class="item-info-pengajuan full-width">
+                    <label class="label-info">Durasi</label>
+                    <div class="nilai-info" id="nilaiDurasi">-</div>
+                </div>
+
+                {{!-- Alasan Pengajuan (Full Width) --}}
+                <div class="item-info-pengajuan full-width">
+                    <label class="label-info">Alasan Pengajuan</label>
+                    <div class="nilai-info nilai-info-alasan" id="nilaiAlasan">-</div>
+                </div>
+
+                {{!-- Tanggal Pengajuan (Full Width) --}}
+                <div class="item-info-pengajuan full-width">
+                    <label class="label-info">Tanggal Pengajuan</label>
+                    <div class="nilai-info" id="nilaiTanggalPengajuan">-</div>
+                </div>
+            </div>
+
+            {{!-- Section: Persetujuan (Hanya untuk status Disetujui) --}}
+            <div class="bagian-persetujuan" id="bagianPersetujuan" style="display: none;">
+                <div class="kotak-persetujuan">
+                    <div class="ikon-persetujuan">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="teks-persetujuan">
+                        <p class="label-persetujuan">Disetujui pada:</p>
+                        <p class="nilai-persetujuan" id="nilaiTanggalPersetujuan">-</p>
+                    </div>
+                </div>
+            </div>
+
+            {{!-- Section: Penolakan (Hanya untuk status Ditolak) --}}
+            <div class="bagian-penolakan" id="bagianPenolakan" style="display: none;">
+                <div class="kotak-penolakan">
+                    <div class="ikon-penolakan">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="teks-penolakan">
+                        <p class="label-penolakan">Ditolak pada:</p>
+                        <p class="nilai-penolakan" id="nilaiTanggalPenolakan">-</p>
+                    </div>
+                </div>
+
+                {{!-- Alasan Penolakan --}}
+                <div class="item-info-pengajuan">
+                    <label class="label-info">Alasan Penolakan</label>
+                    <div class="nilai-info nilai-info-alasan" id="nilaiAlasanPenolakan">-</div>
+                </div>
+            </div>
+
+            {{!-- Tombol Tutup --}}
+            <div class="bagian-aksi-modal">
+                <button type="button" class="tombol-tutup-modal-bawah" id="tombolTutupBawah">
+                    <i class="fas fa-check"></i>
+                    <span>Tutup</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{!-- ==================== SCRIPT LOKAL ==================== --}}
 <script>
-    {{!-- Fungsi untuk menangani klik tombol Detail --}}
+    {{!-- ====================== FUNGSI MODAL ====================== --}}
+    
+    /**
+     * Fungsi untuk membuka modal detail pengajuan dengan data dari baris tabel
+     * @param {HTMLElement} tombolDetail - Tombol detail yang diklik
+     */
+    function bukaModalDetail(tombolDetail) {
+        // Dapatkan baris tabel dari tombol yang diklik
+        const barisTabel = tombolDetail.closest('tr.baris-tabel');
+        if (!barisTabel) return;
+
+        // DEBUG: Log data attributes
+        console.log('📋 Data dari data attributes:', {
+            alasan: barisTabel.dataset.alasan,
+            tanggalPersetujuan: barisTabel.dataset.tanggalPersetujuan,
+            tanggalPenolakan: barisTabel.dataset.tanggalPenolakan,
+            alasanPenolakan: barisTabel.dataset.alasanPenolakan
+        });
+
+        // Ekstrak data dari kolom-kolom tabel
+        const jenisIzin = barisTabel.querySelector('.teks-jenis-izin')?.textContent?.trim() || '-';
+        const periode = barisTabel.querySelector('.teks-periode')?.textContent?.trim() || '-';
+        const durasi = barisTabel.querySelector('.teks-durasi')?.textContent?.trim() || '-';
+        const tanggalPengajuan = barisTabel.querySelector('.teks-tanggal-pengajuan')?.textContent?.trim() || '-';
+        const statusPengajuan = barisTabel.querySelector('.teks-lencana')?.textContent?.trim() || '-';
+
+        // DEBUG: Log data ekstraksi
+        console.log('📊 Data dari table cells:', {
+            jenisIzin,
+            periode,
+            durasi,
+            tanggalPengajuan,
+            statusPengajuan
+        });
+
+        // Ekstrak tanggal mulai dan selesai dari periode (format: "01 Jan 2024 - 05 Jan 2024")
+        let tanggalMulai = '-';
+        let tanggalSelesai = '-';
+        if (periode && periode.includes('-')) {
+            const periodeArray = periode.split('-');
+            tanggalMulai = periodeArray[0]?.trim() || '-';
+            tanggalSelesai = periodeArray[1]?.trim() || '-';
+        }
+
+        // Dapatkan elemen-elemen modal
+        const modalDetailPengajuan = document.getElementById('modalDetailPengajuan');
+        const badgeStatusModal = document.getElementById('badgeStatusModal');
+        const teksStatusModal = document.getElementById('teksStatusModal');
+        const nilaiJenisIzin = document.getElementById('nilaiJenisIzin');
+        const nilaiTanggalMulai = document.getElementById('nilaiTanggalMulai');
+        const nilaiTanggalSelesai = document.getElementById('nilaiTanggalSelesai');
+        const nilaiDurasi = document.getElementById('nilaiDurasi');
+        const nilaiAlasan = document.getElementById('nilaiAlasan');
+        const nilaiTanggalPengajuan = document.getElementById('nilaiTanggalPengajuan');
+        const bagianPersetujuan = document.getElementById('bagianPersetujuan');
+        const bagianPenolakan = document.getElementById('bagianPenolakan');
+        const nilaiTanggalPersetujuan = document.getElementById('nilaiTanggalPersetujuan');
+        const nilaiTanggalPenolakan = document.getElementById('nilaiTanggalPenolakan');
+        const nilaiAlasanPenolakan = document.getElementById('nilaiAlasanPenolakan');
+
+        // Isi data ke modal
+        nilaiJenisIzin.textContent = jenisIzin;
+        nilaiTanggalMulai.textContent = tanggalMulai;
+        nilaiTanggalSelesai.textContent = tanggalSelesai;
+        nilaiDurasi.textContent = durasi;
+        nilaiTanggalPengajuan.textContent = tanggalPengajuan;
+        
+        // Set status badge dan warna
+        teksStatusModal.textContent = statusPengajuan;
+        badgeStatusModal.className = 'lencana-status';
+        if (statusPengajuan === 'Menunggu Persetujuan') {
+            badgeStatusModal.classList.add('lencana-menunggu');
+            nilaiAlasan.textContent = barisTabel.dataset.alasan || '-';
+        } else if (statusPengajuan === 'Disetujui') {
+            badgeStatusModal.classList.add('lencana-disetujui');
+            nilaiAlasan.textContent = barisTabel.dataset.alasan || '-';
+            nilaiTanggalPersetujuan.textContent = barisTabel.dataset.tanggalPersetujuan || '-';
+            bagianPersetujuan.style.display = 'block';
+            bagianPenolakan.style.display = 'none';
+        } else if (statusPengajuan === 'Ditolak') {
+            badgeStatusModal.classList.add('lencana-ditolak');
+            nilaiAlasan.textContent = barisTabel.dataset.alasan || '-';
+            nilaiTanggalPenolakan.textContent = barisTabel.dataset.tanggalPenolakan || '-';
+            nilaiAlasanPenolakan.textContent = barisTabel.dataset.alasanPenolakan || '-';
+            bagianPersetujuan.style.display = 'none';
+            bagianPenolakan.style.display = 'block';
+        } else {
+            nilaiAlasan.textContent = barisTabel.dataset.alasan || '-';
+            bagianPersetujuan.style.display = 'none';
+            bagianPenolakan.style.display = 'none';
+        }
+
+        // Tampilkan modal
+        modalDetailPengajuan.classList.add('modal-aktif');
+        console.log('✅ Modal dibuka dengan data:', {
+            jenisIzin, periode, durasi, tanggalPengajuan, statusPengajuan
+        });
+    }
+
+    /**
+     * Fungsi untuk menutup modal detail pengajuan
+     */
+    function tutupModalDetail() {
+        const modalDetailPengajuan = document.getElementById('modalDetailPengajuan');
+        modalDetailPengajuan.classList.remove('modal-aktif');
+    }
+
+    /**
+     * Event listener untuk tombol detail pada setiap baris tabel
+     */
     document.querySelectorAll('.tombol-detail').forEach(function(tombol) {
         tombol.addEventListener('click', function() {
-            // Placeholder: Implementasi detail modal akan ditangani oleh backend
-            console.log('Tombol Detail diklik');
+            bukaModalDetail(tombol);
         });
+    });
+
+    /**
+     * Event listener untuk tombol tutup modal (header)
+     */
+    document.getElementById('tombolTutupModal').addEventListener('click', function() {
+        tutupModalDetail();
+    });
+
+    /**
+     * Event listener untuk tombol tutup modal (bawah)
+     */
+    document.getElementById('tombolTutupBawah').addEventListener('click', function() {
+        tutupModalDetail();
+    });
+
+    /**
+     * Event listener untuk tutup modal saat klik di luar (overlay)
+     */
+    document.getElementById('modalDetailPengajuan').addEventListener('click', function(event) {
+        // Jika klik langsung di overlay (bukan di modal dialog)
+        if (event.target === this) {
+            tutupModalDetail();
+        }
     });
 </script>
 

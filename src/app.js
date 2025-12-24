@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const mongoose = require("mongoose")
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
@@ -247,6 +248,9 @@ app.engine(
           return options.fn(this);
         }
       },
+       gte(a, b) {
+        return a >= b;
+      },
       // Bantu untuk default case dalam switch statement
       default: function (options) {
         if (this._switch_value_ === undefined) {
@@ -307,6 +311,51 @@ app.get("/register", (req, res) => {
     return res.redirect("/dashboard");
   }
   res.render("register", { title: "Register - NusaAttend" });
+});
+
+// ==================== DEBUG: TEST EMAIL ENDPOINT ====================
+/**
+ * Endpoint untuk testing Nodemailer integration
+ * Akses: GET http://localhost:3000/test-email?email=your@email.com
+ * 
+ * IMPORTANT: Endpoint ini hanya untuk development/debugging
+ * REMOVE atau PASSWORD-PROTECT sebelum production!
+ */
+app.get("/test-email", async (req, res) => {
+  try {
+    const { kirimEmailAkunBaru } = require('./utils/emailService');
+    const emailPenerima = req.query.email || 'test@example.com';
+    
+    console.log(`\n🧪 [DEBUG] Testing email sending ke: ${emailPenerima}`);
+    
+    const result = await kirimEmailAkunBaru(
+      emailPenerima,
+      'Test User',
+      'Karyawan',
+      'https://nusaattend.local'
+    );
+    
+    if (result) {
+      res.json({ 
+        success: true, 
+        message: `✅ Email test berhasil dikirim ke ${emailPenerima}`,
+        email: emailPenerima
+      });
+    } else {
+      res.json({ 
+        success: false, 
+        message: `❌ Email test GAGAL (lihat console untuk detail error)`,
+        email: emailPenerima
+      });
+    }
+  } catch (error) {
+    console.error('[DEBUG] Error di test-email endpoint:', error);
+    res.json({ 
+      success: false, 
+      message: error.message,
+      error: error.toString()
+    });
+  }
 });
 
 // Rute logout (menangani form POST)
@@ -441,7 +490,7 @@ app.use("/api/pengguna", middlewareAuntenfikasi, rutDetailPengajuan);
  * Akses: Penanggung jawab yang sudah ter-autentikasi
  * Catatan: Backend mengubah status & menyimpan alasan penolakan administratif
  *          Bersifat non-hukum, hanya pertimbangan internal penanggung jawab
- *          Tidak ada workflow otomatis, notifikasi, atau operasi lain
+ *          PENTING: Auto-create absensi records & update sisa_cuti saat disetujui
  */
 app.use("/api/pengguna", middlewareAuntenfikasi, rutTolakPengajuan);
 
@@ -631,25 +680,43 @@ app.get("/dashboard", async (req, res) => {
       const Pengajuan = require("./models/Pengajuan");
 
       // Hitung ringkasan
-      const totalKaryawan = await Pengguna.countDocuments({ role: "karyawan" });
+      // PENTING: totalKaryawan HANYA karyawan yang ditanggungjawabi user ini
+      const totalKaryawan = await Pengguna.countDocuments({ 
+        role: "karyawan",
+        penanggung_jawab_id: req.session.userId  // Filter: Hanya karyawan yang ditanggungjawabi
+      });
+      
+      // Hitung pengajuan menunggu review
+      const menungguReview = await Pengajuan.countDocuments({
+        status: "menunggu",
+      });
+
+      // Hitung pengajuan disetujui bulan ini
+      const bulanIniMulai = new Date();
+      bulanIniMulai.setDate(1);
+      bulanIniMulai.setHours(0, 0, 0, 0);
+
+      const bulanIniAkhir = new Date();
+      bulanIniAkhir.setMonth(bulanIniAkhir.getMonth() + 1);
+      bulanIniAkhir.setDate(0);
+      bulanIniAkhir.setHours(23, 59, 59, 999);
+
+      const disetujuiBulanIni = await Pengajuan.countDocuments({
+        status: "disetujui",
+        tanggal_direview: { $gte: bulanIniMulai, $lte: bulanIniAkhir }
+      });
+
+      // Hitung pengajuan ditolak bulan ini
+      const ditolakBulanIni = await Pengajuan.countDocuments({
+        status: "ditolak",
+        tanggal_direview: { $gte: bulanIniMulai, $lte: bulanIniAkhir }
+      });
+
       const totalPenanggungJawab = await Pengguna.countDocuments({
         role: "penanggung-jawab",
       });
       const totalAkunAktif = await Pengguna.countDocuments({
         adalah_aktif: true,
-      });
-
-      // Hitung aktivitas hari ini
-      const hariIniMulai = new Date();
-      hariIniMulai.setHours(0, 0, 0, 0);
-      const hariIniAkhir = new Date();
-      hariIniAkhir.setHours(23, 59, 59, 999);
-
-      const totalAktivitasHariIni = await Pengguna.countDocuments({
-        $or: [
-          { createdAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
-          { updatedAt: { $gte: hariIniMulai, $lte: hariIniAkhir } },
-        ],
       });
 
       // Ambil pengajuan mendesak (status menunggu, sorted by tanggal_mulai terdekat)
@@ -718,11 +785,6 @@ app.get("/dashboard", async (req, res) => {
         };
       });
 
-      // Hitung pengajuan menunggu review
-      const menungguReview = await Pengajuan.countDocuments({
-        status: "menunggu",
-      });
-
       res.render("penanggung-jawab/dashboard", {
         title: "Dashboard Penanggung Jawab - NusaAttend",
         user: req.session.user,
@@ -731,9 +793,9 @@ app.get("/dashboard", async (req, res) => {
         socketToken: req.session.socketToken || "",
         // Data ringkasan - mapping ke frontend variables
         jumlahMenungguReview: menungguReview,
-        jumlahDisetujuiBulanIni: totalKaryawan,
-        jumlahDitolakBulanIni: totalPenanggungJawab,
-        totalKaryawanTim: totalAkunAktif,
+        jumlahDisetujuiBulanIni: disetujuiBulanIni,
+        jumlahDitolakBulanIni: ditolakBulanIni,
+        totalKaryawan: totalKaryawan,
         // Data kehadiran (dummy untuk sekarang)
         jumlahHadir: 18,
         jumlahIzinCuti: 4,
@@ -756,7 +818,7 @@ app.get("/dashboard", async (req, res) => {
         jumlahMenungguReview: 0,
         jumlahDisetujuiBulanIni: 0,
         jumlahDitolakBulanIni: 0,
-        totalKaryawanTim: 0,
+        totalKaryawan: 0,
         jumlahHadir: 0,
         jumlahIzinCuti: 0,
         jumlahBelumAbsen: 0,
@@ -882,7 +944,7 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
           (new Date(pengajuan.tanggal_selesai) -
             new Date(pengajuan.tanggal_mulai)) /
             (1000 * 60 * 60 * 24)
-        );
+        ) + 1; // +1 untuk inclusive (tanggal mulai & selesai sama = 1 hari)
 
         // Format tanggal untuk display
         const tanggalMulai = new Date(
@@ -914,7 +976,10 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
           namaKaryawan: pengajuan.karyawan_id?.nama_lengkap || "Unknown",
           emailKaryawan: pengajuan.karyawan_id?.email || "Unknown",
           jabatanKaryawan: pengajuan.karyawan_id?.jabatan || "Unknown",
-          jenisIzin: pengajuan.jenis_izin,
+          jenisIzin: pengajuan.jenis_izin
+            .split('-')
+            .map((word, idx) => idx === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word)
+            .join(' '),
           periode: `${tanggalMulai} - ${tanggalSelesai}`,
           durasi: `${durasi} hari`,
           tanggalDiajukan: tanggalDiajukan,
@@ -973,9 +1038,10 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
       res.render("karyawan/riwayat-pengajuan", {
         title: "Riwayat Pengajuan - NusaAttend",
         user: req.session.user,
-        layout: "dashboard-layout",
-        halaman: "riwayat-pengajuan",
-        riwayatPengajuan: riwayatPengajuan,
+        layout: 'dashboard-layout',
+        halaman: 'riwayat-pengajuan',
+        socketToken: req.session.socketToken || '',
+        riwayatPengajuan: riwayatPengajuan
       });
     } catch (error) {
       console.error("Error dalam route riwayat pengajuan:", error);
@@ -984,9 +1050,10 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
       res.render("karyawan/riwayat-pengajuan", {
         title: "Riwayat Pengajuan - NusaAttend",
         user: req.session.user,
-        layout: "dashboard-layout",
-        halaman: "riwayat-pengajuan",
-        riwayatPengajuan: [],
+        layout: 'dashboard-layout',
+        halaman: 'riwayat-pengajuan',
+        socketToken: req.session.socketToken || '',
+        riwayatPengajuan: []
       });
     }
   }
@@ -995,7 +1062,7 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
 // ==================== RUTE KARYAWAN ====================
 
 // Halaman buat pengajuan surat izin
-app.get("/pengajuan/buat", middlewareAuntenfikasi, (req, res) => {
+app.get("/pengajuan/buat", middlewareAuntenfikasi, async (req, res) => {
   const role = req.session.user.role;
 
   // Hanya karyawan yang bisa membuat pengajuan
@@ -1006,9 +1073,42 @@ app.get("/pengajuan/buat", middlewareAuntenfikasi, (req, res) => {
     });
   }
 
+  // Hitung sisa cuti real-time sebelum render
+  const Pengajuan = require("./models/Pengajuan");
+  const jatahCutiAwal = 12;
+  
+  // Gunakan session user ID (sama seperti di dashboard)
+  const idPengguna = req.session.user.id || req.session.user._id;
+  
+  console.log(`📄 Route pengajuan/buat - ID Pengguna: ${idPengguna}`);
+  
+  const pengajuanDisetujui = await Pengajuan.find({
+    karyawan_id: idPengguna,
+    status: 'disetujui',
+    jenis_izin: { $ne: 'wfh' }
+  }).select('tanggal_mulai tanggal_selesai jenis_izin');
+  
+  console.log(`📊 Pengajuan disetujui ditemukan: ${pengajuanDisetujui.length}`);
+  
+  let hariDigunakan = 0;
+  pengajuanDisetujui.forEach((paj, idx) => {
+    const durasiHari = Math.ceil(
+      (new Date(paj.tanggal_selesai) - new Date(paj.tanggal_mulai)) / (1000 * 60 * 60 * 24)
+    ) + 1;
+    hariDigunakan += durasiHari;
+    console.log(`   [${idx + 1}] ${paj.tanggal_mulai.toDateString()} - ${paj.tanggal_selesai.toDateString()} (${paj.jenis_izin}) = ${durasiHari} hari`);
+  });
+  
+  const sisaCuti = Math.max(0, jatahCutiAwal - hariDigunakan);
+  
+  console.log(`💾 Sisa cuti untuk rendering: ${sisaCuti} (dari ${jatahCutiAwal} - ${hariDigunakan})`);
+  
   res.render("karyawan/surat-izin", {
     title: "Buat Surat Izin - NusaAttend",
-    user: req.session.user,
+    user: {
+      ...req.session.user,
+      sisaCuti: sisaCuti
+    },
     layout: "dashboard-layout",
     halaman: "buat-pengajuan",
     socketToken: req.session.socketToken || "",
@@ -1038,6 +1138,152 @@ app.get("/admin/karyawan", middlewareAuntenfikasi, (req, res) => {
     halaman: "karyawan",
   });
 });
+// ==================== RUTE PENANGGUNG JAWAB ====================
+
+// Halaman manajemen karyawan
+app.get("/rekap-kehadiran", middlewareAuntenfikasi, async(req, res) => {
+
+  const role = req.session.user.role;
+  // Hanya penanggung jawab yang bisa mengakses rekap kehadiran
+  if (role !== "penanggung-jawab") {
+    return res.status(403).render("publik/404", {
+      title: "Akses Ditolak - NusaAttend",
+      message: "Anda tidak memiliki akses ke halaman rekap kehadiran.",
+    });
+  }
+
+
+  /**
+     * [REKAP KEHADIRAN PENANGGUNG JAWAB - Data Dinamis]
+     */
+    try {
+      // Query data pengguna
+      const Pengguna = require("./models/Pengguna");
+      // Hitung dataAbsensi
+      const dataKaryawanAbsensi = await Pengguna.aggregate([
+        {
+          $match:{
+          penanggung_jawab_id : new mongoose.Types.ObjectId(req.session.userId)
+          }
+        },
+        { 
+          $lookup: { 
+            from: "absensis", 
+            localField: "_id", 
+            foreignField: "id_pengguna", 
+            as: "absensi" 
+          } }, 
+          { 
+            $project: { 
+              nama_lengkap:1,
+              jabatan:1,
+              sisa_cuti : 1,
+              "absensi.status":1,
+              "absensi.tanggal" : 1
+            } }
+      ])
+
+
+      // Hitung hadir hari ini
+      const hariIni = new Date();
+      hariIni.setHours(0, 0, 0, 0);
+
+
+      let hariIniHadir = 0;
+      let hariIniIzin = 0;
+
+      const hariSama = (h1, h2) =>
+          h1.getFullYear() === h2.getFullYear() &&
+          h1.getMonth() === h2.getMonth() &&
+          h1.getDate() === h2.getDate();
+
+
+      const dataKaryawanAbsensiTotal = await Promise.all(
+        dataKaryawanAbsensi.map(async (k) => {
+          // Hitung sisa cuti real-time dari pengajuan yang disetujui
+          const Pengajuan = require("./models/Pengajuan");
+          const jatahCutiAwal = 12;
+          
+          const pengajuanDisetujui = await Pengajuan.find({
+            karyawan_id: k._id,
+            status: 'disetujui',
+            jenis_izin: { $ne: 'wfh' }  // Exclude WFH
+          }).select('tanggal_mulai tanggal_selesai');
+          
+          let hariDigunakan = 0;
+          pengajuanDisetujui.forEach(pengajuan => {
+            const durasiHari = Math.ceil(
+              (new Date(pengajuan.tanggal_selesai) - new Date(pengajuan.tanggal_mulai)) / (1000 * 60 * 60 * 24)
+            ) + 1;
+            hariDigunakan += durasiHari;
+          });
+          
+          const sisaCuti = Math.max(0, jatahCutiAwal - hariDigunakan);
+          
+          let izin = 0;
+          let hadir = 0;
+          let tidakHadir = 0;
+          (k.absensi ?? []).forEach(a => {
+            if (a.status === 'hadir') {
+              hadir++;
+              if (hariSama(a.tanggal, hariIni)) {
+                hariIniHadir++;
+              }
+            } else if (a.status === 'izin') {
+              izin++;
+              if (hariSama(a.tanggal, hariIni)) {
+                hariIniIzin++;
+              }
+            } else {
+              tidakHadir++;
+            }
+          });
+
+          const totalHari = hadir + izin + tidakHadir;
+          const persentase = totalHari === 0 ? 0 : (hadir / totalHari) * 100;
+
+          return {
+            nama_lengkap : k.nama_lengkap,
+            jabatan : k.jabatan,
+            sisa_cuti : sisaCuti,
+            izin,
+            hadir,
+            tidakHadir,
+            persentase
+          }
+        })
+      )
+
+      const rataRataKehadiran =
+          dataKaryawanAbsensiTotal.reduce((sum, k) => sum + k.persentase, 0) / dataKaryawanAbsensiTotal.length;
+
+      const totalKaryawan = dataKaryawanAbsensiTotal.length;
+      
+
+    res.render("penanggung-jawab/rekap-kehadiran", {
+    title: "Rekap Kehadiran - NusaAttend",
+    user: req.session.user,
+    layout: "dashboard-layout",
+    karyawan:dataKaryawanAbsensiTotal,
+    rataRataKehadiran,
+    totalKaryawan,
+    hariIniHadir,
+    hariIniIzin,
+    halaman: "rekap-kehadiran",
+  });
+    } catch (error) {
+    console.error("Error loading dashboard penanggung jawab data:", error);
+    res.render("penanggung-jawab/rekap-kehadiran", {
+    title: "Rekap Kehadiran - NusaAttend",
+    user: req.session.user,
+    layout: "dashboard-layout",
+    halaman: "rekap-kehadiran",
+  });
+    }
+
+  
+});
+
 
 // ==================== HALAMAN MANAJEMEN PENANGGUNG JAWAB (SUPERVISOR) ====================
 

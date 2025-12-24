@@ -573,11 +573,21 @@ function bukaModalDetailPengajuan(button) {
 function tampilkanModal() {
     const modal = document.getElementById('modalDetailPengajuan');
     if (modal) {
-        // Step 1: Set display agar modal visible
+        // Step 0: Matikan SEMUA overlay terlebih dahulu (prevent ghost overlay)
+        matikanSemuaOverlay();
+        console.log('⬛ Matikan semua overlay sebelum tampilkan modal detail');
+        
+        // Step 1: Aktifkan overlay untuk modal detail SEKARANG
+        aktifkanOverlayModal('modalDetailPengajuan');
+        console.log('✅ Overlay untuk modal detail DIAKTIFKAN');
+        
+        // Step 2: Set display agar modal visible
         modal.style.display = 'flex';
+        modal.style.visibility = 'visible';
+        modal.style.pointerEvents = 'auto';
         console.log('🎬 Modal detail pengajuan tampil...');
         
-        // Step 2: Trigger animasi dengan menambah class (sedikit delay agar CSS transition berfungsi)
+        // Step 3: Trigger animasi dengan menambah class (sedikit delay agar CSS transition berfungsi)
         const container = modal.querySelector('.containerModalDetailPengajuan');
         if (container) {
             // Reset class (hapus kelas animasi keluar jika ada)
@@ -625,21 +635,29 @@ function isianDataModalDetailPengajuan(dataPengajuan) {
     }
     
     // Update judul jenis izin di bagian atas modal
+    // Format: "CUTI-TAHUNAN" → "Cuti Tahunan"
     const judulJenisIzin = document.getElementById('judulJenisIzin');
     if (judulJenisIzin) {
-        judulJenisIzin.textContent = dataPengajuan.jenisIzin.toUpperCase();
+        const jenisIzinFormatted = dataPengajuan.jenisIzin
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+        judulJenisIzin.textContent = jenisIzinFormatted;
+        console.log(`✅ Judul jenis izin diupdate: ${jenisIzinFormatted}`);
     }
     
     // Update tanda tangan (jika ada data, tampilkan; jika tidak, tampilkan placeholder)
     const boxTandaTangan = document.querySelector('.boxTandaTangan');
-    if (boxTandaTangan && dataPengajuan.tandaTangan && dataPengajuan.tandaTangan !== '[TANDA TANGAN ADMINISTRATIF]') {
-        // Jika ada tanda tangan dari database, tampilkan sebagai image/text
-        boxTandaTangan.innerHTML = `<img src="${dataPengajuan.tandaTangan}" alt="Tanda Tangan" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
-        console.log('✅ Tanda tangan berhasil ditampilkan');
-    } else {
-        // Fallback ke placeholder
-        boxTandaTangan.innerHTML = '<p class="teksPlaceholderTandaTangan">Tanda Tangan</p>';
-        console.log('⚠️ Tanda tangan placeholder ditampilkan');
+    if (boxTandaTangan) {
+        if (dataPengajuan.tandaTangan && dataPengajuan.tandaTangan !== '[TANDA TANGAN ADMINISTRATIF]' && dataPengajuan.tandaTangan !== '') {
+            // Jika ada tanda tangan dari database, tampilkan sebagai image
+            boxTandaTangan.innerHTML = `<img src="${dataPengajuan.tandaTangan}" alt="Tanda Tangan" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+            console.log('✅ Tanda tangan berhasil ditampilkan dari database');
+        } else {
+            // Fallback ke placeholder
+            boxTandaTangan.innerHTML = '<p class="teksPlaceholderTandaTangan">Tanda Tangan</p>';
+            console.log('⚠️ Tanda tangan placeholder ditampilkan');
+        }
     }
 }
 
@@ -666,10 +684,13 @@ function tutupModalDetailPengajuan() {
         setTimeout(() => {
             modal.style.display = 'none';
             modal.style.visibility = 'hidden';
+            modal.style.pointerEvents = 'none';
             // Clear animasi classes untuk mencegah conflict dengan modal lain
             if (container) {
                 container.classList.remove('modalAnimasiKeluar');
             }
+            // Matikan overlay modal detail
+            matikanSemuaOverlay();
             idPengajuanAktif = null;
             console.log('✅ Modal detail pengajuan berhasil ditutup setelah animasi');
         }, 300); // Durasi animasi keluar

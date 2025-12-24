@@ -14,21 +14,23 @@ const Pengajuan = require('../models/Pengajuan');
 
 /**
  * Helper function: Map jenis_izin dari database ke display name dan icon
- * Database: 'wfh', 'cuti', 'izin-sakit', 'izin-tidak-masuk-kerja'
+ * Database: 'wfh', 'cuti-tahunan', 'izin-sakit', 'izin-tidak-masuk'
  * Display dengan icon:
  * - 'wfh' → 'Work From Home' + fas fa-laptop-house
- * - 'cuti' → 'Cuti Tahunan' + fas fa-calendar-check
+ * - 'cuti-tahunan' → 'Cuti Tahunan' + fas fa-calendar-check
  * - 'izin-sakit' → 'Izin Sakit' + fas fa-heartbeat
- * - 'izin-tidak-masuk-kerja' → 'Izin Tidak Masuk Kerja' + fas fa-ban
+ * - 'izin-tidak-masuk' → 'Izin Tidak Masuk' + fas fa-ban
  */
 function mapJenisIzin(jenisIzinDb) {
   const mapping = {
     'wfh': { display: 'Work From Home', icon: 'fa-laptop-house' },
+    'cuti-tahunan': { display: 'Cuti Tahunan', icon: 'fa-calendar-check' },
     'cuti': { display: 'Cuti Tahunan', icon: 'fa-calendar-check' },
     'izin-sakit': { display: 'Izin Sakit', icon: 'fa-heartbeat' },
-    'izin_sakit': { display: 'Izin Sakit', icon: 'fa-heartbeat' }, // fallback untuk underscore
+    'izin_sakit': { display: 'Izin Sakit', icon: 'fa-heartbeat' },
+    'izin-tidak-masuk': { display: 'Izin Tidak Masuk', icon: 'fa-ban' },
     'izin-tidak-masuk-kerja': { display: 'Izin Tidak Masuk Kerja', icon: 'fa-ban' },
-    'izin_tidak_masuk_kerja': { display: 'Izin Tidak Masuk Kerja', icon: 'fa-ban' } // fallback untuk underscore
+    'izin_tidak_masuk_kerja': { display: 'Izin Tidak Masuk Kerja', icon: 'fa-ban' }
   };
   return mapping[jenisIzinDb] || { display: jenisIzinDb, icon: 'fa-calendar' };
 }
@@ -131,12 +133,13 @@ exports.ambilRiwayatPengajuanPengguna = async (req, res) => {
     // ==================== LOGIKA DATA READ-ONLY ====================
     /**
      * Query pengajuan dari database berdasarkan karyawan_id
-     * - Seleksi fields: jenis_izin, tanggal_mulai, tanggal_selesai, status, dibuat_pada
+     * - Seleksi fields: jenis_izin, tanggal_mulai, tanggal_selesai, status, dibuat_pada,
+     *   alasan (alasan pengajuan), keterangan_review (alasan penolakan), tanggal_direview
      * - Sort: descending berdasarkan tanggal dibuat (terbaru dulu)
      * - Lean: return plain objects bukan Mongoose documents
      */
     const daftarPengajuanDb = await Pengajuan.find({ karyawan_id: idPengguna })
-      .select('jenis_izin tanggal_mulai tanggal_selesai status dibuat_pada')
+      .select('jenis_izin tanggal_mulai tanggal_selesai status dibuat_pada alasan keterangan_review tanggal_direview')
       .sort({ dibuat_pada: -1 })
       .lean();
 
@@ -147,7 +150,10 @@ exports.ambilRiwayatPengajuanPengguna = async (req, res) => {
       periode: formatPeriode(pengajuan.tanggal_mulai, pengajuan.tanggal_selesai),
       durasi: hitungDurasi(pengajuan.tanggal_mulai, pengajuan.tanggal_selesai),
       tanggalPengajuan: formatTanggalIndonesia(pengajuan.dibuat_pada),
-      statusPengajuan: mapStatus(pengajuan.status)
+      statusPengajuan: mapStatus(pengajuan.status),
+      alasan: pengajuan.alasan || '',
+      tanggalPersetujuan: pengajuan.tanggal_direview ? formatTanggalIndonesia(pengajuan.tanggal_direview) : '',
+      alasanPenolakan: pengajuan.keterangan_review || ''
     }));
 
     return res.json({

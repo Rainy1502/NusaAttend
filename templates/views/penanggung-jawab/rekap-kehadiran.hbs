@@ -1,0 +1,118 @@
+{{!--
+  Halaman Rekap Kehadiran - NusaAttend
+  Menampilkan statistik ringkasan dan detail kehadiran karyawan
+  Sumber: templates/views/rekap.hbs
+  Class: kontainer-rekap-kehadiran, kartu-rekap-kehadiran, tabel-rekap-kehadiran
+--}}
+
+<div class="kontainer-rekap-kehadiran">
+  {{!-- Judul Halaman --}}
+  <header class="header-rekap-kehadiran">
+    <h1 class="judul-rekap-kehadiran">Rekap Kehadiran</h1>
+    <p class="deskripsi-rekap-kehadiran">Pantau kehadiran dan statistik karyawan</p>
+  </header>
+
+  {{!-- Baris Statistik --}}
+  <div class="baris-statistik-rekap-kehadiran">
+    <div class="kartu-rekap-kehadiran">
+      <div class="ikon-rekap-kehadiran latar-biru">
+        <i class="fas fa-users"></i>
+      </div>
+      <div class="info-rekap-kehadiran">
+        <p class="label-rekap-kehadiran">Total Karyawan</p>
+        <h2 class="angka-rekap-kehadiran">{{totalKaryawan}}</h2>
+      </div>
+    </div>
+
+    <div class="kartu-rekap-kehadiran">
+      <div class="ikon-rekap-kehadiran latar-hijau">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="info-rekap-kehadiran">
+        <p class="label-rekap-kehadiran">Rata-rata Kehadiran</p>
+        <h2 class="angka-rekap-kehadiran">{{rataRataKehadiran}}%</h2>
+      </div>
+    </div>
+
+    <div class="kartu-rekap-kehadiran">
+      <div class="ikon-rekap-kehadiran latar-ungu">
+        <i class="fas fa-calendar-check"></i>
+      </div>
+      <div class="info-rekap-kehadiran">
+        <p class="label-rekap-kehadiran">Hadir Hari Ini</p>
+        <h2 class="angka-rekap-kehadiran">{{hariIniHadir}}</h2>
+      </div>
+    </div>
+
+    <div class="kartu-rekap-kehadiran">
+      <div class="ikon-rekap-kehadiran latar-kuning">
+        <i class="fas fa-calendar-day"></i>
+      </div>
+      <div class="info-rekap-kehadiran">
+        <p class="label-rekap-kehadiran">Izin Hari Ini</p>
+        <h2 class="angka-rekap-kehadiran">{{hariIniIzin}}</h2>
+      </div>
+    </div>
+  </div>
+
+  {{!-- Tabel Detail --}}
+  <section class="bagian-tabel-rekap-kehadiran">
+    <h3 class="judul-bagian-rekap-kehadiran">Detail Kehadiran Karyawan (Bulan Ini)</h3>
+    <div class="pembungkus-tabel-rekap-kehadiran">
+      <table class="tabel-rekap-kehadiran">
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Jabatan</th>
+            <th>Hadir</th>
+            <th>Izin</th>
+            <th>Tidak Hadir</th>
+            <th>Sisa Cuti</th>
+            <th>Persentase</th>
+          </tr>
+        </thead>
+        <tbody>
+            {{#each karyawan}}
+                <tr>
+                <td>{{nama_lengkap}}</td>
+                <td>{{jabatan}}</td>
+                <td><span class="badge-rekap-kehadiran hijau">{{hadir}}</span></td>
+                <td><span class="badge-rekap-kehadiran biru">{{izin}}</span></td>
+                <td><span class="badge-rekap-kehadiran merah">{{tidakHadir}}</span></td>
+                <td>{{sisa_cuti}} hari</td>
+                <td class="{{#if (gte persentase 95)}}
+                                teks-rekap-kehadiran-hijau
+                                {{else if (gte persentase 85)}}
+                                teks-rekap-kehadiran-biru
+                                {{else if (gte persentase 75)}}
+                                teks-rekap-kehadiran-kuning
+                                {{else}}
+                                teks-rekap-kehadiran-merah
+                                {{/if}}
+                                ">{{persentase}}%</td>
+                </tr>
+            {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {{!-- Legenda --}}
+  <footer class="legenda-rekap-kehadiran">
+    <p class="judul-legenda-rekap-kehadiran">Keterangan Persentase Kehadiran</p>
+    <div class="baris-legenda-rekap-kehadiran">
+      <div class="item-legenda-rekap-kehadiran">
+        <span class="titik-rekap-kehadiran bg-hijau"></span> ≥ 95% - Sangat Baik
+      </div>
+      <div class="item-legenda-rekap-kehadiran">
+        <span class="titik-rekap-kehadiran bg-biru"></span> 85-94% - Baik
+      </div>
+      <div class="item-legenda-rekap-kehadiran">
+        <span class="titik-rekap-kehadiran bg-kuning"></span> 75-84% - Cukup
+      </div>
+      <div class="item-legenda-rekap-kehadiran">
+        <span class="titik-rekap-kehadiran bg-merah"></span> < 75% - Perlu Perhatian
+      </div>
+    </div>
+  </footer>
+</div>

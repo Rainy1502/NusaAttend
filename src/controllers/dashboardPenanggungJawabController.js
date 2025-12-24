@@ -50,10 +50,14 @@ async function ambilDataDashboardPenanggungJawab(req, res) {
     // - menunggu_review: Count pengajuan dengan status "menunggu"
     // - disetujui_bulan_ini: Count pengajuan dengan status "disetujui" bulan ini
     // - ditolak_bulan_ini: Count pengajuan dengan status "ditolak" bulan ini
-    // - total_karyawan: Count Pengguna dengan role "karyawan"
+    // - total_karyawan: Count HANYA Pengguna dengan role "karyawan" yang ditanggungjawabi user ini
     
-    // Hitung total karyawan dari model Pengguna
-    const totalKaryawan = await Pengguna.countDocuments({ role: 'karyawan' });
+    // Hitung total karyawan yang ditanggungjawabi (filter by penanggung_jawab_id)
+    // Referensi: Sama seperti di rekap-kehadiran, hanya ambil karyawan dengan penanggung_jawab_id = user yang login
+    const totalKaryawan = await Pengguna.countDocuments({ 
+      role: 'karyawan',
+      penanggung_jawab_id: req.session.user._id  // Filter: Hanya karyawan yang ditanggungjawabi user ini
+    });
     
     // Hitung pengajuan menunggu review (status = 'menunggu')
     const menungguReview = await Pengajuan.countDocuments({ status: 'menunggu' });

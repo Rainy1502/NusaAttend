@@ -1621,7 +1621,7 @@ footer a:hover {
   border-radius: 14px;
   box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-width: 500px;
+  max-width: 720px;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -6098,15 +6098,16 @@ select.input-form {
 
 /* ==================== HALAMAN REVIEW PENGAJUAN (PENANGGUNG JAWAB) ==================== */
 
-/* Header halaman review pengajuan */
+/* Header halaman review pengajuan
+   Memberikan padding horizontal yang seragam untuk keselarasan konten */
 .reviewPengajuanHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 32px;
+  padding: 32px 32px 24px 32px;
   margin: 0;
-  background-color: white;
-  border-bottom: 1px solid #f0f1f3;
+  background-color: transparent;
+  border-bottom: none;
   gap: 16px;
 }
 
@@ -6134,13 +6135,16 @@ select.input-form {
   line-height: 24px;
 }
 
-/* Container daftar pengajuan menunggu review */
+/* Container daftar pengajuan menunggu review
+   Memberikan padding horizontal agar konten lebar sesuai dengan halaman lain
+   Margin vertikal untuk spacing antar section */
 .containerDaftarPengajuan {
   background-color: white;
   border: 1px solid #f3f4f6;
   border-radius: 14px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   margin: 0 32px 32px 32px;
+  padding: 0;
   overflow: hidden;
 }
 
@@ -6410,7 +6414,7 @@ select.input-form {
 /* Responsive: Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
   .reviewPengajuanHeader {
-    padding: 20px 24px;
+    padding: 24px 24px 16px 24px;
   }
 
   .reviewPengajuanTitle {
@@ -6471,7 +6475,7 @@ select.input-form {
   .reviewPengajuanHeader {
     flex-direction: column;
     align-items: flex-start;
-    padding: 16px 20px;
+    padding: 20px 20px 12px 20px;
   }
 
   .reviewPengajuanTitle {
@@ -7502,10 +7506,10 @@ select.input-form {
 }
 
 /**
- * Tombol Hapus Tanda Tangan
+ * Tombol Hapus Tanda Tangan (Step 3)
  * Secondary button untuk clear canvas tanpa navigasi
  */
-.tombolHapusTandaTangan {
+.tombolHapusTandaTanganStep3 {
   flex: 1;
   padding: 12px 24px;
   font-size: 14px;
@@ -7523,13 +7527,13 @@ select.input-form {
   min-height: 44px;
 }
 
-.tombolHapusTandaTangan:hover {
+.tombolHapusTandaTanganStep3:hover {
   background: #f7fafc;
   border-color: #a0aec0;
   color: #2d3748;
 }
 
-.tombolHapusTandaTangan:active {
+.tombolHapusTandaTanganStep3:active {
   background: #edf2f7;
   border-color: #a0aec0;
 }
@@ -7861,7 +7865,7 @@ select.input-form {
   }
 
   .tombolKembaliDariTandaTangan,
-  .tombolHapusTandaTangan,
+  .tombolHapusTandaTanganStep3,
   .tombolKirimPengajuan {
     padding: 10px 16px;
     font-size: 13px;
@@ -8523,7 +8527,7 @@ select.input-form {
   }
 
   .tombolKembaliDariTandaTangan,
-  .tombolHapusTandaTangan,
+  .tombolHapusTandaTanganStep3,
   .tombolKirimPengajuan {
     padding: 12px 16px;
     font-size: 14px;
@@ -9826,46 +9830,7 @@ select.input-form {
 }
 
 /* Tombol hapus tanda tangan */
-.tombolHapusTandaTangan {
-  align-self: flex-start;
-  padding: 0;
-  background: none;
-  border: none;
-  color: #4f39f6;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.tombolHapusTandaTangan:hover {
-  color: #3d2fd1;
-  text-decoration: underline;
-}
-
-.tombolHapusTandaTangan:active {
-  opacity: 0.8;
-}
-
-.iconButtonSmall {
-  font-size: 0.875rem;
-}
-
-.textButtonSmall {
-  font-size: 0.875rem;
-}
-
-/* Section informasi catatan */
-.sectionInformasiCatatan {
-  padding: 17px;
-  background-color: #f0fdf4;
-  border: 1px solid #b9f8cf;
-  border-radius: 10px;
-}
+/* ==================== MODAL DETAIL PENGAJUAN ==================== */
 
 .teksInformasiCatatan {
   font-size: 0.875rem;
@@ -10318,6 +10283,177 @@ select.input-form {
                 flex-direction: column-reverse;
             }
         }
+
+
+/* Menormalkan lebar dan padding halaman rekap kehadiran agar konsisten 
+   dengan halaman penanggung jawab lainnya (dashboard dan review-pengajuan) */
+.kontainer-rekap-kehadiran {
+  padding: 0 32px;
+}
+
+/* Header */
+.header-rekap-kehadiran {
+  margin-bottom: 32px;
+  padding: 0;
+}
+
+.judul-rekap-kehadiran {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  color: #101828;
+}
+
+.deskripsi-rekap-kehadiran {
+  font-size: 16px;
+  color: #4a5565;
+  margin-top: 8px;
+}
+
+/* Menormalisasi jarak antar section baris statistik 
+   untuk konsistensi dengan grid statistik di halaman dashboard */
+.baris-statistik-rekap-kehadiran {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+/* Menormalkan styling kartu statistik rekap kehadiran 
+   untuk konsistensi dengan kartu di halaman dashboard */
+.kartu-rekap-kehadiran {
+  background: white;
+  padding: 24px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f3f4f6;
+}
+
+.ikon-rekap-kehadiran {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.latar-biru { background-color: #eff6ff; color: #3b82f6; }
+.latar-hijau { background-color: #f0fdf4; color: #22c55e; }
+.latar-ungu { background-color: #f5f3ff; color: #8b5cf6; }
+.latar-kuning { background-color: #fffbeb; color: #f59e0b; }
+
+.label-rekap-kehadiran {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.angka-rekap-kehadiran {
+  font-size: 20px;
+  margin: 4px 0 0 0;
+  color: #1e293b;
+}
+
+/* Menormalkan styling bagian tabel rekap kehadiran 
+   agar sesuai dengan standar container halaman penanggung jawab */
+.bagian-tabel-rekap-kehadiran {
+  background: white;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f3f4f6;
+  margin-bottom: 32px;
+}
+
+/* Menormalkan styling judul bagian tabel 
+   untuk konsistensi dengan judul section halaman lain */
+.judul-bagian-rekap-kehadiran {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #101828;
+}
+
+.tabel-rekap-kehadiran {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabel-rekap-kehadiran th {
+  text-align: left;
+  padding: 12px;
+  font-size: 13px;
+  color: #64748b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.tabel-rekap-kehadiran td {
+  padding: 16px 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #f8fafc;
+}
+
+/* Badge Angka */
+.badge-rekap-kehadiran {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-rekap-kehadiran.hijau { background-color: #f0fdf4; color: #22c55e; }
+.badge-rekap-kehadiran.biru { background-color: #eff6ff; color: #3b82f6; }
+.badge-rekap-kehadiran.merah { background-color: #fef2f2; color: #ef4444; }
+
+/* Warna Teks Persentase */
+.teks-rekap-kehadiran-hijau { color: #22c55e; font-weight: 600; }
+.teks-rekap-kehadiran-biru { color: #3b82f6; font-weight: 600; }
+.teks-rekap-kehadiran-kuning { color: #f59e0b; font-weight: 600; }
+.teks-rekap-kehadiran-merah { color: #ef4444; font-weight: 600; }
+
+/* Legenda */
+.legenda-rekap-kehadiran {
+  margin: 20px 0;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+
+.judul-legenda-rekap-kehadiran {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.baris-legenda-rekap-kehadiran {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-legenda-rekap-kehadiran {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.titik-rekap-kehadiran {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.bg-hijau { background-color: #22c55e; }
+.bg-biru { background-color: #3b82f6; }
+.bg-kuning { background-color: #f59e0b; }
+.bg-merah { background-color: #ef4444; }
 /* ==================== KEYFRAMES NOTIFIKASI ==================== */
 
 @keyframes slideIn {
@@ -10339,5 +10475,253 @@ select.input-form {
   to {
     transform: translateX(400px);
     opacity: 0;
+  }
+}
+
+/* ==================== MODAL DETAIL PENGAJUAN ==================== */
+/* Styling khusus untuk modal detail pengajuan surat izin */
+
+/* Modal overlay untuk detail pengajuan - Tidak conflict dengan .modal-overlay lain */
+.modal-detail-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-detail-overlay.modal-aktif {
+  display: flex;
+}
+
+/* Konten modal detail pengajuan */
+.modal-konten-detail-pengajuan {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Section status badge modal */
+.bagian-status-modal {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* Section informasi pengajuan */
+.bagian-info-pengajuan {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  grid-row-gap: 20px;
+}
+
+/* Item informasi pengajuan */
+.item-info-pengajuan {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Item info full width (durasi, alasan) */
+.item-info-pengajuan.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Label informasi */
+.label-info {
+  font-size: 12px;
+  font-weight: 600;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* Nilai informasi */
+.nilai-info {
+  font-size: 14px;
+  font-weight: 500;
+  color: #101828;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* Nilai info untuk alasan (memungkinkan text wrapping) */
+.nilai-info-alasan {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+/* Section persetujuan (untuk status Disetujui) */
+.bagian-persetujuan {
+  padding: 16px;
+  background-color: #dcfce7;
+  border-left: 4px solid #16a34a;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Kotak persetujuan dengan ikon */
+.kotak-persetujuan {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+/* Ikon persetujuan */
+.ikon-persetujuan {
+  font-size: 20px;
+  color: #16a34a;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* Teks persetujuan */
+.teks-persetujuan {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Label persetujuan */
+.label-persetujuan {
+  font-size: 12px;
+  font-weight: 600;
+  color: #016630;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Nilai persetujuan (tanggal) */
+.nilai-persetujuan {
+  font-size: 14px;
+  font-weight: 500;
+  color: #016630;
+  margin: 0;
+}
+
+/* Section penolakan (untuk status Ditolak) */
+.bagian-penolakan {
+  padding: 16px;
+  background-color: #ffe2e2;
+  border-left: 4px solid #dc3545;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Kotak penolakan dengan ikon */
+.kotak-penolakan {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+/* Ikon penolakan */
+.ikon-penolakan {
+  font-size: 20px;
+  color: #9f0712;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* Teks penolakan */
+.teks-penolakan {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Label penolakan */
+.label-penolakan {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9f0712;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Nilai penolakan (tanggal) */
+.nilai-penolakan {
+  font-size: 14px;
+  font-weight: 500;
+  color: #9f0712;
+  margin: 0;
+}
+
+/* Section aksi modal (tombol tutup) */
+.bagian-aksi-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 20px;
+}
+
+/* Tombol tutup modal di bawah */
+.tombol-tutup-modal-bawah {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #f3f4f6;
+  color: #4a5565;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.tombol-tutup-modal-bawah:hover {
+  background-color: #e5e7eb;
+}
+
+.tombol-tutup-modal-bawah:active {
+  transform: scale(0.98);
+}
+
+/* Responsive design untuk modal detail pengajuan */
+@media (max-width: 768px) {
+  .modal-konten-detail-pengajuan {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .nilai-info {
+    font-size: 13px;
+  }
+
+  .bagian-persetujuan,
+  .bagian-penolakan {
+    padding: 14px;
+  }
+
+  .label-info {
+    font-size: 11px;
   }
 }

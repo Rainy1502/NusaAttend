@@ -52,10 +52,13 @@ async function ambilDetailPengajuan(req, res) {
             
             if (pengajuan) {
                 console.log('✅ Data pengajuan ditemukan di database');
-                console.log('📊 Pengajuan data:', pengajuan);
+                console.log('📊 Pengajuan data:', JSON.stringify(pengajuan, null, 2));
                 
                 // Data karyawan dari relasi populate
                 const karyawan = pengajuan.karyawan_id;
+                console.log('👤 Data karyawan:', JSON.stringify(karyawan, null, 2));
+                console.log(`📊 Sisa cuti karyawan - Nilai: ${karyawan?.sisa_cuti}, Tipe: ${typeof karyawan?.sisa_cuti}`);
+                console.log(`📄 Tanda tangan - Nilai: ${pengajuan.tanda_tangan_base64 ? 'Ada' : 'Tidak ada'}, Panjang: ${pengajuan.tanda_tangan_base64?.length || 0}`);
                 
                 // Format jenis izin (ubah dari enum ke display name)
                 const jenisIzinMap = {
@@ -84,6 +87,24 @@ async function ambilDetailPengajuan(req, res) {
                     return `${hari} hari kerja`;
                 };
                 
+                // Hitung sisa cuti real-time dari pengajuan disetujui
+                const jatahCutiAwal = 12;
+                const pengajuanDisetujui = await Pengajuan.find({
+                    karyawan_id: karyawan._id,
+                    status: 'disetujui',
+                    jenis_izin: { $ne: 'wfh' }
+                }).select('tanggal_mulai tanggal_selesai');
+                
+                let hariDigunakan = 0;
+                pengajuanDisetujui.forEach(paj => {
+                    const durasiHari = Math.ceil(
+                        (new Date(paj.tanggal_selesai) - new Date(paj.tanggal_mulai)) / (1000 * 60 * 60 * 24)
+                    ) + 1;
+                    hariDigunakan += durasiHari;
+                });
+                
+                const sisaCutiHitung = Math.max(0, jatahCutiAwal - hariDigunakan);
+                
                 detailPengajuanData = {
                     jenis_izin: jenisIzinDisplay,
                     periode_izin: `${formatTanggal(pengajuan.tanggal_mulai)} s/d ${formatTanggal(pengajuan.tanggal_selesai)}`,
@@ -94,11 +115,12 @@ async function ambilDetailPengajuan(req, res) {
                     durasi_pengajuan: hitungDurasi(pengajuan.tanggal_mulai, pengajuan.tanggal_selesai),
                     tanda_tangan_administratif: pengajuan.tanda_tangan_base64 || '[TANDA TANGAN ADMINISTRATIF]',
                     nama_penandatangan: karyawan?.nama_lengkap || '-',
-                    sisa_cuti: karyawan?.sisa_cuti ? String(karyawan.sisa_cuti) : '0',
+                    sisa_cuti: String(sisaCutiHitung),
                     status_pengajuan: pengajuan.status || 'menunggu'
                 };
                 
                 console.log('✅ Detail pengajuan berhasil diproses:', detailPengajuanData);
+                console.log(`📊 DEBUG Sisa Cuti - Nilai: ${detailPengajuanData.sisa_cuti}, Tipe: ${typeof detailPengajuanData.sisa_cuti}`);
             } else {
                 // Jika pengajuan tidak ada, gunakan mock data
                 console.warn('⚠️  Pengajuan tidak ditemukan, menggunakan mock data');

@@ -66,10 +66,16 @@
     <div id="stepSatuIsiForm" class="stepSatuIsiForm">
         <div class="kartuFormSuratIzin">
             
-            <!-- Header form dengan icon dan judul -->
-            <div class="headerFormSuratIzin">
-                <i class="fas fa-file-alt iconHeaderForm"></i>
-                <h2 class="judulHeaderForm">Buat Surat Izin Baru</h2>
+            <!-- Container header + warning (flex row) -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
+                <!-- Header form dengan icon dan judul -->
+                <div class="headerFormSuratIzin">
+                    <i class="fas fa-file-alt iconHeaderForm"></i>
+                    <h2 class="judulHeaderForm">Buat Surat Izin Baru</h2>
+                </div>
+                
+                <!-- Warning Box - di-render by JavaScript setelah DOM ready -->
+                <div id="containerWarning"></div>
             </div>
         
         <!-- ==================== ISI FORM SURAT IZIN ==================== -->
@@ -122,9 +128,9 @@
                     required
                 >
                     <option value="">Pilih jenis izin</option>
-                    <option value="cuti-tahunan">Cuti Tahunan</option>
-                    <option value="izin-tidak-masuk">Izin Tidak Masuk Kerja</option>
-                    <option value="izin-sakit">Izin Sakit</option>
+                    <option value="cuti-tahunan" id="optCutiTahunan">Cuti Tahunan</option>
+                    <option value="izin-tidak-masuk" id="optIzinTidakMasuk">Izin Tidak Masuk Kerja</option>
+                    <option value="izin-sakit" id="optIzinSakit">Izin Sakit</option>
                     <option value="wfh">Work From Home (WFH)</option>
                 </select>
                 <div id="errorJenisIzin" class="errorMessageForm"></div>
@@ -160,6 +166,23 @@
                         required
                     />
                     <div id="errorTanggalSelesai" class="errorMessageForm"></div>
+                </div>
+            </div>
+
+            <!-- Display: Jumlah Hari & Warning Jika Melebihi Sisa Cuti -->
+            <div id="containerDurasiWarning" style="display: none; margin-bottom: 20px;">
+                <div style="background-color: #f8f9fa; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="margin: 0 0 4px 0; color: #666; font-size: 13px; font-weight: 500;">Durasi Pengajuan:</p>
+                        <p id="durasiHariDisplay" style="margin: 0; color: #4f39f6; font-size: 18px; font-weight: 700;">0 hari</p>
+                    </div>
+                    <div id="warningDurasiMelebihi" style="display: none; background-color: #fff3cd; border: 2px solid #ffc107; border-radius: 6px; padding: 8px 12px; display: flex; gap: 8px; align-items: center;">
+                        <i class="fas fa-exclamation-triangle" style="color: #ff6b6b; font-size: 16px;"></i>
+                        <div>
+                            <p style="margin: 0; color: #dc3545; font-size: 13px; font-weight: 600;">Melebihi Jatah!</p>
+                            <p style="margin: 2px 0 0 0; color: #666; font-size: 12px;">Sisa cuti: <span id="sisaCutiDisplay">0</span> hari</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -349,7 +372,7 @@
                 <button 
                     type="button" 
                     id="tombolHapusTandaTangan" 
-                    class="tombolHapusTandaTangan" 
+                    class="tombolHapusTandaTanganStep3" 
                     aria-label="Hapus Tanda Tangan"
                 >
                     Hapus Tanda Tangan
@@ -667,6 +690,44 @@
             return;
         }
         
+        
+        // NOTE: Logic disable opsi jenis izin sudah handle di atas (sebelum inisialisasi form)
+        
+
+        // ==================== RENDER WARNING JIKA SISA CUTI = 0 ====================
+        // Ini dijalankan saat DOM ready, setelah halaman sepenuhnya dimuat
+        const sisaCutiKaryawan = {{#if user.sisaCuti}}{{user.sisaCuti}}{{else}}0{{/if}};
+        console.log(`📊 [INIT] Sisa cuti karyawan: ${sisaCutiKaryawan}`);
+        
+        const containerWarning = document.getElementById('containerWarning');
+        if (containerWarning && sisaCutiKaryawan === 0) {
+            console.warn(`⚠️  Sisa cuti = 0. Render warning box.`);
+            containerWarning.innerHTML = `
+                <div id="warningBoxCutiHabis" style="background-color: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 12px 16px; display: flex; gap: 12px; align-items: flex-start; flex-shrink: 0; min-width: 300px;">
+                    <i class="fas fa-exclamation-triangle" style="color: #ff6b6b; font-size: 18px; min-width: 18px; margin-top: 2px;"></i>
+                    <div>
+                        <h3 style="margin: 0 0 4px 0; color: #dc3545; font-size: 14px; font-weight: 600;">⚠️ Cuti Habis</h3>
+                        <p style="margin: 0; color: #666; font-size: 12px;">Jatah cuti tahunan sudah habis. Cuman bisa ajukan WFH saja.</p>
+                    </div>
+                </div>
+            `;
+        } else if (containerWarning) {
+            console.log(`✓ Sisa cuti = ${sisaCutiKaryawan}. Tidak ada warning.`);
+        }
+        
+        // Disable opsi jenis izin jika sisa cuti = 0
+        if (sisaCutiKaryawan === 0) {
+            const optCutiTahunan = document.getElementById('optCutiTahunan');
+            const optIzinTidakMasuk = document.getElementById('optIzinTidakMasuk');
+            const optIzinSakit = document.getElementById('optIzinSakit');
+            
+            if (optCutiTahunan) optCutiTahunan.disabled = true;
+            if (optIzinTidakMasuk) optIzinTidakMasuk.disabled = true;
+            if (optIzinSakit) optIzinSakit.disabled = true;
+            
+            console.log('✓ Opsi jenis izin (selain WFH) telah di-disable');
+        }
+                
         /**
          * Fungsi: Format tanggal dari format YYYY-MM-DD ke DD/MM/YYYY
          * @param {string} tanggalISO - Tanggal dalam format YYYY-MM-DD
@@ -734,6 +795,55 @@
             });
         }
         
+        // ==================== FUNGSI: HITUNG DURASI & TAMPILKAN WARNING ====================
+        /**
+         * Hitung durasi hari dari tanggal mulai ke tanggal selesai
+         * Tampilkan warning jika durasi melebihi sisa cuti
+         */
+        function hitungDanUpdateDurasi() {
+            const containerDurasiWarning = document.getElementById('containerDurasiWarning');
+            const durasiHariDisplay = document.getElementById('durasiHariDisplay');
+            const warningDurasiMelebihi = document.getElementById('warningDurasiMelebihi');
+            const sisaCutiDisplay = document.getElementById('sisaCutiDisplay');
+            
+            const tanggalMulai = inputTanggalMulai.value;
+            const tanggalSelesai = inputTanggalSelesai.value;
+            const sisaCutiKaryawan = {{#if user.sisaCuti}}{{user.sisaCuti}}{{else}}0{{/if}};
+            
+            // Hanya tampilkan container jika kedua tanggal sudah diisi
+            if (!tanggalMulai || !tanggalSelesai) {
+                containerDurasiWarning.style.display = 'none';
+                return;
+            }
+            
+            // Hitung durasi
+            const mulai = new Date(tanggalMulai);
+            const selesai = new Date(tanggalSelesai);
+            const durasiMs = selesai - mulai;
+            const durasiHari = Math.ceil(durasiMs / (1000 * 60 * 60 * 24)) + 1; // +1 untuk inclusive
+            
+            // Tampilkan container
+            containerDurasiWarning.style.display = 'block';
+            
+            // Update display durasi
+            durasiHariDisplay.textContent = `${durasiHari} hari`;
+            
+            // Cek jika durasi melebihi sisa cuti (hanya untuk non-WFH)
+            const jenisIzinSelected = selectJenisIzin.value;
+            const isCutiTahunan = jenisIzinSelected === 'cuti-tahunan' || jenisIzinSelected === 'izin-tidak-masuk' || jenisIzinSelected === 'izin-sakit';
+            
+            if (isCutiTahunan && durasiHari > sisaCutiKaryawan) {
+                // Durasi melebihi sisa cuti
+                warningDurasiMelebihi.style.display = 'flex';
+                sisaCutiDisplay.textContent = sisaCutiKaryawan;
+                console.warn(`⚠️  Durasi ${durasiHari} hari melebihi sisa cuti ${sisaCutiKaryawan} hari`);
+            } else {
+                // Durasi OK
+                warningDurasiMelebihi.style.display = 'none';
+                console.log(`✓ Durasi ${durasiHari} hari OK (sisa cuti: ${sisaCutiKaryawan} hari)`);
+            }
+        }
+        
         // ==================== FUNGSI: CEK DAN UPDATE STATUS TOMBOL LANJUT ====================
         /**
          * Cek validitas form dan update warna tombol "Lanjut ke Preview"
@@ -744,6 +854,7 @@
          * - Tanggal Mulai: tidak boleh di masa lalu (hanya tampil error jika touched)
          * - Tanggal Selesai: harus >= tanggal mulai (hanya tampil error jika touched)
          * - Alasan: minimal 10 kata (hanya tampil error jika touched)
+         * - Durasi: tidak boleh melebihi sisa cuti (untuk non-WFH)
          */
         function cekDanUpdateTombolLanjut() {
             // Reset semua error messages (tapi hanya tampil jika field sudah di-touch)
@@ -806,6 +917,25 @@
                     }
                     isFormValid = false;
                 }
+                
+                // ==================== VALIDASI DURASI TERHADAP SISA CUTI ====================
+                // Hanya validasi untuk non-WFH (cuti-tahunan, izin-tidak-masuk, izin-sakit)
+                const jenisIzinSelected = selectJenisIzin.value;
+                const isCutiTahunan = jenisIzinSelected === 'cuti-tahunan' || jenisIzinSelected === 'izin-tidak-masuk' || jenisIzinSelected === 'izin-sakit';
+                const sisaCutiKaryawan = {{#if user.sisaCuti}}{{user.sisaCuti}}{{else}}0{{/if}};
+                
+                if (isCutiTahunan && tanggalSelesai >= tanggalMulai) {
+                    const durasiMs = tanggalSelesai - tanggalMulai;
+                    const durasiHari = Math.ceil(durasiMs / (1000 * 60 * 60 * 24)) + 1;
+                    
+                    if (durasiHari > sisaCutiKaryawan) {
+                        if (touchedFields.tanggalSelesai || touchedFields.tanggalMulai) {
+                            errorTanggalSelesai.textContent = `⚠️ Durasi ${durasiHari} hari melebihi sisa cuti (${sisaCutiKaryawan} hari).`;
+                            errorTanggalSelesai.classList.add('show');
+                        }
+                        isFormValid = false;
+                    }
+                }
             }
             
             // ==================== VALIDASI ALASAN ====================
@@ -864,6 +994,11 @@
             field.addEventListener('input', cekDanUpdateTombolLanjut);
             field.addEventListener('change', cekDanUpdateTombolLanjut);
             field.addEventListener('blur', cekDanUpdateTombolLanjut);
+            
+            // Tambahan: hitung durasi saat tanggal berubah
+            if (field.id === 'inputTanggalMulai' || field.id === 'inputTanggalSelesai') {
+                field.addEventListener('change', hitungDanUpdateDurasi);
+            }
         });
         
         // JANGAN jalankan validasi saat halaman load (untuk menghindari error muncul langsung)
@@ -883,6 +1018,32 @@
                 event.stopPropagation();
                 formSuratIzin.classList.add('wasValidated');
                 console.warn('Form tidak valid. Mohon lengkapi semua field yang diperlukan.');
+                return;
+            }
+            
+            // ==================== VALIDASI DURASI VS SISA CUTI ====================
+            const jenisIzinSelected = document.getElementById('selectJenisIzin').value;
+            const sisaCutiKaryawan = {{#if user.sisaCuti}}{{user.sisaCuti}}{{else}}0{{/if}};
+            const tanggalMulai = new Date(document.getElementById('inputTanggalMulai').value);
+            const tanggalSelesai = new Date(document.getElementById('inputTanggalSelesai').value);
+            
+            const isCutiTahunan = jenisIzinSelected === 'cuti-tahunan' || jenisIzinSelected === 'izin-tidak-masuk' || jenisIzinSelected === 'izin-sakit';
+            
+            if (isCutiTahunan) {
+                const durasiMs = tanggalSelesai - tanggalMulai;
+                const durasiHari = Math.ceil(durasiMs / (1000 * 60 * 60 * 24)) + 1;
+                
+                if (durasiHari > sisaCutiKaryawan) {
+                    alert(`❌ Durasi ${durasiHari} hari melebihi jatah cuti (${sisaCutiKaryawan} hari). Tidak dapat melanjutkan.`);
+                    console.warn(`Durasi melebihi sisa cuti. Durasi: ${durasiHari}, Sisa: ${sisaCutiKaryawan}`);
+                    return;
+                }
+            }
+            
+            // Validasi sisa cuti untuk cuti tahunan (legacy, untuk safety)
+            if (jenisIzinSelected === 'cuti-tahunan' && sisaCutiKaryawan <= 0) {
+                alert('❌ Maaf, jatah cuti tahunan Anda sudah habis. Tidak dapat mengajukan cuti tahunan lagi.');
+                console.warn('Cuti tahunan sudah habis. Sisa cuti:', sisaCutiKaryawan);
                 return;
             }
             

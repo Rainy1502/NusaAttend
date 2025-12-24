@@ -217,6 +217,98 @@ async function setujuiPengajuan(req, res) {
     console.log(`   - Status: ${statusSebelumnya} → ${pengajuanUpdated.status}`);
     console.log(`   - Tanggal Review: ${pengajuanUpdated.tanggal_direview}`);
     
+    // ==================== AUTO-CREATE ABSENSI RECORDS ====================
+    // Ketika pengajuan disetujui, buat record absensi otomatis untuk tanggal-tanggal izin
+    console.log('📅 Membuat record absensi otomatis untuk tanggal-tanggal izin...');
+    console.log(`   - Jenis izin: ${pengajuanUpdated.jenis_izin}`);
+    console.log(`   - Karyawan ID: ${pengajuanUpdated.karyawan_id}`);
+    console.log(`   - Tanggal mulai: ${pengajuanUpdated.tanggal_mulai}`);
+    console.log(`   - Tanggal selesai: ${pengajuanUpdated.tanggal_selesai}`);
+    
+    try {
+      const Absensi = require('../models/Absensi');
+      
+      // Helper function: normalize date ke local midnight (00:00:00)
+      const normalizeDate = (dateStr) => {
+        const date = new Date(dateStr);
+        date.setHours(0, 0, 0, 0);
+        return date;
+      };
+      
+      // Loop dari tanggal_mulai hingga tanggal_selesai
+      const tanggalMulai = normalizeDate(pengajuanUpdated.tanggal_mulai);
+      const tanggalSelesai = normalizeDate(pengajuanUpdated.tanggal_selesai);
+      
+      console.log(`   - Tanggal mulai (normalized): ${tanggalMulai.toString()}`);
+      console.log(`   - Tanggal selesai (normalized): ${tanggalSelesai.toString()}`);
+      
+      // Tentukan status absensi berdasarkan jenis_izin
+      const statusAbsensi = (jenis) => {
+        if (jenis === 'cuti-tahunan') return 'cuti';
+        if (jenis === 'izin-sakit') return 'izin';
+        if (jenis === 'izin-tidak-masuk') return 'izin';
+        if (jenis === 'wfh') return 'izin'; // WFH dianggap izin
+        return 'izin'; // default
+      };
+      
+      const statusAbsensiValue = statusAbsensi(pengajuanUpdated.jenis_izin);
+      console.log(`   - Status absensi: ${statusAbsensiValue}`);
+      
+      // Loop setiap hari dari mulai hingga selesai
+      const currentDate = new Date(tanggalMulai);
+      let counterAbsensi = 0;
+      
+      while (currentDate <= tanggalSelesai) {
+        const hariIni = new Date(currentDate);
+        const hariIniStart = new Date(hariIni.getFullYear(), hariIni.getMonth(), hariIni.getDate(), 0, 0, 0, 0);
+        const hariIniEnd = new Date(hariIni.getFullYear(), hariIni.getMonth(), hariIni.getDate(), 23, 59, 59, 999);
+        
+        console.log(`   ⏳ Memproses tanggal: ${hariIni.toDateString()}`);
+        
+        // Cek apakah sudah ada record absensi untuk hari ini
+        const absensiExist = await Absensi.findOne({
+          id_pengguna: pengajuanUpdated.karyawan_id,
+          tanggal: {
+            $gte: hariIniStart,
+            $lte: hariIniEnd
+          }
+        });
+        
+        // Jika belum ada, buat record baru
+        if (!absensiExist) {
+          const absensi = new Absensi({
+            id_pengguna: pengajuanUpdated.karyawan_id,
+            tanggal: hariIniStart,
+            status: statusAbsensiValue,
+            keterangan: pengajuanUpdated.jenis_izin
+          });
+          
+          await absensi.save();
+          counterAbsensi++;
+          console.log(`   ✅ Absensi dibuat: ${hariIni.toDateString()} - ${statusAbsensiValue}`);
+        } else {
+          console.log(`   ℹ️  Absensi sudah ada: ${hariIni.toDateString()} (status: ${absensiExist.status})`);
+        }
+        
+        // Tambah 1 hari
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      
+      console.log(`✅ Total absensi dibuat: ${counterAbsensi} hari`);
+    } catch (errorAbsensi) {
+      console.error('⚠️ Warning: Error saat membuat absensi otomatis:', errorAbsensi.message);
+      console.error(errorAbsensi.stack);
+      // Jangan stop approval hanya karena error absensi
+      // Absensi boleh dibuat manual nanti
+    }
+    
+    // ==================== UPDATE SISA CUTI (JIKA CUTI TAHUNAN) ====================
+    // Note: Sisa cuti dihitung real-time dari pengajuan yang disetujui di dashboard
+    // Jadi tidak perlu update field sisa_cuti di Pengguna model
+    if (pengajuanUpdated.jenis_izin === 'cuti-tahunan') {
+      console.log('💰 Catatan: Sisa cuti akan dihitung real-time di dashboard dari pengajuan disetujui');
+    }
+    
     // ==================== RESPONSE SUKSES ====================
     console.log('📤 Mengirim respons sukses...');
     

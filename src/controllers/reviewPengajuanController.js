@@ -52,7 +52,7 @@ async function ambilDaftarPengajuanReview(req, res) {
       const durasi = Math.ceil(
         (new Date(pengajuan.tanggal_selesai) - new Date(pengajuan.tanggal_mulai)) / 
         (1000 * 60 * 60 * 24)
-      );
+      ) + 1; // +1 untuk inclusive (tanggal mulai & selesai sama = 1 hari)
 
       return {
         _id: pengajuan._id,
