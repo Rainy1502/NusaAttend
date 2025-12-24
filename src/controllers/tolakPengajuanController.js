@@ -303,32 +303,10 @@ async function setujuiPengajuan(req, res) {
     }
     
     // ==================== UPDATE SISA CUTI (JIKA CUTI TAHUNAN) ====================
+    // Note: Sisa cuti dihitung real-time dari pengajuan yang disetujui di dashboard
+    // Jadi tidak perlu update field sisa_cuti di Pengguna model
     if (pengajuanUpdated.jenis_izin === 'cuti-tahunan') {
-      console.log('💰 Mengurangi sisa cuti karyawan...');
-      
-      try {
-        // Hitung jumlah hari cuti yang digunakan
-        const durasiHari = Math.ceil(
-          (new Date(pengajuanUpdated.tanggal_selesai) - new Date(pengajuanUpdated.tanggal_mulai)) / (1000 * 60 * 60 * 24)
-        ) + 1; // +1 untuk inclusive
-        
-        // Update sisa_cuti di koleksi Pengguna
-        const Pengguna = require('../models/Pengguna');
-        const karyawan = await Pengguna.findByIdAndUpdate(
-          pengajuanUpdated.karyawan_id,
-          { 
-            $inc: { sisa_cuti: -durasiHari } // Kurangi sisa_cuti
-          },
-          { new: true } // Return updated document
-        );
-        
-        console.log(`   ✅ Sisa cuti karyawan diperbarui`);
-        console.log(`      - Hari digunakan: ${durasiHari} hari`);
-        console.log(`      - Sisa cuti baru: ${karyawan.sisa_cuti} hari`);
-      } catch (errorCuti) {
-        console.error('⚠️ Warning: Error saat update sisa cuti:', errorCuti.message);
-        // Jangan stop approval hanya karena error update sisa cuti
-      }
+      console.log('💰 Catatan: Sisa cuti akan dihitung real-time di dashboard dari pengajuan disetujui');
     }
     
     // ==================== RESPONSE SUKSES ====================

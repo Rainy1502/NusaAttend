@@ -72,27 +72,46 @@ async function ambilDataDashboardPengguna(req, res) {
      * - menunggu_persetujuan: Count dari Pengajuan dengan status 'menunggu'
      */
 
-    // Ambil sisa cuti dari database user
-    let sisaCuti = pengguna.sisa_cuti || 12;
+    // Hitung sisa cuti dari pengajuan yang disetujui (bukan dari field sisa_cuti yang mungkin outdated)
+    const jatahCutiAwal = 12; // Default jatah tahunan
     
-    // Hitung pengajuan cuti tahunan yang sudah DISETUJUI untuk mengurangi sisa cuti
-    const pengajuanCutiDisetujui = await Pengajuan.find({
+    console.log(`📊 Dashboard - ID Pengguna: ${idPengguna}`);
+    console.log(`📊 Jatah cuti awal: ${jatahCutiAwal} hari`);
+    
+    // Debug: Cek semua pengajuan
+    const allPengajuan = await Pengajuan.find({
+      karyawan_id: idPengguna
+    }).select('tanggal_mulai tanggal_selesai status jenis_izin');
+    console.log(`📊 SEMUA pengajuan (semua status): ${allPengajuan.length}`);
+    allPengajuan.forEach((p, idx) => {
+      console.log(`   [${idx + 1}] ${p.tanggal_mulai.toDateString()} - ${p.tanggal_selesai.toDateString()} | ${p.jenis_izin} | Status: ${p.status}`);
+    });
+    
+    // Hitung pengajuan yang sudah DISETUJUI (semua jenis izin KECUALI wfh)
+    // WFH tidak dikurangi karena karyawan tetap bekerja
+    const pengajuanDisetujui = await Pengajuan.find({
       karyawan_id: idPengguna,
-      jenis_izin: 'cuti-tahunan',  // Hanya cuti tahunan yang kurangi
-      status: 'disetujui'
-    }).select('tanggal_mulai tanggal_selesai');
+      status: 'disetujui',
+      jenis_izin: { $ne: 'wfh' }  // Exclude WFH
+    }).select('tanggal_mulai tanggal_selesai jenis_izin');
     
+    console.log(`📊 Total pengajuan DISETUJUI (exclude WFH): ${pengajuanDisetujui.length}`);
     // Hitung total hari yang digunakan dari pengajuan yang disetujui
     let hariDigunakan = 0;
-    pengajuanCutiDisetujui.forEach(pengajuan => {
+    pengajuanDisetujui.forEach((pengajuan, idx) => {
       const durasiHari = Math.ceil(
         (new Date(pengajuan.tanggal_selesai) - new Date(pengajuan.tanggal_mulai)) / (1000 * 60 * 60 * 24)
       ) + 1; // +1 untuk inclusive (include tanggal pertama dan terakhir)
       hariDigunakan += durasiHari;
+      console.log(`   [${idx + 1}] ${pengajuan.tanggal_mulai.toDateString()} - ${pengajuan.tanggal_selesai.toDateString()} (${pengajuan.jenis_izin}) = ${durasiHari} hari`);
     });
     
-    // Sisa cuti = sisa awal - hari yang sudah digunakan
-    sisaCuti = Math.max(0, sisaCuti - hariDigunakan);
+    console.log(`📊 Total hari digunakan: ${hariDigunakan}`);
+    
+    // Sisa cuti = jatah awal - hari yang sudah digunakan
+    let sisaCuti = Math.max(0, jatahCutiAwal - hariDigunakan);
+    
+    console.log(`📊 Sisa cuti final: ${sisaCuti} hari`);
 
     // Hitung kehadiran bulan ini dari Absensi collection (jika ada)
     let kehadiranBulanIni = 0;

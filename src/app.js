@@ -477,7 +477,7 @@ app.use("/api/pengguna", middlewareAuntenfikasi, rutDashboardPengguna);
  *          Tidak melakukan persetujuan, penolakan, atau perubahan status
  *          Tanda tangan bersifat administratif visual, bukan bukti hukum
  */
-// app.use("/api/pengguna", middlewareAuntenfikasi, rutDetailPengajuan); // DEPRECATED: Gunakan rutTolakPengajuan yang lebih lengkap
+app.use("/api/pengguna", middlewareAuntenfikasi, rutDetailPengajuan);
 
 /**
  * [FITUR BARU - Tolak & Setujui Pengajuan]
@@ -944,7 +944,7 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
           (new Date(pengajuan.tanggal_selesai) -
             new Date(pengajuan.tanggal_mulai)) /
             (1000 * 60 * 60 * 24)
-        );
+        ) + 1; // +1 untuk inclusive (tanggal mulai & selesai sama = 1 hari)
 
         // Format tanggal untuk display
         const tanggalMulai = new Date(
@@ -976,7 +976,10 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
           namaKaryawan: pengajuan.karyawan_id?.nama_lengkap || "Unknown",
           emailKaryawan: pengajuan.karyawan_id?.email || "Unknown",
           jabatanKaryawan: pengajuan.karyawan_id?.jabatan || "Unknown",
-          jenisIzin: pengajuan.jenis_izin,
+          jenisIzin: pengajuan.jenis_izin
+            .split('-')
+            .map((word, idx) => idx === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word)
+            .join(' '),
           periode: `${tanggalMulai} - ${tanggalSelesai}`,
           durasi: `${durasi} hari`,
           tanggalDiajukan: tanggalDiajukan,
@@ -1059,7 +1062,7 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
 // ==================== RUTE KARYAWAN ====================
 
 // Halaman buat pengajuan surat izin
-app.get("/pengajuan/buat", middlewareAuntenfikasi, (req, res) => {
+app.get("/pengajuan/buat", middlewareAuntenfikasi, async (req, res) => {
   const role = req.session.user.role;
 
   // Hanya karyawan yang bisa membuat pengajuan
@@ -1070,9 +1073,42 @@ app.get("/pengajuan/buat", middlewareAuntenfikasi, (req, res) => {
     });
   }
 
+  // Hitung sisa cuti real-time sebelum render
+  const Pengajuan = require("./models/Pengajuan");
+  const jatahCutiAwal = 12;
+  
+  // Gunakan session user ID (sama seperti di dashboard)
+  const idPengguna = req.session.user.id || req.session.user._id;
+  
+  console.log(`📄 Route pengajuan/buat - ID Pengguna: ${idPengguna}`);
+  
+  const pengajuanDisetujui = await Pengajuan.find({
+    karyawan_id: idPengguna,
+    status: 'disetujui',
+    jenis_izin: { $ne: 'wfh' }
+  }).select('tanggal_mulai tanggal_selesai jenis_izin');
+  
+  console.log(`📊 Pengajuan disetujui ditemukan: ${pengajuanDisetujui.length}`);
+  
+  let hariDigunakan = 0;
+  pengajuanDisetujui.forEach((paj, idx) => {
+    const durasiHari = Math.ceil(
+      (new Date(paj.tanggal_selesai) - new Date(paj.tanggal_mulai)) / (1000 * 60 * 60 * 24)
+    ) + 1;
+    hariDigunakan += durasiHari;
+    console.log(`   [${idx + 1}] ${paj.tanggal_mulai.toDateString()} - ${paj.tanggal_selesai.toDateString()} (${paj.jenis_izin}) = ${durasiHari} hari`);
+  });
+  
+  const sisaCuti = Math.max(0, jatahCutiAwal - hariDigunakan);
+  
+  console.log(`💾 Sisa cuti untuk rendering: ${sisaCuti} (dari ${jatahCutiAwal} - ${hariDigunakan})`);
+  
   res.render("karyawan/surat-izin", {
     title: "Buat Surat Izin - NusaAttend",
-    user: req.session.user,
+    user: {
+      ...req.session.user,
+      sisaCuti: sisaCuti
+    },
     layout: "dashboard-layout",
     halaman: "buat-pengajuan",
     socketToken: req.session.socketToken || "",
@@ -1162,9 +1198,28 @@ app.get("/rekap-kehadiran", middlewareAuntenfikasi, async(req, res) => {
           h1.getDate() === h2.getDate();
 
 
-      const dataKaryawanAbsensiTotal = dataKaryawanAbsensi.map(k=>{
-        
-        
+      const dataKaryawanAbsensiTotal = await Promise.all(
+        dataKaryawanAbsensi.map(async (k) => {
+          // Hitung sisa cuti real-time dari pengajuan yang disetujui
+          const Pengajuan = require("./models/Pengajuan");
+          const jatahCutiAwal = 12;
+          
+          const pengajuanDisetujui = await Pengajuan.find({
+            karyawan_id: k._id,
+            status: 'disetujui',
+            jenis_izin: { $ne: 'wfh' }  // Exclude WFH
+          }).select('tanggal_mulai tanggal_selesai');
+          
+          let hariDigunakan = 0;
+          pengajuanDisetujui.forEach(pengajuan => {
+            const durasiHari = Math.ceil(
+              (new Date(pengajuan.tanggal_selesai) - new Date(pengajuan.tanggal_mulai)) / (1000 * 60 * 60 * 24)
+            ) + 1;
+            hariDigunakan += durasiHari;
+          });
+          
+          const sisaCuti = Math.max(0, jatahCutiAwal - hariDigunakan);
+          
           let izin = 0;
           let hadir = 0;
           let tidakHadir = 0;
@@ -1182,21 +1237,22 @@ app.get("/rekap-kehadiran", middlewareAuntenfikasi, async(req, res) => {
             } else {
               tidakHadir++;
             }
-            });
+          });
 
-            const totalHari = hadir + izin + tidakHadir;
-            const persentase = totalHari === 0 ? 0 : (hadir / totalHari) * 100;
+          const totalHari = hadir + izin + tidakHadir;
+          const persentase = totalHari === 0 ? 0 : (hadir / totalHari) * 100;
 
-        return {
-          nama_lengkap : k.nama_lengkap,
-          jabatan : k.jabatan,
-          sisa_cuti : k.sisa_cuti,
-          izin,
-          hadir,
-          tidakHadir,
-          persentase
-        }
-      })
+          return {
+            nama_lengkap : k.nama_lengkap,
+            jabatan : k.jabatan,
+            sisa_cuti : sisaCuti,
+            izin,
+            hadir,
+            tidakHadir,
+            persentase
+          }
+        })
+      )
 
       const rataRataKehadiran =
           dataKaryawanAbsensiTotal.reduce((sum, k) => sum + k.persentase, 0) / dataKaryawanAbsensiTotal.length;
