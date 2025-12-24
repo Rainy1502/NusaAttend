@@ -217,6 +217,116 @@ async function setujuiPengajuan(req, res) {
     console.log(`   - Status: ${statusSebelumnya} → ${pengajuanUpdated.status}`);
     console.log(`   - Tanggal Review: ${pengajuanUpdated.tanggal_direview}`);
     
+    // ==================== AUTO-CREATE ABSENSI RECORDS ====================
+    // Ketika pengajuan disetujui, buat record absensi otomatis untuk tanggal-tanggal izin
+    console.log('📅 Membuat record absensi otomatis untuk tanggal-tanggal izin...');
+    console.log(`   - Jenis izin: ${pengajuanUpdated.jenis_izin}`);
+    console.log(`   - Karyawan ID: ${pengajuanUpdated.karyawan_id}`);
+    console.log(`   - Tanggal mulai: ${pengajuanUpdated.tanggal_mulai}`);
+    console.log(`   - Tanggal selesai: ${pengajuanUpdated.tanggal_selesai}`);
+    
+    try {
+      const Absensi = require('../models/Absensi');
+      
+      // Loop dari tanggal_mulai hingga tanggal_selesai
+      const tanggalMulai = new Date(pengajuanUpdated.tanggal_mulai);
+      const tanggalSelesai = new Date(pengajuanUpdated.tanggal_selesai);
+      
+      // Normalize dates (set semua ke UTC 00:00:00)
+      tanggalMulai.setUTCHours(0, 0, 0, 0);
+      tanggalSelesai.setUTCHours(0, 0, 0, 0);
+      
+      console.log(`   - Tanggal mulai (normalized): ${tanggalMulai.toISOString()}`);
+      console.log(`   - Tanggal selesai (normalized): ${tanggalSelesai.toISOString()}`);
+      
+      // Tentukan status absensi berdasarkan jenis_izin
+      const statusAbsensi = (jenis) => {
+        if (jenis === 'cuti-tahunan') return 'cuti';
+        if (jenis === 'izin-sakit') return 'izin';
+        if (jenis === 'izin-tidak-masuk') return 'izin';
+        if (jenis === 'wfh') return 'izin'; // WFH dianggap izin
+        return 'izin'; // default
+      };
+      
+      const statusAbsensiValue = statusAbsensi(pengajuanUpdated.jenis_izin);
+      console.log(`   - Status absensi: ${statusAbsensiValue}`);
+      
+      // Loop setiap hari dari mulai hingga selesai
+      const currentDate = new Date(tanggalMulai);
+      let counterAbsensi = 0;
+      
+      while (currentDate <= tanggalSelesai) {
+        const hariIni = new Date(currentDate);
+        hariIni.setUTCHours(0, 0, 0, 0);
+        
+        console.log(`   ⏳ Memproses tanggal: ${hariIni.toDateString()}`);
+        
+        // Cek apakah sudah ada record absensi untuk hari ini
+        const absensiExist = await Absensi.findOne({
+          id_pengguna: pengajuanUpdated.karyawan_id,
+          tanggal: {
+            $gte: new Date(hariIni.getTime()),
+            $lt: new Date(hariIni.getTime() + 24 * 60 * 60 * 1000)
+          }
+        });
+        
+        // Jika belum ada, buat record baru
+        if (!absensiExist) {
+          const absensi = new Absensi({
+            id_pengguna: pengajuanUpdated.karyawan_id,
+            tanggal: new Date(hariIni),
+            status: statusAbsensiValue,
+            keterangan: pengajuanUpdated.jenis_izin
+          });
+          
+          await absensi.save();
+          counterAbsensi++;
+          console.log(`   ✅ Absensi dibuat: ${hariIni.toDateString()} - ${statusAbsensiValue}`);
+        } else {
+          console.log(`   ℹ️  Absensi sudah ada: ${hariIni.toDateString()} (status: ${absensiExist.status})`);
+        }
+        
+        // Tambah 1 hari
+        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+      }
+      
+      console.log(`✅ Total absensi dibuat: ${counterAbsensi} hari`);
+    } catch (errorAbsensi) {
+      console.error('⚠️ Warning: Error saat membuat absensi otomatis:', errorAbsensi.message);
+      console.error(errorAbsensi.stack);
+      // Jangan stop approval hanya karena error absensi
+      // Absensi boleh dibuat manual nanti
+    }
+    
+    // ==================== UPDATE SISA CUTI (JIKA CUTI TAHUNAN) ====================
+    if (pengajuanUpdated.jenis_izin === 'cuti-tahunan') {
+      console.log('💰 Mengurangi sisa cuti karyawan...');
+      
+      try {
+        // Hitung jumlah hari cuti yang digunakan
+        const durasiHari = Math.ceil(
+          (new Date(pengajuanUpdated.tanggal_selesai) - new Date(pengajuanUpdated.tanggal_mulai)) / (1000 * 60 * 60 * 24)
+        ) + 1; // +1 untuk inclusive
+        
+        // Update sisa_cuti di koleksi Pengguna
+        const Pengguna = require('../models/Pengguna');
+        const karyawan = await Pengguna.findByIdAndUpdate(
+          pengajuanUpdated.karyawan_id,
+          { 
+            $inc: { sisa_cuti: -durasiHari } // Kurangi sisa_cuti
+          },
+          { new: true } // Return updated document
+        );
+        
+        console.log(`   ✅ Sisa cuti karyawan diperbarui`);
+        console.log(`      - Hari digunakan: ${durasiHari} hari`);
+        console.log(`      - Sisa cuti baru: ${karyawan.sisa_cuti} hari`);
+      } catch (errorCuti) {
+        console.error('⚠️ Warning: Error saat update sisa cuti:', errorCuti.message);
+        // Jangan stop approval hanya karena error update sisa cuti
+      }
+    }
+    
     // ==================== RESPONSE SUKSES ====================
     console.log('📤 Mengirim respons sukses...');
     

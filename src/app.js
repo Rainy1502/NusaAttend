@@ -477,7 +477,7 @@ app.use("/api/pengguna", middlewareAuntenfikasi, rutDashboardPengguna);
  *          Tidak melakukan persetujuan, penolakan, atau perubahan status
  *          Tanda tangan bersifat administratif visual, bukan bukti hukum
  */
-app.use("/api/pengguna", middlewareAuntenfikasi, rutDetailPengajuan);
+// app.use("/api/pengguna", middlewareAuntenfikasi, rutDetailPengajuan); // DEPRECATED: Gunakan rutTolakPengajuan yang lebih lengkap
 
 /**
  * [FITUR BARU - Tolak & Setujui Pengajuan]
@@ -490,7 +490,7 @@ app.use("/api/pengguna", middlewareAuntenfikasi, rutDetailPengajuan);
  * Akses: Penanggung jawab yang sudah ter-autentikasi
  * Catatan: Backend mengubah status & menyimpan alasan penolakan administratif
  *          Bersifat non-hukum, hanya pertimbangan internal penanggung jawab
- *          Tidak ada workflow otomatis, notifikasi, atau operasi lain
+ *          PENTING: Auto-create absensi records & update sisa_cuti saat disetujui
  */
 app.use("/api/pengguna", middlewareAuntenfikasi, rutTolakPengajuan);
 

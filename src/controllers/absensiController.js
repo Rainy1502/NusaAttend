@@ -24,7 +24,7 @@ const absensiController = {
 
   async absenMasuk(req, res) {
     try {
-      const idPengguna = req.user.id;
+      const idPengguna = req.session.user.id;
       const tanggalHariIni = ambilTanggalHariIni();
       const jamMasuk = ambilJamSekarang();
       const { keterangan } = req.body;
@@ -69,7 +69,7 @@ const absensiController = {
 
   async absenPulang(req, res) {
     try {
-      const idPengguna = req.user.id;
+      const idPengguna = req.session.user.id;
       const tanggalHariIni = ambilTanggalHariIni();
       const jamPulang = ambilJamSekarang();
 
@@ -112,8 +112,12 @@ const absensiController = {
 
   async getAbsensiHariIni(req, res) {
     try {
-      const idPengguna = req.user.id;
+      const idPengguna = req.session.user.id;
       const tanggalHariIni = ambilTanggalHariIni();
+
+      console.log('📅 Mengambil data absensi...');
+      console.log(`   - User ID: ${idPengguna}`);
+      console.log(`   - Tanggal: ${tanggalHariIni}`);
 
       const absensiHariIni = await Absensi.findOne({
         id_pengguna: idPengguna,
@@ -133,16 +137,21 @@ const absensiController = {
         .limit(30)
         .lean();
       
-           const riwayatAbsensiFormat = riwayatAbsensi.map(item => ({
-          ...item,
-          tanggalFormat: new Date(item.tanggal).toLocaleDateString('id-ID', {
-            weekday: 'short',
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-            timeZone: 'Asia/Jakarta'
-          })
-        }));
+      console.log(`   - Total riwayat absensi: ${riwayatAbsensi.length} records`);
+      if (riwayatAbsensi.length > 0) {
+        console.log(`   - Data terbaru: ${riwayatAbsensi[0].status} pada ${riwayatAbsensi[0].tanggal}`);
+      }
+
+      const riwayatAbsensiFormat = riwayatAbsensi.map(item => ({
+        ...item,
+        tanggalFormat: new Date(item.tanggal).toLocaleDateString('id-ID', {
+          weekday: 'short',
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          timeZone: 'Asia/Jakarta'
+        })
+      }));
       res.render('karyawan/absensi', {
         title: 'Absensi - NusaAttend',
         layout: 'dashboard-layout',

@@ -66,15 +66,33 @@ async function ambilDataDashboardPengguna(req, res) {
     // ==================== RINGKASAN ADMINISTRATIF ====================
     /**
      * Catatan: Nilai ringkasan berdasarkan data yang tersedia di database
-     * - sisa_cuti: Default 12 hari (standar cuti tahunan Indonesia)
-     *   Dalam implementasi penuh, akan dihitung dari pengajuan yang sudah disetujui
+     * - sisa_cuti: Ambil dari user.sisa_cuti, atau dihitung dari pengajuan yang sudah disetujui
      * - kehadiran_bulan_ini: Dihitung dari Absensi records bulan ini
      * - tidak_hadir: Jumlah hari tidak hadir (izin + sakit)
      * - menunggu_persetujuan: Count dari Pengajuan dengan status 'menunggu'
      */
 
-    // Default sisa cuti (standar 12 hari per tahun)
-    const sisaCuti = 12;
+    // Ambil sisa cuti dari database user
+    let sisaCuti = pengguna.sisa_cuti || 12;
+    
+    // Hitung pengajuan cuti tahunan yang sudah DISETUJUI untuk mengurangi sisa cuti
+    const pengajuanCutiDisetujui = await Pengajuan.find({
+      karyawan_id: idPengguna,
+      jenis_izin: 'cuti-tahunan',  // Hanya cuti tahunan yang kurangi
+      status: 'disetujui'
+    }).select('tanggal_mulai tanggal_selesai');
+    
+    // Hitung total hari yang digunakan dari pengajuan yang disetujui
+    let hariDigunakan = 0;
+    pengajuanCutiDisetujui.forEach(pengajuan => {
+      const durasiHari = Math.ceil(
+        (new Date(pengajuan.tanggal_selesai) - new Date(pengajuan.tanggal_mulai)) / (1000 * 60 * 60 * 24)
+      ) + 1; // +1 untuk inclusive (include tanggal pertama dan terakhir)
+      hariDigunakan += durasiHari;
+    });
+    
+    // Sisa cuti = sisa awal - hari yang sudah digunakan
+    sisaCuti = Math.max(0, sisaCuti - hariDigunakan);
 
     // Hitung kehadiran bulan ini dari Absensi collection (jika ada)
     let kehadiranBulanIni = 0;
