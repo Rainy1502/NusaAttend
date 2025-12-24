@@ -30,12 +30,12 @@
                         <div class="teks-status">
                             <span class="label-box">Jam Masuk</span>
                             <span class="waktu-box" id="display-jam-masuk">
-                                {{#if absen.jamMasuk}}{{absen.jamMasuk}}{{else}}Belum absen{{/if}}
+                                {{#if absen.jamMasuk}}{{absen.jamMasuk}}{{else}}{{#if absen.status}}{{#if (eq absen.status "izin")}}Izin{{else}}{{#if (eq absen.status "cuti")}}Cuti{{else}}Belum absen{{/if}}{{/if}}{{else}}Belum absen{{/if}}{{/if}}
                             </span>
                         </div>
                     </div>
-                    <button id="btn-buka-modal-masuk" class="btn-absen btn-masuk" {{#if absen.jamMasuk}}disabled style ="display : none;"{{/if}}>
-                        Absen Masuk
+                    <button id="btn-buka-modal-masuk" class="btn-absen btn-masuk" {{#if absen.jamMasuk}}disabled style ="display : none;"{{else}}{{#if absen.status}}{{#if (eq absen.status "izin")}}disabled{{/if}}{{#if (eq absen.status "cuti")}}disabled{{/if}}{{/if}}{{/if}}>
+                        {{#if absen.jamMasuk}}-{{else}}{{#if absen.status}}{{#if (eq absen.status "izin")}}Sudah Diizinkan{{else}}{{#if (eq absen.status "cuti")}}Sudah Diizinkan{{else}}Absen Masuk{{/if}}{{/if}}{{else}}Absen Masuk{{/if}}{{/if}}
                     </button>
                 </div>
 
@@ -46,11 +46,19 @@
                         <div class="teks-status">
                             <span class="label-box">Jam Pulang</span>
                             <span class="waktu-box">
-                                {{#if absen.jamPulang}}{{absen.jamPulang}}{{else}}Belum absen{{/if}}
+                                {{#if absen.jamPulang}}{{absen.jamPulang}}{{else}}{{#if absen.status}}{{#if (eq absen.status "izin")}}Izin{{else}}{{#if (eq absen.status "cuti")}}Cuti{{else}}Belum absen{{/if}}{{/if}}{{else}}Belum absen{{/if}}{{/if}}
                             </span>
                         </div>
                     </div>
-                    {{#if absen.jamMasuk}}
+                    {{#if absen.status}}{{#if (eq absen.status "izin")}}
+                        <button class="btn-absen btn-disabled" disabled>
+                            Sudah Diizinkan
+                        </button>
+                    {{else}}{{#if (eq absen.status "cuti")}}
+                        <button class="btn-absen btn-disabled" disabled>
+                            Sudah Diizinkan
+                        </button>
+                    {{else}}{{#if absen.jamMasuk}}
                         <button id="btn-buka-modal-pulang" class="btn-absen btn-pulang" {{#if absen.jamPulang}}disabled style ="display : none;"{{/if}}>
                             Absen Pulang
                         </button>
@@ -58,7 +66,15 @@
                         <button class="btn-absen btn-disabled" disabled>
                             Absen Masuk Terlebih Dahulu
                         </button>
-                    {{/if}}
+                    {{/if}}{{/if}}{{/if}}{{else}}{{#if absen.jamMasuk}}
+                        <button id="btn-buka-modal-pulang" class="btn-absen btn-pulang" {{#if absen.jamPulang}}disabled style ="display : none;"{{/if}}>
+                            Absen Pulang
+                        </button>
+                    {{else}}
+                        <button class="btn-absen btn-disabled" disabled>
+                            Absen Masuk Terlebih Dahulu
+                        </button>
+                    {{/if}}{{/if}}
                 </div>
             </div>
             {{!-- ==================== STATUS ABSENSI SELESAI ==================== --}}
@@ -236,20 +252,35 @@ document.addEventListener('DOMContentLoaded', function() {
         if (btnKonfirmasiMasuk){
             btnKonfirmasiMasuk.addEventListener('click', async function() {
                 const ket = document.getElementById('keterangan-absen').value;
-            await fetch('/absensi/masuk',{
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({keterangan:ket})
-            });
-            location.reload();
+                const response = await fetch('/absensi/masuk',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({keterangan:ket})
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('❌ ' + data.message);
+                }
             });
         }
         if (btnKonfirmasiPulang){
             btnKonfirmasiPulang.addEventListener('click', async function() {
-            await fetch('/absensi/pulang',{
-                method:'POST',
+                const response = await fetch('/absensi/pulang',{
+                    method:'POST',
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('❌ ' + data.message);
+                }
             });
-            location.reload();
             });
         }
 

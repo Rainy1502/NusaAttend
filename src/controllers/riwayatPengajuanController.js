@@ -14,21 +14,23 @@ const Pengajuan = require('../models/Pengajuan');
 
 /**
  * Helper function: Map jenis_izin dari database ke display name dan icon
- * Database: 'wfh', 'cuti', 'izin-sakit', 'izin-tidak-masuk-kerja'
+ * Database: 'wfh', 'cuti-tahunan', 'izin-sakit', 'izin-tidak-masuk'
  * Display dengan icon:
  * - 'wfh' → 'Work From Home' + fas fa-laptop-house
- * - 'cuti' → 'Cuti Tahunan' + fas fa-calendar-check
+ * - 'cuti-tahunan' → 'Cuti Tahunan' + fas fa-calendar-check
  * - 'izin-sakit' → 'Izin Sakit' + fas fa-heartbeat
- * - 'izin-tidak-masuk-kerja' → 'Izin Tidak Masuk Kerja' + fas fa-ban
+ * - 'izin-tidak-masuk' → 'Izin Tidak Masuk' + fas fa-ban
  */
 function mapJenisIzin(jenisIzinDb) {
   const mapping = {
     'wfh': { display: 'Work From Home', icon: 'fa-laptop-house' },
+    'cuti-tahunan': { display: 'Cuti Tahunan', icon: 'fa-calendar-check' },
     'cuti': { display: 'Cuti Tahunan', icon: 'fa-calendar-check' },
     'izin-sakit': { display: 'Izin Sakit', icon: 'fa-heartbeat' },
-    'izin_sakit': { display: 'Izin Sakit', icon: 'fa-heartbeat' }, // fallback untuk underscore
+    'izin_sakit': { display: 'Izin Sakit', icon: 'fa-heartbeat' },
+    'izin-tidak-masuk': { display: 'Izin Tidak Masuk', icon: 'fa-ban' },
     'izin-tidak-masuk-kerja': { display: 'Izin Tidak Masuk Kerja', icon: 'fa-ban' },
-    'izin_tidak_masuk_kerja': { display: 'Izin Tidak Masuk Kerja', icon: 'fa-ban' } // fallback untuk underscore
+    'izin_tidak_masuk_kerja': { display: 'Izin Tidak Masuk Kerja', icon: 'fa-ban' }
   };
   return mapping[jenisIzinDb] || { display: jenisIzinDb, icon: 'fa-calendar' };
 }

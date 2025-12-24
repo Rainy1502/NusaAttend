@@ -228,16 +228,19 @@ async function setujuiPengajuan(req, res) {
     try {
       const Absensi = require('../models/Absensi');
       
+      // Helper function: normalize date ke local midnight (00:00:00)
+      const normalizeDate = (dateStr) => {
+        const date = new Date(dateStr);
+        date.setHours(0, 0, 0, 0);
+        return date;
+      };
+      
       // Loop dari tanggal_mulai hingga tanggal_selesai
-      const tanggalMulai = new Date(pengajuanUpdated.tanggal_mulai);
-      const tanggalSelesai = new Date(pengajuanUpdated.tanggal_selesai);
+      const tanggalMulai = normalizeDate(pengajuanUpdated.tanggal_mulai);
+      const tanggalSelesai = normalizeDate(pengajuanUpdated.tanggal_selesai);
       
-      // Normalize dates (set semua ke UTC 00:00:00)
-      tanggalMulai.setUTCHours(0, 0, 0, 0);
-      tanggalSelesai.setUTCHours(0, 0, 0, 0);
-      
-      console.log(`   - Tanggal mulai (normalized): ${tanggalMulai.toISOString()}`);
-      console.log(`   - Tanggal selesai (normalized): ${tanggalSelesai.toISOString()}`);
+      console.log(`   - Tanggal mulai (normalized): ${tanggalMulai.toString()}`);
+      console.log(`   - Tanggal selesai (normalized): ${tanggalSelesai.toString()}`);
       
       // Tentukan status absensi berdasarkan jenis_izin
       const statusAbsensi = (jenis) => {
@@ -257,7 +260,8 @@ async function setujuiPengajuan(req, res) {
       
       while (currentDate <= tanggalSelesai) {
         const hariIni = new Date(currentDate);
-        hariIni.setUTCHours(0, 0, 0, 0);
+        const hariIniStart = new Date(hariIni.getFullYear(), hariIni.getMonth(), hariIni.getDate(), 0, 0, 0, 0);
+        const hariIniEnd = new Date(hariIni.getFullYear(), hariIni.getMonth(), hariIni.getDate(), 23, 59, 59, 999);
         
         console.log(`   ⏳ Memproses tanggal: ${hariIni.toDateString()}`);
         
@@ -265,8 +269,8 @@ async function setujuiPengajuan(req, res) {
         const absensiExist = await Absensi.findOne({
           id_pengguna: pengajuanUpdated.karyawan_id,
           tanggal: {
-            $gte: new Date(hariIni.getTime()),
-            $lt: new Date(hariIni.getTime() + 24 * 60 * 60 * 1000)
+            $gte: hariIniStart,
+            $lte: hariIniEnd
           }
         });
         
@@ -274,7 +278,7 @@ async function setujuiPengajuan(req, res) {
         if (!absensiExist) {
           const absensi = new Absensi({
             id_pengguna: pengajuanUpdated.karyawan_id,
-            tanggal: new Date(hariIni),
+            tanggal: hariIniStart,
             status: statusAbsensiValue,
             keterangan: pengajuanUpdated.jenis_izin
           });
@@ -287,7 +291,7 @@ async function setujuiPengajuan(req, res) {
         }
         
         // Tambah 1 hari
-        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+        currentDate.setDate(currentDate.getDate() + 1);
       }
       
       console.log(`✅ Total absensi dibuat: ${counterAbsensi} hari`);
