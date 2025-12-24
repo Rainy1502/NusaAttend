@@ -110,13 +110,18 @@ Sistem ini memungkinkan karyawan untuk mengajukan izin/cuti dengan mudah, penang
 - ✅ Responsive design untuk semua device
 - ✅ CSS Grid 2-kolom untuk tampilan info
 
-### 🤖 **Chatbot AI Terintegrasi** (Checkpoint 5)
-- ✅ Integrasi Groq AI dengan model cepat
-- ✅ Natural language understanding
-- ✅ Real-time messaging via Socket.io
-- ✅ Widget chatbot di dashboard
-- ✅ Database context dengan info pengguna
-- ✅ Support untuk pertanyaan tentang cuti & kebijakan
+### 🤖 **Chatbot AI Powered by Groq** (Checkpoint 5)
+- ✅ **Groq AI API Integration** - LLM berbasis cloud dengan response cepat
+- ✅ **Natural Language Processing** - Memahami pertanyaan dalam bahasa Indonesia
+- ✅ **Real-time Messaging** via Socket.io - Percakapan instant tanpa delay
+- ✅ **Intelligent Responses** - Menjawab pertanyaan tentang:
+  - Kebijakan cuti & izin
+  - Prosedur pengajuan
+  - Status pengajuan pengguna
+  - Informasi sistem
+- ✅ **Context-Aware** - Menggunakan data pengguna & kebijakan sistem
+- ✅ **Multi-language Support** - Indonesian language optimized
+- ✅ **Widget Chatbot** - Accessible di semua halaman dashboard
 
 ### 🔔 **Notifikasi Real-time** (Socket.io)
 - ✅ Update status pengajuan langsung
@@ -314,10 +319,6 @@ NusaAttend/
 │       │
 │       └── reset-password-dengan-token.hbs
 │
-├── 📂 documentation/                    # Documentation
-│   ├── Kerangka.md                      # Project structure (English)
-│   ├── Kerangka_ID.md                   # Project structure (Indonesian)
-│   └── [dokumentasi lainnya]
 │
 ├── 📂 dokumentasi-progress/             # Progress tracking
 │   ├── karyawan/
@@ -784,8 +785,6 @@ kill -9 <PID>
 ## 📚 Dokumentasi Lengkap
 
 Untuk dokumentasi lebih detail, lihat:
-- 📖 **[Kerangka.md](./documentation/Kerangka.md)** - Struktur proyek (English)
-- 📖 **[Kerangka_ID.md](./documentation/Kerangka_ID.md)** - Struktur proyek (Indonesian)
 - 📋 **[Progress Karyawan](./dokumentasi-progress/karyawan/)** - Feature development tracking
 - 📋 **[Progress Penanggung Jawab](./dokumentasi-progress/penanggung-jawab/)** - Supervisor features
 - 📋 **[Progress Admin](./dokumentasi-progress/admin/)** - Admin features
@@ -808,7 +807,7 @@ Untuk dokumentasi lebih detail, lihat:
 - Sistem ini adalah simulasi untuk keperluan akademis
 - Tanda tangan bersifat visual (bukan legal signature)
 - Email dapat dikonfigurasi dengan berbagai provider
-- Chatbot berbasis rule (dapat di-upgrade ke AI generatif)
+- ⭐ **Chatbot menggunakan Groq AI API** (bukan rule-based) untuk intelligent responses
 - Single-level approval (tidak ada multi-level flow)
 
 ---
@@ -826,7 +825,6 @@ MIT License - Lihat file [LICENSE](./LICENSE) untuk detail lengkap
 - ✨ **Real-time Durasi Display**: Display & warning di form page
 - ✨ **Modal Overlay State Management**: Support reopen unlimited
 - 🐛 Fix: Absensi syntax error (extra `});`)
-- 📚 **Documentation**: Complete Indonesian translation (Kerangka_ID.md)
 
 ### Version 1.1 (December 21, 2025) - Checkpoint 7
 - ✨ Password recovery system dengan email verification
