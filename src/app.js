@@ -683,12 +683,13 @@ app.get("/dashboard", async (req, res) => {
       // PENTING: totalKaryawan HANYA karyawan yang ditanggungjawabi user ini
       const totalKaryawan = await Pengguna.countDocuments({ 
         role: "karyawan",
-        penanggung_jawab_id: req.session.userId  // Filter: Hanya karyawan yang ditanggungjawabi
+        penanggung_jawab_id: req.session.user.id  // Filter: Hanya karyawan yang ditanggungjawabi
       });
       
-      // Hitung pengajuan menunggu review
-      const menungguReview = await Pengajuan.countDocuments({
+      // Hitung pengajuan menunggu review - HANYA dari karyawan yang ditanggungjawabi
+      const menungguReview = await Pengajuan.countDocuments({ 
         status: "menunggu",
+        penanggung_jawab_id: req.session.user.id
       });
 
       // Hitung pengajuan disetujui bulan ini
@@ -703,12 +704,14 @@ app.get("/dashboard", async (req, res) => {
 
       const disetujuiBulanIni = await Pengajuan.countDocuments({
         status: "disetujui",
+        penanggung_jawab_id: req.session.user.id,
         tanggal_direview: { $gte: bulanIniMulai, $lte: bulanIniAkhir }
       });
 
-      // Hitung pengajuan ditolak bulan ini
+      // Hitung pengajuan ditolak bulan ini - HANYA dari karyawan yang ditanggungjawabi
       const ditolakBulanIni = await Pengajuan.countDocuments({
         status: "ditolak",
+        penanggung_jawab_id: req.session.user.id,
         tanggal_direview: { $gte: bulanIniMulai, $lte: bulanIniAkhir }
       });
 
@@ -719,9 +722,10 @@ app.get("/dashboard", async (req, res) => {
         adalah_aktif: true,
       });
 
-      // Ambil pengajuan mendesak (status menunggu, sorted by tanggal_mulai terdekat)
+      // Ambil pengajuan mendesak - HANYA dari karyawan yang ditanggungjawabi user ini (status menunggu, sorted by tanggal_mulai terdekat)
       const daftarPengajuanMendesak = await Pengajuan.find({
         status: "menunggu",
+        penanggung_jawab_id: req.session.user.id
       })
         .populate("karyawan_id", "nama_lengkap")
         .sort({ tanggal_mulai: 1 }) // Paling dekat dulu
@@ -785,6 +789,40 @@ app.get("/dashboard", async (req, res) => {
         };
       });
 
+      // ==================== HITUNG KEHADIRAN HARI INI ====================
+      // Hanya karyawan yang ditanggungjawabi user ini
+      const Absensi = require("./models/Absensi");
+      
+      // Set tanggal hari ini (00:00:00 - 23:59:59)
+      const hariIni = new Date();
+      hariIni.setHours(0, 0, 0, 0);
+      const awalHariIni = new Date(hariIni);
+      const akhirHariIni = new Date(hariIni);
+      akhirHariIni.setHours(23, 59, 59, 999);
+      
+      // Ambil semua karyawan yang ditanggungjawabi
+      const daftarKaryawan = await Pengguna.find({
+        role: 'karyawan',
+        penanggung_jawab_id: req.session.user.id
+      }).select('_id');
+      
+      const karyawanIds = daftarKaryawan.map(k => k._id);
+      
+      // Hitung kehadiran hari ini
+      const jumlahHadir = await Absensi.countDocuments({
+        id_pengguna: { $in: karyawanIds },
+        tanggal: { $gte: awalHariIni, $lte: akhirHariIni },
+        status: 'hadir'
+      });
+      
+      const jumlahIzinCuti = await Absensi.countDocuments({
+        id_pengguna: { $in: karyawanIds },
+        tanggal: { $gte: awalHariIni, $lte: akhirHariIni },
+        status: { $in: ['izin', 'cuti'] }
+      });
+      
+      const jumlahBelumAbsen = totalKaryawan - jumlahHadir - jumlahIzinCuti;
+
       res.render("penanggung-jawab/dashboard", {
         title: "Dashboard Penanggung Jawab - NusaAttend",
         user: req.session.user,
@@ -796,10 +834,10 @@ app.get("/dashboard", async (req, res) => {
         jumlahDisetujuiBulanIni: disetujuiBulanIni,
         jumlahDitolakBulanIni: ditolakBulanIni,
         totalKaryawan: totalKaryawan,
-        // Data kehadiran (dummy untuk sekarang)
-        jumlahHadir: 18,
-        jumlahIzinCuti: 4,
-        jumlahBelumAbsen: 2,
+        // Data kehadiran (real-time dari database untuk karyawan yang ditanggungjawabi)
+        jumlahHadir: jumlahHadir,
+        jumlahIzinCuti: jumlahIzinCuti,
+        jumlahBelumAbsen: jumlahBelumAbsen,
         // Data statistik bulan (dummy untuk sekarang)
         totalPengajuanBulanIni: 19,
         rataRataWaktuReview: "4.2 jam",
@@ -927,12 +965,15 @@ app.get("/pengajuan", middlewareAuntenfikasi, async (req, res) => {
       halaman: "manajemen-karyawan",
     });
   } else if (role === "penanggung-jawab") {
-    // Penanggung jawab melihat pengajuan untuk direview
+    // Penanggung jawab melihat pengajuan untuk direview - HANYA dari karyawan yang ditanggungjawabi
     try {
       const Pengajuan = require("./models/Pengajuan");
 
-      // Ambil semua pengajuan dengan status "menunggu" review
-      const daftarPengajuan = await Pengajuan.find({ status: "menunggu" })
+      // Ambil pengajuan dengan status "menunggu" review - HANYA dari karyawan yang ditanggungjawabi user ini
+      const daftarPengajuan = await Pengajuan.find({ 
+        status: "menunggu",
+        penanggung_jawab_id: req.session.user.id
+      })
         .populate("karyawan_id", "nama_lengkap jabatan email")
         .sort({ dibuat_pada: -1 })
         .lean()

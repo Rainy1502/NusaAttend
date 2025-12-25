@@ -38,10 +38,13 @@ async function ambilDaftarPengajuanReview(req, res) {
     console.log('📥 Mengambil daftar pengajuan untuk review...');
 
     // ==================== QUERY DATA PENGAJUAN ====================
-    // Ambil semua pengajuan dengan status "menunggu" review
+    // Ambil pengajuan dengan status "menunggu" review - HANYA dari karyawan yang ditanggungjawabi
     // Populate karyawan_id untuk mendapat informasi nama dan jabatan
     
-    const daftarPengajuan = await Pengajuan.find({ status: 'menunggu' })
+    const daftarPengajuan = await Pengajuan.find({ 
+      status: 'menunggu',
+      penanggung_jawab_id: req.session.user.id  // Fix: gunakan .id bukan ._id
+    })
       .populate('karyawan_id', 'nama_lengkap jabatan email')
       .sort({ dibuat_pada: -1 })
       .lean()

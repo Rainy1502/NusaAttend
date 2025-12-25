@@ -56,13 +56,18 @@ async function ambilDataDashboardPenanggungJawab(req, res) {
     // Referensi: Sama seperti di rekap-kehadiran, hanya ambil karyawan dengan penanggung_jawab_id = user yang login
     const totalKaryawan = await Pengguna.countDocuments({ 
       role: 'karyawan',
-      penanggung_jawab_id: req.session.user._id  // Filter: Hanya karyawan yang ditanggungjawabi user ini
+      penanggung_jawab_id: req.session.user.id  // Fix: gunakan .id bukan ._id
     });
     
-    // Hitung pengajuan menunggu review (status = 'menunggu')
-    const menungguReview = await Pengajuan.countDocuments({ status: 'menunggu' });
+    // Hitung pengajuan menunggu review (status = 'menunggu') - HANYA dari karyawan yang ditanggungjawabi
+    // Filter: pengajuan dengan penanggung_jawab_id sama dengan user yang login
+    // Catatan: Pengajuan lama mungkin punya penanggung_jawab_id = null, mereka tidak ditampilkan
+    const menungguReview = await Pengajuan.countDocuments({ 
+      status: 'menunggu',
+      penanggung_jawab_id: req.session.user.id  // Fix: gunakan .id bukan ._id
+    });
     
-    // Hitung pengajuan disetujui bulan ini
+    // Hitung pengajuan disetujui bulan ini - HANYA dari karyawan yang ditanggungjawabi
     const bulanIniMulai = new Date();
     bulanIniMulai.setDate(1);
     bulanIniMulai.setHours(0, 0, 0, 0);
@@ -74,12 +79,14 @@ async function ambilDataDashboardPenanggungJawab(req, res) {
     
     const disetujuiBulanIni = await Pengajuan.countDocuments({
       status: 'disetujui',
+      penanggung_jawab_id: req.session.user.id,  // Fix: gunakan .id bukan ._id
       tanggal_direview: { $gte: bulanIniMulai, $lte: bulanIniAkhir }
     });
     
-    // Hitung pengajuan ditolak bulan ini
+    // Hitung pengajuan ditolak bulan ini - HANYA dari karyawan yang ditanggungjawabi
     const ditolakBulanIni = await Pengajuan.countDocuments({
       status: 'ditolak',
+      penanggung_jawab_id: req.session.user.id,  // Fix: gunakan .id bukan ._id
       tanggal_direview: { $gte: bulanIniMulai, $lte: bulanIniAkhir }
     });
 
@@ -104,7 +111,10 @@ async function ambilDataDashboardPenanggungJawab(req, res) {
     
     const Pengajuan = require('../models/Pengajuan');
     
-    const daftarPengajuanMendesak = await Pengajuan.find({ status: 'menunggu' })
+    const daftarPengajuanMendesak = await Pengajuan.find({ 
+      status: 'menunggu',
+      penanggung_jawab_id: req.session.user.id  // Fix: gunakan .id bukan ._id
+    })
       .populate('karyawan_id', 'nama_lengkap')
       .sort({ tanggal_mulai: 1 })  // Paling dekat dulu
       .limit(5)
