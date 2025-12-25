@@ -14,6 +14,7 @@ const chatbotSocket = require("./chatbotSocket");
 // ==================== IMPORT KONFIGURASI ====================
 const hubungkanDB = require("./config/database");
 const inisialisasiSocket = require("./config/socket");
+const { inisialisasiPenjadwalAbsen } = require("./config/penjadwal-otomatis-absen");
 
 // ==================== IMPORT RUTE ====================
 const rutAuntenfikasi = require("./routes/auth");
@@ -133,6 +134,16 @@ const io = socketIO(server, {
 
 // ==================== KONEKSI DATABASE ====================
 hubungkanDB();
+
+// ==================== INISIALISASI SCHEDULER ABSENSI OTOMATIS ====================
+/**
+ * Menjalankan penjadwal untuk absensi otomatis
+ * Setiap hari pukul 00:01 WIB, sistem akan memeriksa karyawan yang belum absen
+ * dan otomatis menandai mereka sebagai "tidak_hadir"
+ * 
+ * Catatan: Harus dipanggil SETELAH database terkoneksi
+ */
+inisialisasiPenjadwalAbsen();
 
 // SOCKET AUTH
 io.use(socketAuth);
