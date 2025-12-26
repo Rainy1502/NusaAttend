@@ -190,7 +190,7 @@ exports.tampilkan_halaman_reset = async (req, res) => {
     }
 
     // Render halaman reset dengan token tersembunyi
-    res.render("reset-password-dengan-token", {
+    res.render("publik/reset-password-dengan-token", {
       title: "Reset Password - NusaAttend",
       layout: false,
       token_reset: token,
@@ -340,18 +340,19 @@ function buat_template_email_reset(nama_lengkap, reset_link) {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.6; color: #333; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background:  #4F39F6; color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header { background-color: #4f39f6; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
         .header h1 { margin: 0; font-size: 24px; }
-        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-        .greeting { font-size: 16px; margin-bottom: 20px; }
-        .info-box { background: white; border-left: 4px solid #4F39F6; padding: 15px; margin: 20px 0; }
-        .info-box strong { color: #4F39F6; }
-        .button { display: inline-block; background: #ada2ffff; color: #4F39F6; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
-        .button:hover { opacity: 0.9; }
-        .warning { background: #fffbec; border: 1px solid #ffd699; color: #8b6914; padding: 15px; border-radius: 6px; margin: 20px 0; font-size: 14px; }
-        .footer { text-align: center; padding: 20px; color: #999; font-size: 12px; }
+        .content { background-color: #f9fafb; padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; }
+        .info-box { background-color: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 15px 0; border-radius: 4px; }
+        .info-box strong { color: #92400e; }
+        .button-container { text-align: center; margin-top: 15px; }
+        .button { display: inline-block; background-color: #4f39f6; color: #ffffff !important; padding: 12px 30px; text-decoration: none !important; border-radius: 4px; font-weight: bold; font-size: 16px; }
+        .button:hover { background-color: #3f2fd6; }
+        .security-box { background-color: #dbeafe; padding: 15px; border-left: 4px solid #0284c7; margin: 15px 0; border-radius: 4px; }
+        .security-box strong { color: #164e63; }
+        .footer { font-size: 12px; color: #666; margin-top: 20px; text-align: center; }
       </style>
     </head>
     <body>
@@ -360,28 +361,32 @@ function buat_template_email_reset(nama_lengkap, reset_link) {
           <h1>🔐 Reset Password NusaAttend</h1>
         </div>
         <div class="content">
-          <p class="greeting">Halo <strong>${nama_lengkap}</strong>,</p>
+          <p>Halo <strong>${nama_lengkap}</strong>,</p>
+          
           <p>Anda telah meminta untuk mereset password akun NusaAttend Anda. Klik tombol di bawah untuk melanjutkan:</p>
           
-          <center>
-            <a href="${reset_link}" class="button">Reset Password Saya</a>
-          </center>
-
-          <p>Atau copy link berikut ke browser Anda:</p>
+          <div class="button-container">
+            <a href="${reset_link}" class="button">Reset Password Saya →</a>
+          </div>
+          
+          <p style="text-align: center; color: #666; margin-top: 10px;"><small>atau copy link berikut ke browser Anda:</small></p>
           <div class="info-box">
-            <small><strong>Link:</strong><br/>${reset_link}</small>
+            <p><strong>Link Reset Password:</strong></p>
+            <p style="background-color: #fff; padding: 10px; border-radius: 3px; font-family: monospace; word-break: break-all; font-size: 12px;"><strong>${reset_link}</strong></p>
           </div>
-
-          <div class="warning">
-            ⏰ <strong>Perhatian:</strong> Link ini hanya berlaku selama <strong>30 menit</strong>. Setelah itu, Anda perlu meminta link reset password baru.
+          
+          <div class="security-box">
+            <p><strong>⏰ Perhatian Penting:</strong></p>
+            <p>Link reset password ini hanya berlaku selama <strong>30 menit</strong>. Setelah itu, Anda perlu meminta link reset password yang baru.</p>
           </div>
-
-          <p style="color: #999; font-size: 14px;">
-            <strong>Keamanan:</strong> Jika Anda tidak meminta reset password ini, abaikan email ini. Password Anda tetap aman.
+          
+          <p style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e5e7eb; color: #666; font-size: 14px;">
+            <strong>🔒 Keamanan:</strong> Jika Anda tidak meminta reset password ini, abaikan email ini. Password Anda tetap aman. Hubungi Tim Administrasi jika Anda merasa akun Anda tidak aman.
           </p>
         </div>
         <div class="footer">
-          <p>© 2025 NusaAttend - Portal Administrasi Kehadiran Tim</p>
+          <p>© ${new Date().getFullYear()} NusaAttend - Sistem Manajemen Absensi & Pengajuan Izin</p>
+          <p style="color: #999;">Email ini dikirim otomatis. Jangan balas email ini.</p>
         </div>
       </div>
     </body>
@@ -403,15 +408,19 @@ function buat_template_email_sukses(nama_lengkap) {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.6; color: #333; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header { background-color: #10b981; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
         .header h1 { margin: 0; font-size: 24px; }
-        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-        .success-box { background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; padding: 15px; border-radius: 6px; margin: 20px 0; }
-        .info-box { background: white; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; font-size: 14px; }
-        .button { display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
-        .footer { text-align: center; padding: 20px; color: #999; font-size: 12px; }
+        .content { background-color: #f9fafb; padding: 20px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; }
+        .success-box { background-color: #dcfce7; padding: 15px; border-left: 4px solid #16a34a; margin: 15px 0; border-radius: 4px; }
+        .success-box strong { color: #166534; }
+        .button-container { text-align: center; margin-top: 15px; }
+        .button { display: inline-block; background-color: #10b981; color: #ffffff !important; padding: 12px 30px; text-decoration: none !important; border-radius: 4px; font-weight: bold; font-size: 16px; }
+        .button:hover { background-color: #059669; }
+        .info-box { background-color: #dbeafe; padding: 15px; border-left: 4px solid #0284c7; margin: 15px 0; border-radius: 4px; }
+        .info-box strong { color: #164e63; }
+        .footer { font-size: 12px; color: #666; margin-top: 20px; text-align: center; }
       </style>
     </head>
     <body>
@@ -423,32 +432,32 @@ function buat_template_email_sukses(nama_lengkap) {
           <p>Halo <strong>${nama_lengkap}</strong>,</p>
           
           <div class="success-box">
-            <strong>✓ Selamat!</strong> Password akun NusaAttend Anda telah berhasil direset.
+            <p><strong>✓ Selamat!</strong> Password akun NusaAttend Anda telah berhasil direset.</p>
           </div>
 
           <p>Anda sekarang dapat login dengan password baru Anda. Klik tombol di bawah untuk masuk:</p>
           
-          <center>
-            <a href="${
-              process.env.APP_URL || "http://localhost:3000"
-            }/login" class="button">Login ke NusaAttend</a>
-          </center>
+          <div class="button-container">
+            <a href="${process.env.APP_URL || "http://localhost:3000"}/login" class="button">Login ke NusaAttend →</a>
+          </div>
 
           <div class="info-box">
-            <strong>💡 Tips Keamanan:</strong>
+            <p><strong>💡 Tips Keamanan:</strong></p>
             <ul style="margin: 10px 0; padding-left: 20px;">
               <li>Gunakan password yang kuat dan unik</li>
               <li>Jangan bagikan password Anda kepada siapapun</li>
               <li>Logout setelah selesai menggunakan komputer bersama</li>
+              <li>Ubah password Anda secara berkala untuk keamanan maksimal</li>
             </ul>
           </div>
 
-          <p style="color: #999; font-size: 14px;">
-            <strong>Pertanyaan?</strong> Jika ada yang tidak dimengerti, hubungi tim support kami.
+          <p style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e5e7eb; color: #666; font-size: 14px;">
+            <strong>Pertanyaan atau Masalah?</strong> Jika Anda mengalami kesulitan, silakan hubungi Tim Administrasi.
           </p>
         </div>
         <div class="footer">
-          <p>© 2025 NusaAttend - Portal Administrasi Kehadiran Tim</p>
+          <p>© ${new Date().getFullYear()} NusaAttend - Sistem Manajemen Absensi & Pengajuan Izin</p>
+          <p style="color: #999;">Email ini dikirim otomatis. Jangan balas email ini.</p>
         </div>
       </div>
     </body>

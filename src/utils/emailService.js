@@ -119,18 +119,17 @@ async function kirimEmailAkunBaru(emailPenerima, namaLengkap, namaPeran = 'Pengg
                 <p><strong>Peran:</strong> ${namaPeran}</p>
                 <p><strong>Status:</strong> Aktif</p>
                 ${passwordAkunBaru ? `<hr style="border: none; border-top: 1px solid #999; margin: 10px 0;">
-                <p><strong>🔐 Password Sementara:</strong></p>
-                <p style="background-color: #fff; padding: 8px; border-radius: 3px; font-family: monospace; word-break: break-all;"><strong>${passwordAkunBaru}</strong></p>
-                <p style="color: #d32f2f; font-size: 12px; margin-top: 8px;">⚠️ <strong>PENTING:</strong> Ubah password Anda segera setelah login pertama!</p>` : ''}
+                <p><strong>🔐 Password:</strong></p>
+                <p style="background-color: #fff; padding: 8px; border-radius: 3px; font-family: monospace; word-break: break-all;"><strong>${passwordAkunBaru}</strong></p>` : ''}
               </div>
               
               <p><strong>Langkah Selanjutnya:</strong></p>
               <ol>
                 <li>Klik tombol di bawah atau buka <a href="${websiteUrl}/login">halaman login</a></li>
                 <li>Gunakan email Anda untuk login</li>
-                <li>Password akan diberikan oleh Administrator</li>
-                <li>Ubah password Anda di pengaturan akun setelah login pertama</li>
               </ol>
+              
+              <p style="margin-top: 15px; padding: 12px; background-color: #dbeafe; border-left: 4px solid #0284c7; border-radius: 4px;"><strong>💡 Ingin Mengubah Password?</strong> Klik tombol "Lupa Password" di halaman login untuk mereset password Anda kapan saja.</p>
               
               <div class="button-container">
                 <a href="${websiteUrl}/login" class="button">Login ke NusaAttend →</a>
@@ -160,16 +159,15 @@ INFORMASI AKUN:
 - Peran: ${namaPeran}
 - Status: Aktif
 ${passwordAkunBaru ? `
-PASSWORD SEMENTARA:
-${passwordAkunBaru}
-
-⚠️  PENTING: Ubah password Anda segera setelah login pertama!` : ''}
+PASSWORD:
+${passwordAkunBaru}` : ''}
 
 LANGKAH SELANJUTNYA:
 1. Login ke ${websiteUrl}/login
 2. Gunakan email Anda untuk login
-3. Password akan diberikan oleh Administrator
-4. Ubah password Anda di pengaturan akun setelah login pertama
+
+INGIN MENGUBAH PASSWORD?
+Klik tombol "Lupa Password" di halaman login untuk mereset password Anda kapan saja.
 
 Jika Anda mengalami masalah atau memiliki pertanyaan, silakan hubungi Tim Administrasi.
 
@@ -233,3 +231,4 @@ Email ini dikirim otomatis. Jangan balas email ini.
 module.exports = {
   kirimEmailAkunBaru
 };
+

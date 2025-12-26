@@ -683,7 +683,6 @@ kill -9 <PID>
 - 👨‍💻 **Carli Tamba** - Frontend & UI/UX
 
 **Untuk pertanyaan atau masalah:**
-- 📧 Email: support@nusaattend.com (placeholder)
 - 🐛 Laporkan bug di [GitHub Issues](https://github.com/username/NusaAttend/issues)
 - 💬 Diskusi di [GitHub Discussions](https://github.com/username/NusaAttend/discussions)
 
