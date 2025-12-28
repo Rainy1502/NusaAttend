@@ -68,8 +68,8 @@ function inisialisasiPenjadwalAbsen() {
   // ==================== TASK 2: BUAT ABSENSI IZIN OTOMATIS ====================
   
   // Buat task cron untuk buat absensi izin
-  // Pattern: '02 00 * * *' = Setiap hari pukul 00:02 (2 menit setelah tidak hadir)
-  const taskBuatAbsensiIzin = cron.schedule('02 00 * * *', async () => {
+  // Pattern: '02 00 * * *' = Setiap hari pukul 00:00 
+  const taskBuatAbsensiIzin = cron.schedule('00 00 * * *', async () => {
     console.log('\n🔔 [CRON] Jalankan: Buat Absensi Otomatis untuk Izin/Cuti');
     
     try {
@@ -96,11 +96,11 @@ function inisialisasiPenjadwalAbsen() {
   
   // Start task izin
   taskBuatAbsensiIzin.start();
-  console.log('✅ Penjadwal IZIN/CUTI OTOMATIS AKTIF (setiap hari pukul 00:02 WIB)');
+  console.log('✅ Penjadwal IZIN/CUTI OTOMATIS AKTIF (setiap hari pukul 00:00 WIB)');
   
   console.log('\n📅 Ringkasan Penjadwal Absensi Otomatis:');
   console.log('   - 00:00 WIB: Tandai karyawan tidak hadir');
-  console.log('   - 00:02 WIB: Buat absensi otomatis untuk izin/cuti\n');
+  console.log('   - 00:00 WIB: Buat absensi otomatis untuk izin/cuti\n');
   
   return { taskTandaiTidakHadir, taskBuatAbsensiIzin };
 }
