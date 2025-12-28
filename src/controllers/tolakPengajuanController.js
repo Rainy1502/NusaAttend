@@ -244,7 +244,8 @@ async function setujuiPengajuan(req, res) {
       
       // Tentukan status absensi berdasarkan jenis_izin
       const statusAbsensi = (jenis) => {
-        if (jenis === 'cuti-tahunan') return 'cuti';
+        // Semua jenis izin menggunakan status 'izin' agar konsisten di UI
+        if (jenis === 'cuti-tahunan') return 'izin';
         if (jenis === 'izin-sakit') return 'izin';
         if (jenis === 'izin-tidak-masuk') return 'izin';
         if (jenis === 'wfh') return 'izin'; // WFH dianggap izin

@@ -41,18 +41,34 @@ exports.ambilContextUser = async (userId) => {
 
     // ==================== AMBIL INFORMASI PENGGUNA ====================
     const infoPengguna = await Pengguna.findById(userId)
-      .select('nama_lengkap jabatan email role')
+      .select('nama_lengkap jabatan email role sisa_cuti')
       .lean();
 
     // ==================== HITUNG RINGKASAN UNTUK KONTEKS ====================
     // Membantu AI memahami status pengguna dengan cepat
+    
+    // Hitung sisa cuti dari pengajuan yang disetujui (sama seperti di dashboard)
+    const jatahCutiAwal = 12;
+    const pengajuanDisetujui = daftarPengajuan.filter(p => 
+      p.status === 'disetujui' && p.jenis_izin !== 'wfh'
+    );
+    let hariDigunakan = 0;
+    pengajuanDisetujui.forEach(p => {
+      const durasiHari = Math.ceil(
+        (new Date(p.tanggal_selesai) - new Date(p.tanggal_mulai)) / (1000 * 60 * 60 * 24)
+      ) + 1;
+      hariDigunakan += durasiHari;
+    });
+    const sisaCutiTerhitung = Math.max(0, jatahCutiAwal - hariDigunakan);
+    
     const ringkasan = {
       totalAbsensi: daftarAbsensi.length,
       hadiranBulanIni: 0,
       totalPengajuan: daftarPengajuan.length,
       menungguPersetujuan: 0,
       disetujui: 0,
-      ditolak: 0
+      ditolak: 0,
+      sisaCuti: sisaCutiTerhitung
     };
 
     // Hitung kehadiran bulan ini

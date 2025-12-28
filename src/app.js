@@ -14,6 +14,7 @@ const chatbotSocket = require("./chatbotSocket");
 // ==================== IMPORT KONFIGURASI ====================
 const hubungkanDB = require("./config/database");
 const inisialisasiSocket = require("./config/socket");
+const { inisialisasiPenjadwalAbsen } = require("./config/penjadwal-otomatis-absen");
 
 // ==================== IMPORT RUTE ====================
 const rutAuntenfikasi = require("./routes/auth");
@@ -133,6 +134,16 @@ const io = socketIO(server, {
 
 // ==================== KONEKSI DATABASE ====================
 hubungkanDB();
+
+// ==================== INISIALISASI SCHEDULER ABSENSI OTOMATIS ====================
+/**
+ * Menjalankan penjadwal untuk absensi otomatis
+ * Setiap hari pukul 00:01 WIB, sistem akan memeriksa karyawan yang belum absen
+ * dan otomatis menandai mereka sebagai "tidak_hadir"
+ * 
+ * Catatan: Harus dipanggil SETELAH database terkoneksi
+ */
+inisialisasiPenjadwalAbsen();
 
 // SOCKET AUTH
 io.use(socketAuth);
@@ -1281,7 +1292,8 @@ app.get("/rekap-kehadiran", middlewareAuntenfikasi, async(req, res) => {
           });
 
           const totalHari = hadir + izin + tidakHadir;
-          const persentase = totalHari === 0 ? 0 : (hadir / totalHari) * 100;
+          const persentaseRaw = totalHari === 0 ? 0 : (hadir / totalHari) * 100;
+          const persentase = parseFloat(persentaseRaw.toFixed(2));
 
           return {
             nama_lengkap : k.nama_lengkap,
@@ -1295,8 +1307,11 @@ app.get("/rekap-kehadiran", middlewareAuntenfikasi, async(req, res) => {
         })
       )
 
-      const rataRataKehadiran =
+      const rataRataKehadiranRaw =
           dataKaryawanAbsensiTotal.reduce((sum, k) => sum + k.persentase, 0) / dataKaryawanAbsensiTotal.length;
+      
+      // Format rata-rata kehadiran dengan 2 desimal
+      const rataRataKehadiran = parseFloat(rataRataKehadiranRaw.toFixed(2));
 
       const totalKaryawan = dataKaryawanAbsensiTotal.length;
       
@@ -1459,6 +1474,145 @@ app.get("/pengajuan/:id", middlewareAuntenfikasi, (req, res) => {
   } else {
     return res.status(403).render("404", {
       title: "Akses Ditolak - NusaAttend",
+    });
+  }
+});
+
+// ==================== ENDPOINT TESTING ABSENSI OTOMATIS ====================
+
+// Endpoint untuk manual testing absensi otomatis (tidak hadir)
+app.get('/test/absensi-otomatis', async (req, res) => {
+  try {
+    const { tandaiKaryawanTidakHadir } = require('./services/otomatis-absen');
+    
+    console.log('🧪 TEST ABSENSI OTOMATIS - DIPICU MANUAL');
+    const hasil = await tandaiKaryawanTidakHadir();
+    
+    res.json({
+      sukses: true,
+      pesan: 'Test absensi otomatis (tidak hadir) selesai',
+      hasil: hasil
+    });
+  } catch (error) {
+    console.error('❌ Error test absensi:', error);
+    res.status(500).json({
+      sukses: false,
+      pesan: 'Error saat menjalankan test',
+      error: error.message
+    });
+  }
+});
+
+// Endpoint untuk testing flow izin/cuti otomatis
+// Menampilkan daftar pengajuan yang pending dan disetujui
+app.get('/test/izin-otomatis', async (req, res) => {
+  try {
+    const Pengajuan = require('./models/Pengajuan');
+    const Absensi = require('./models/Absensi');
+    
+    console.log('\n🧪 TEST IZIN/CUTI OTOMATIS');
+    
+    // Ambil pengajuan dengan status disetujui
+    const pengajuanDisetujui = await Pengajuan.find({ status: 'disetujui' })
+      .populate('karyawan_id', 'nama_lengkap email')
+      .sort({ tanggal_direview: -1 })
+      .limit(10)
+      .lean();
+    
+    console.log(`📋 Pengajuan yang disetujui: ${pengajuanDisetujui.length}`);
+    
+    // Untuk setiap pengajuan, cek apakah ada record absensi otomatis yang dibuat
+    const hasilTest = [];
+    for (const pengajuan of pengajuanDisetujui) {
+      const absensiOtomatis = await Absensi.find({
+        id_pengguna: pengajuan.karyawan_id._id,
+        tanggal: {
+          $gte: new Date(pengajuan.tanggal_mulai).setHours(0,0,0,0),
+          $lte: new Date(pengajuan.tanggal_selesai).setHours(23,59,59,999)
+        },
+        status: 'izin'
+      }).lean();
+      
+      hasilTest.push({
+        pengajuan: {
+          jenis_izin: pengajuan.jenis_izin,
+          periode: `${new Date(pengajuan.tanggal_mulai).toLocaleDateString('id-ID')} - ${new Date(pengajuan.tanggal_selesai).toLocaleDateString('id-ID')}`,
+          nama_karyawan: pengajuan.karyawan_id.nama_lengkap
+        },
+        absensi_otomatis_dibuat: absensiOtomatis.length,
+        detail_absensi: absensiOtomatis.map(a => ({
+          tanggal: new Date(a.tanggal).toLocaleDateString('id-ID'),
+          status: a.status,
+          keterangan: a.keterangan
+        }))
+      });
+      
+      console.log(`   ✅ ${pengajuan.jenis_izin} (${pengajuan.karyawan_id.nama_lengkap}): ${absensiOtomatis.length} hari`);
+    }
+    
+    res.json({
+      sukses: true,
+      pesan: 'Test izin/cuti otomatis selesai',
+      total_pengajuan_disetujui: pengajuanDisetujui.length,
+      hasil_detail: hasilTest
+    });
+    
+  } catch (error) {
+    console.error('❌ Error test izin:', error);
+    res.status(500).json({
+      sukses: false,
+      pesan: 'Error saat menjalankan test',
+      error: error.message
+    });
+  }
+});
+
+// ==================== ENDPOINT REPAIR: AUTO-CREATE ABSENSI UNTUK PENGAJUAN LAMA ====================
+
+// Endpoint untuk membuat absensi otomatis untuk semua pengajuan disetujui yang belum punya absensi
+// Berguna untuk repair data pengajuan lama yang disetujui sebelum fitur auto-create ditambahkan
+app.get('/test/repair-auto-create-absensi', async (req, res) => {
+  try {
+    const { buatAbsensiOtomatisIzinSemuaPengajuan } = require('./services/otomatis-absen');
+    
+    console.log('\n🔧 REPAIR: Membuat absensi otomatis untuk pengajuan lama');
+    const hasil = await buatAbsensiOtomatisIzinSemuaPengajuan();
+    
+    res.json({
+      sukses: true,
+      pesan: 'Repair auto-create absensi selesai',
+      hasil: hasil
+    });
+  } catch (error) {
+    console.error('❌ Error repair:', error);
+    res.status(500).json({
+      sukses: false,
+      pesan: 'Error saat menjalankan repair',
+      error: error.message
+    });
+  }
+});
+
+// Endpoint untuk membuat absensi otomatis untuk satu pengajuan tertentu
+app.post('/test/repair-auto-create-absensi/:pengajuanId', async (req, res) => {
+  try {
+    const { pengajuanId } = req.params;
+    const { buatAbsensiOtomatisIzin } = require('./services/otomatis-absen');
+    
+    console.log(`\n🔧 REPAIR: Membuat absensi otomatis untuk pengajuan: ${pengajuanId}`);
+    const hasil = await buatAbsensiOtomatisIzin(pengajuanId);
+    
+    res.json({
+      sukses: hasil.sukses,
+      pesan: hasil.pesan,
+      hasil: hasil
+    });
+  } catch (error) {
+    console.error('❌ Error repair:', error);
+    res.status(500).json({
+      sukses: false,
+      pesan: 'Error saat menjalankan repair',
+      error: error.message
     });
   }
 });

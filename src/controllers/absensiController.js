@@ -192,16 +192,36 @@ const absensiController = {
       // Helper function untuk format jenis izin
       const formatJenisIzin = (jenisIzinDb) => {
         if (!jenisIzinDb) return jenisIzinDb;
-        // Format: izin-tidak-masuk → Izin tidak masuk
+        // Format: izin-tidak-masuk → Izin tidak masuk, cuti-tahunan → Cuti tahunan
         return jenisIzinDb
           .split('-')
           .map((word, idx) => idx === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word)
           .join(' ');
       };
 
+      // Helper function untuk format status
+      const formatStatus = (status) => {
+        if (!status) return status;
+        // Format: tidak_hadir → Tidak hadir
+        return status
+          .split('_')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      };
+
+      // Helper function untuk hapus prefix "Otomatis:" dari keterangan dan format jenis izin
+      const bersihkanKeterangan = (keterangan) => {
+        if (!keterangan) return keterangan;
+        // Hapus "Otomatis: " dari awal keterangan
+        const keteranganBersih = keterangan.replace(/^Otomatis:\s*/, '').trim();
+        // Format jenis izin (cuti-tahunan → Cuti tahunan)
+        return formatJenisIzin(keteranganBersih);
+      };
+
       const riwayatAbsensiFormat = riwayatAbsensi.map(item => ({
         ...item,
-        keterangan: item.keterangan ? formatJenisIzin(item.keterangan) : null,
+        status: formatStatus(item.status),
+        keterangan: bersihkanKeterangan(item.keterangan) || null,
         tanggalFormat: new Date(item.tanggal).toLocaleDateString('id-ID', {
           weekday: 'short',
           day: 'numeric',
