@@ -52,7 +52,7 @@ async function ambilDataDashboardPengguna(req, res) {
 
     // ==================== AMBIL DATA PENGGUNA ====================
     const pengguna = await Pengguna.findById(idPengguna)
-      .select('nama_lengkap')
+      .select('nama_lengkap sisa_cuti')
       .lean();
 
     if (!pengguna) {
@@ -72,11 +72,11 @@ async function ambilDataDashboardPengguna(req, res) {
      * - menunggu_persetujuan: Count dari Pengajuan dengan status 'menunggu'
      */
 
-    // Hitung sisa cuti dari pengajuan yang disetujui (bukan dari field sisa_cuti yang mungkin outdated)
-    const jatahCutiAwal = 12; // Default jatah tahunan
+    // Ambil sisa cuti langsung dari field user.sisa_cuti di database
+    const sisaCuti = pengguna.sisa_cuti || 0;
     
     console.log(`📊 Dashboard - ID Pengguna: ${idPengguna}`);
-    console.log(`📊 Jatah cuti awal: ${jatahCutiAwal} hari`);
+    console.log(`📊 Sisa cuti dari database: ${sisaCuti} hari`);
     
     // Debug: Cek semua pengajuan
     const allPengajuan = await Pengajuan.find({
@@ -109,12 +109,14 @@ async function ambilDataDashboardPengguna(req, res) {
     console.log(`📊 Total hari digunakan: ${hariDigunakan}`);
     
     // Sisa cuti = jatah awal - hari yang sudah digunakan
-    let sisaCuti = Math.max(0, jatahCutiAwal - hariDigunakan);
+    const jatahCutiAwal = 12;
+    let sisaCutiAkhir = Math.max(0, jatahCutiAwal - hariDigunakan);
     
-    console.log(`📊 Sisa cuti final: ${sisaCuti} hari`);
+    console.log(`📊 Sisa cuti final: ${sisaCutiAkhir} hari`);
 
     // Hitung kehadiran bulan ini dari Absensi collection (jika ada)
     let kehadiranBulanIni = 0;
+    let tidakHadir = 0;
     try {
       const Absensi = require('../models/Absensi');
       const bulanIniMulai = new Date();
@@ -131,13 +133,18 @@ async function ambilDataDashboardPengguna(req, res) {
         tanggal: { $gte: bulanIniMulai, $lte: bulanIniAkhir },
         status: 'hadir'
       });
+
+      // Hitung tidak hadir bulan ini
+      tidakHadir = await Absensi.countDocuments({
+        id_pengguna: idPengguna,
+        tanggal: { $gte: bulanIniMulai, $lte: bulanIniAkhir },
+        status: 'tidak_hadir'
+      });
     } catch (err) {
       // Jika Absensi belum ada atau error, default ke 0
       kehadiranBulanIni = 0;
+      tidakHadir = 0;
     }
-
-    // Hitung tidak hadir dari Pengajuan (izin, sakit)
-    const tidakHadir = 0; // Default untuk sekarang, bisa dihitung dari Pengajuan
 
     // ==================== AMBIL PENGAJUAN TERBARU ====================
     /**
@@ -190,7 +197,7 @@ async function ambilDataDashboardPengguna(req, res) {
       data: {
         nama_pengguna: pengguna.nama_lengkap,
         ringkasan: {
-          sisa_cuti: sisaCuti,
+          sisa_cuti: sisaCutiAkhir,
           kehadiran_bulan_ini: kehadiranBulanIni,
           menunggu_persetujuan: jumlahMenungguPersetujuan,
           tidak_hadir: tidakHadir

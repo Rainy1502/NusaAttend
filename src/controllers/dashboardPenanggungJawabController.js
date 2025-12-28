@@ -164,6 +164,7 @@ async function ambilDataDashboardPenanggungJawab(req, res) {
       });
 
       return {
+        _id: pengajuan._id,
         nama_pengguna: pengajuan.karyawan_id?.nama_lengkap || 'Unknown',
         judul_pengajuan: `${jenisIzinMap[pengajuan.jenis_izin] || pengajuan.jenis_izin} - ${tanggalMulai}`,
         tanggal_pengajuan: tanggalDiajukan,

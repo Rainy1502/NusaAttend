@@ -368,31 +368,31 @@
 ALUR NAVIGASI MODAL:
 
 1. HALAMAN TABEL (Review Pengajuan)
-   ↓
+   ↁE
    User klik tombol "Detail" pada row pengajuan
-   ↓
+   ↁE
 2. MODAL DETAIL PENGAJUAN (modalDetailPengajuan)
    ├─ Menampilkan data lengkap pengajuan
-   ├─ Tombol "Tolak" → Buka Modal Tolak Pengajuan
-   ├─ Tombol "Setujui" → Submit approval ke backend
-   └─ Tombol "Tutup" / Klik overlay / Tekan ESC → Tutup modal
-   ↓
+   ├─ Tombol "Tolak" ↁEBuka Modal Tolak Pengajuan
+   ├─ Tombol "Setujui" ↁESubmit approval ke backend
+   └─ Tombol "Tutup" / Klik overlay / Tekan ESC ↁETutup modal
+   ↁE
 3. MODAL TOLAK PENGAJUAN (modalTolakPengajuan)
    ├─ Menampilkan konfirmasi & form alasan penolakan
-   ├─ Tombol "Batal" / Klik overlay / Tekan ESC → Kembali ke Modal Detail
-   └─ Tombol "Konfirmasi Penolakan" → Submit penolakan ke backend
-   ↓
+   ├─ Tombol "Batal" / Klik overlay / Tekan ESC ↁEKembali ke Modal Detail
+   └─ Tombol "Konfirmasi Penolakan" ↁESubmit penolakan ke backend
+   ↁE
 4. PROSES BACKEND (di luar scope frontend)
    └─ Update status pengajuan & kirim notifikasi
 
 KEYBOARD SHORTCUTS:
-- ESC: Tutup modal yang sedang aktif (prioritas: tolak → detail)
+- ESC: Tutup modal yang sedang aktif (prioritas: tolak ↁEdetail)
 - Click Overlay: Tutup modal yang sedang aktif
 
 DATA FLOW:
-- Detail Modal ← Data dari button.dataset-* & API /api/pengguna/detail-pengajuan/:id
-- Tolak Modal ← Data dari elemen modal detail yang sedang aktif
-- Backend Submit ← POST /api/pengguna/pengajuan-tolak/:id dengan alasan
+- Detail Modal ↁEData dari button.dataset-* & API /api/pengguna/detail-pengajuan/:id
+- Tolak Modal ↁEData dari elemen modal detail yang sedang aktif
+- Backend Submit ↁEPOST /api/pengguna/pengajuan-tolak/:id dengan alasan
 -->
 <script>
 /**
@@ -472,7 +472,7 @@ function matikanSemuaOverlay() {
         overlay.style.pointerEvents = 'none';
         overlay.style.visibility = 'hidden';
     });
-    console.log('⬛ SEMUA overlay dimatikan - prevent ghost overlay interference!');
+    console.log('⬁ESEMUA overlay dimatikan - prevent ghost overlay interference!');
 }
 
 /**
@@ -488,7 +488,7 @@ function aktifkanOverlayModal(modalId) {
             overlay.style.display = 'block';
             overlay.style.visibility = 'visible';
             overlay.style.pointerEvents = 'auto';
-            console.log(`✅ Overlay untuk ${modalId} DIAKTIFKAN`);
+            console.log(`✁EOverlay untuk ${modalId} DIAKTIFKAN`);
         }
     }
 }
@@ -539,11 +539,11 @@ function bukaModalDetailPengajuan(button) {
                         tandaTangan: dataAPI.tanda_tangan_administratif || '[TANDA TANGAN ADMINISTRATIF]'
                     };
                     
-                    console.log('✅ Data lengkap dari API:', dataLengkap);
+                    console.log('✁EData lengkap dari API:', dataLengkap);
                     isianDataModalDetailPengajuan(dataLengkap);
                 } else {
                     // Fallback ke data dari button jika API gagal
-                    console.warn('⚠️ API tidak mengembalikan data, gunakan button data');
+                    console.warn('⚠�E�EAPI tidak mengembalikan data, gunakan button data');
                     isianDataModalDetailPengajuan(dataPengajuan);
                 }
                 
@@ -551,14 +551,14 @@ function bukaModalDetailPengajuan(button) {
                 tampilkanModal();
             })
             .catch(error => {
-                console.error('❌ Error fetch API:', error);
+                console.error('❁EError fetch API:', error);
                 // Fallback ke data dari button
                 isianDataModalDetailPengajuan(dataPengajuan);
                 tampilkanModal();
             });
     } else {
         // Jika tidak ada ID, gunakan data dari button
-        console.warn('⚠️ ID pengajuan tidak ditemukan, gunakan button data');
+        console.warn('⚠�E�EID pengajuan tidak ditemukan, gunakan button data');
         isianDataModalDetailPengajuan(dataPengajuan);
         tampilkanModal();
     }
@@ -575,11 +575,11 @@ function tampilkanModal() {
     if (modal) {
         // Step 0: Matikan SEMUA overlay terlebih dahulu (prevent ghost overlay)
         matikanSemuaOverlay();
-        console.log('⬛ Matikan semua overlay sebelum tampilkan modal detail');
+        console.log('⬁EMatikan semua overlay sebelum tampilkan modal detail');
         
         // Step 1: Aktifkan overlay untuk modal detail SEKARANG
         aktifkanOverlayModal('modalDetailPengajuan');
-        console.log('✅ Overlay untuk modal detail DIAKTIFKAN');
+        console.log('✁EOverlay untuk modal detail DIAKTIFKAN');
         
         // Step 2: Set display agar modal visible
         modal.style.display = 'flex';
@@ -594,12 +594,12 @@ function tampilkanModal() {
             container.classList.remove('modalAnimasiKeluar');
             // Tambah class animasi masuk
             container.classList.add('modalAnimasiMasuk');
-            console.log('✅ Animasi slide in dimulai');
+            console.log('✁EAnimasi slide in dimulai');
         }
         
-        console.log('✅ Modal detail pengajuan berhasil dibuka dengan animasi');
+        console.log('✁EModal detail pengajuan berhasil dibuka dengan animasi');
     } else {
-        console.error('❌ Modal element tidak ditemukan');
+        console.error('❁EModal element tidak ditemukan');
     }
 }
 
@@ -628,14 +628,14 @@ function isianDataModalDetailPengajuan(dataPengajuan) {
         const element = document.getElementById(elementId);
         if (element) {
             element.textContent = nilaiData;
-            console.log(`✅ ${elementId} diisi dengan: ${nilaiData}`);
+            console.log(`✁E${elementId} diisi dengan: ${nilaiData}`);
         } else {
-            console.warn(`⚠️ Element dengan id "${elementId}" tidak ditemukan`);
+            console.warn(`⚠�E�EElement dengan id "${elementId}" tidak ditemukan`);
         }
     }
     
     // Update judul jenis izin di bagian atas modal
-    // Format: "CUTI-TAHUNAN" → "Cuti Tahunan"
+    // Format: "CUTI-TAHUNAN" ↁE"Cuti Tahunan"
     const judulJenisIzin = document.getElementById('judulJenisIzin');
     if (judulJenisIzin) {
         const jenisIzinFormatted = dataPengajuan.jenisIzin
@@ -643,7 +643,7 @@ function isianDataModalDetailPengajuan(dataPengajuan) {
             .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
             .join(' ');
         judulJenisIzin.textContent = jenisIzinFormatted;
-        console.log(`✅ Judul jenis izin diupdate: ${jenisIzinFormatted}`);
+        console.log(`✁EJudul jenis izin diupdate: ${jenisIzinFormatted}`);
     }
     
     // Update tanda tangan (jika ada data, tampilkan; jika tidak, tampilkan placeholder)
@@ -652,11 +652,11 @@ function isianDataModalDetailPengajuan(dataPengajuan) {
         if (dataPengajuan.tandaTangan && dataPengajuan.tandaTangan !== '[TANDA TANGAN ADMINISTRATIF]' && dataPengajuan.tandaTangan !== '') {
             // Jika ada tanda tangan dari database, tampilkan sebagai image
             boxTandaTangan.innerHTML = `<img src="${dataPengajuan.tandaTangan}" alt="Tanda Tangan" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
-            console.log('✅ Tanda tangan berhasil ditampilkan dari database');
+            console.log('✁ETanda tangan berhasil ditampilkan dari database');
         } else {
             // Fallback ke placeholder
             boxTandaTangan.innerHTML = '<p class="teksPlaceholderTandaTangan">Tanda Tangan</p>';
-            console.log('⚠️ Tanda tangan placeholder ditampilkan');
+            console.log('⚠�E�ETanda tangan placeholder ditampilkan');
         }
     }
 }
@@ -692,7 +692,7 @@ function tutupModalDetailPengajuan() {
             // Matikan overlay modal detail
             matikanSemuaOverlay();
             idPengajuanAktif = null;
-            console.log('✅ Modal detail pengajuan berhasil ditutup setelah animasi');
+            console.log('✁EModal detail pengajuan berhasil ditutup setelah animasi');
         }, 300); // Durasi animasi keluar
     }
 }
@@ -707,24 +707,24 @@ function tutupModalDetailPengajuan() {
  * dengan tanda tangan digital, daripada langsung POST ke backend.
  * 
  * Workflow sebelumnya:
- * - User klik "Setujui" → Langsung POST ke /api/pengguna/pengajuan-setujui
+ * - User klik "Setujui" ↁELangsung POST ke /api/pengguna/pengajuan-setujui
  * 
  * Workflow sekarang:
- * - User klik "Setujui" (di modal detail) → Buka modal Setujui Pengajuan
- * - User berikan tanda tangan digital → Klik "Konfirmasi Persetujuan"
+ * - User klik "Setujui" (di modal detail) ↁEBuka modal Setujui Pengajuan
+ * - User berikan tanda tangan digital ↁEKlik "Konfirmasi Persetujuan"
  * - Baru POST ke /api/pengguna/pengajuan-setujui
  * 
- * Animation: Slide out detail → Slide in setujui (SAMA SEPERTI TOLAK PENGAJUAN)
+ * Animation: Slide out detail ↁESlide in setujui (SAMA SEPERTI TOLAK PENGAJUAN)
  * Overlay tetap visible dan tidak berubah (single container)
  */
 function setujuiPengajuan() {
     if (!idPengajuanAktif) {
-        console.error('❌ ID pengajuan tidak ditemukan');
+        console.error('❁EID pengajuan tidak ditemukan');
         alert('Terjadi kesalahan: ID pengajuan tidak ditemukan');
         return;
     }
     
-    console.log('🟢 ROUTING: Detail Modal → Setujui Modal (Ganti View dengan Animasi)');
+    console.log('🟢 ROUTING: Detail Modal ↁESetujui Modal (Ganti View dengan Animasi)');
     console.log('📌 ID Pengajuan:', idPengajuanAktif);
     
     // Step 1: Ambil data jenis izin dan nama pengguna dari modal detail yang aktif
@@ -735,11 +735,11 @@ function setujuiPengajuan() {
     // Step 2: Isi data ke modal setujui
     document.getElementById('jenisIzinSetujui').textContent = jenisIzin;
     document.getElementById('namaKaryawanSetujui').textContent = namaPengguna;
-    console.log('✅ Data diisi ke Modal Setujui');
+    console.log('✁EData diisi ke Modal Setujui');
     
     // Step 3: Clear canvas untuk tanda tangan baru
     hapusTandaTanganDigital();
-    console.log('✅ Canvas dibersihkan');
+    console.log('✁ECanvas dibersihkan');
     
     // Step 4: Animasi slide out untuk modal detail container
     const modalDetail = document.getElementById('modalDetailPengajuan');
@@ -783,8 +783,8 @@ function setujuiPengajuan() {
                 modalSetujui.style.pointerEvents = 'auto';
                 
                 console.log('🎬 Animasi setujui modal container: slide in');
-                console.log('👁️  Modal Setujui AKTIF dengan overlay sendiri');
-                console.log('✅ HANYA overlay setujui yang bisa terima events!');
+                console.log('👁�E�E Modal Setujui AKTIF dengan overlay sendiri');
+                console.log('✁EHANYA overlay setujui yang bisa terima events!');
                 
                 // PENTING: Init canvas SETELAH modal visible (jadi offsetWidth valid)
                 // Delay 50ms untuk memastikan browser sudah render & recalculate layout
@@ -792,7 +792,7 @@ function setujuiPengajuan() {
                     initCanvasTandaTangan();
                 }, 50);
             } else {
-                console.error('❌ Modal setujui pengajuan tidak ditemukan');
+                console.error('❁EModal setujui pengajuan tidak ditemukan');
             }
         }, 300); // Durasi animasi keluar
     }
@@ -801,24 +801,24 @@ function setujuiPengajuan() {
 /**
  * Menampilkan modal tolak pengajuan dengan animasi smooth
  * 
- * ROUTING: Modal Detail Pengajuan → Modal Tolak Pengajuan (Single Display)
+ * ROUTING: Modal Detail Pengajuan ↁEModal Tolak Pengajuan (Single Display)
  * 
  * Trigger: Tombol "Tolak" pada modal detail
  * Action: Tutup modal detail dengan animasi, ambil data, buka modal tolak dengan animasi
  * 
- * Animation: Slide out detail → Slide in tolak
+ * Animation: Slide out detail ↁESlide in tolak
  * Overlay tetap visible dan tidak berubah
  * 
  * NOTE: Hanya satu modal yang tampil di satu waktu (bukan nested)
  */
 function tolakPengajuan() {
     if (!idPengajuanAktif) {
-        console.error('❌ ID pengajuan tidak ditemukan');
+        console.error('❁EID pengajuan tidak ditemukan');
         alert('Terjadi kesalahan: ID pengajuan tidak ditemukan');
         return;
     }
     
-    console.log('🔴 ROUTING: Detail Modal → Tolak Modal (Ganti View dengan Animasi)');
+    console.log('🔴 ROUTING: Detail Modal ↁETolak Modal (Ganti View dengan Animasi)');
     console.log('📌 ID Pengajuan:', idPengajuanAktif);
     
     // Step 1: Ambil data jenis izin dan nama pengguna dari modal detail yang aktif
@@ -829,11 +829,11 @@ function tolakPengajuan() {
     // Step 2: Isi data ke modal tolak
     document.getElementById('jenisIzinTolak').textContent = jenisIzin;
     document.getElementById('namaPengggunaTolak').textContent = namaPengguna;
-    console.log('✅ Data diisi ke Modal Tolak');
+    console.log('✁EData diisi ke Modal Tolak');
     
     // Step 3: Kosongkan textarea alasan penolakan
     document.getElementById('inputAlasanPenolakan').value = '';
-    console.log('✅ Textarea dibersihkan');
+    console.log('✁ETextarea dibersihkan');
     
     // Step 4: Animasi slide out untuk modal detail container
     const modalDetail = document.getElementById('modalDetailPengajuan');
@@ -876,10 +876,10 @@ function tolakPengajuan() {
                 modalTolak.style.pointerEvents = 'auto';
                 
                 console.log('🎬 Animasi tolak modal container: slide in');
-                console.log('👁️  Modal Tolak AKTIF dengan overlay sendiri');
-                console.log('✅ HANYA overlay tolak yang bisa terima events!');
+                console.log('👁�E�E Modal Tolak AKTIF dengan overlay sendiri');
+                console.log('✁EHANYA overlay tolak yang bisa terima events!');
             } else {
-                console.error('❌ Modal tolak pengajuan tidak ditemukan');
+                console.error('❁EModal tolak pengajuan tidak ditemukan');
             }
         }, 300); // Durasi animasi keluar
     }
@@ -888,18 +888,18 @@ function tolakPengajuan() {
 /**
  * Menutup modal tolak pengajuan dan kembali ke modal detail dengan animasi
  * 
- * ROUTING: Modal Tolak Pengajuan → Modal Detail Pengajuan (Single Display)
+ * ROUTING: Modal Tolak Pengajuan ↁEModal Detail Pengajuan (Single Display)
  * 
  * Trigger: Tombol "Batal", klik overlay, atau tekan ESC
  * Action: Tutup modal tolak dengan animasi, buka modal detail kembali dengan animasi
  * 
- * Animation: Slide out tolak → Slide in detail
+ * Animation: Slide out tolak ↁESlide in detail
  * Overlay tetap visible dan tidak berubah
  * 
  * NOTE: Hanya satu modal yang tampil di satu waktu (bukan nested)
  */
 function tutupModalTolakPengajuan() {
-    console.log('🔒 ROUTING: Tolak Modal → Detail Modal (Ganti View dengan Animasi)');
+    console.log('🔒 ROUTING: Tolak Modal ↁEDetail Modal (Ganti View dengan Animasi)');
     
     // Step 1: Animasi slide out untuk modal tolak container
     const modalTolak = document.getElementById('modalTolakPengajuan');
@@ -944,8 +944,8 @@ function tutupModalTolakPengajuan() {
                 modalDetail.style.pointerEvents = 'auto';
                 
                 console.log('🎬 Animasi detail modal container: slide in');
-                console.log('👁️  Modal Detail ditampilkan kembali dengan animasi');
-                console.log('✅ HANYA overlay detail yang bisa terima events!');
+                console.log('👁�E�E Modal Detail ditampilkan kembali dengan animasi');
+                console.log('✁EHANYA overlay detail yang bisa terima events!');
             }
         }, 300); // Durasi animasi keluar
     }
@@ -954,7 +954,7 @@ function tutupModalTolakPengajuan() {
 /**
  * Mengirim konfirmasi penolakan ke backend
  * 
- * ROUTING: Modal Tolak Pengajuan → Backend → Halaman Reload
+ * ROUTING: Modal Tolak Pengajuan ↁEBackend ↁEHalaman Reload
  * 
  * Trigger: Tombol "Konfirmasi Penolakan"
  * Action: Submit penolakan ke backend & reload halaman
@@ -964,7 +964,7 @@ function tutupModalTolakPengajuan() {
  */
 async function konfirmasiPenolakan() {
     if (!idPengajuanAktif) {
-        console.error('❌ ID pengajuan tidak ditemukan');
+        console.error('❁EID pengajuan tidak ditemukan');
         alert('Terjadi kesalahan: ID pengajuan tidak ditemukan');
         return;
     }
@@ -972,7 +972,7 @@ async function konfirmasiPenolakan() {
     // Ambil alasan penolakan dari textarea
     const alasanPenolakan = document.getElementById('inputAlasanPenolakan').value.trim();
     
-    console.log('❌ ROUTING: Submit Penolakan Pengajuan ke Backend');
+    console.log('❁EROUTING: Submit Penolakan Pengajuan ke Backend');
     console.log('📤 Data pengiriman:', { id: idPengajuanAktif, alasanPenolakan });
     
     // Disable button saat loading
@@ -999,8 +999,8 @@ async function konfirmasiPenolakan() {
         console.log('📡 Response dari backend:', { status: response.status, success: result.success, message: result.message });
         
         if (response.ok && result.success) {
-            console.log('✅ Pengajuan berhasil ditolak di backend');
-            console.log('📍 ROUTE: Backend → Reload Halaman');
+            console.log('✁EPengajuan berhasil ditolak di backend');
+            console.log('📍 ROUTE: Backend ↁEReload Halaman');
             tampilkanNotifikasi('Pengajuan berhasil ditolak', 'warning');
             
             // Langsung reload halaman SEKARANG (tanpa delay)
@@ -1008,7 +1008,7 @@ async function konfirmasiPenolakan() {
                 location.reload();
             }, 300);
         } else {
-            console.error('❌ Error response:', result);
+            console.error('❁EError response:', result);
             const pesan = result.message || 'Gagal menolak pengajuan';
             tampilkanNotifikasi(pesan, 'error');
             
@@ -1020,7 +1020,7 @@ async function konfirmasiPenolakan() {
             if (btnBatal) btnBatal.disabled = false;
         }
     } catch (error) {
-        console.error('❌ Error fetch:', error);
+        console.error('❁EError fetch:', error);
         tampilkanNotifikasi('Terjadi kesalahan saat menolak pengajuan: ' + error.message, 'error');
         
         // Re-enable button kalau error
@@ -1088,7 +1088,7 @@ function bukaModalSetujuiPengajuan() {
         // Trigger animasi masuk
         if (container) {
             container.classList.add('modalAnimasiMasuk');
-            console.log('✅ Modal setujui dibuka dengan animasi');
+            console.log('✁EModal setujui dibuka dengan animasi');
         }
     }
 }
@@ -1103,18 +1103,18 @@ function bukaModalSetujuiPengajuan() {
  * 
  * Menutup modal "Setujui Pengajuan" dan kembali ke modal detail dengan animasi.
  * 
- * ROUTING: Modal Setujui Pengajuan → Modal Detail Pengajuan (Single Display)
+ * ROUTING: Modal Setujui Pengajuan ↁEModal Detail Pengajuan (Single Display)
  * 
  * Trigger: Tombol "Batal", klik overlay, atau tekan ESC
  * Action: Tutup modal setujui dengan animasi, buka modal detail dengan animasi
  * 
- * Animation: Slide out setujui → Slide in detail
+ * Animation: Slide out setujui ↁESlide in detail
  * Overlay tetap visible dan tidak berubah
  * 
  * NOTE: Hanya satu modal yang tampil di satu waktu (bukan nested)
  */
 function tutupModalSetujuiPengajuan() {
-    console.log('🔒 ROUTING: Setujui Modal → Detail Modal (Ganti View dengan Animasi)');
+    console.log('🔒 ROUTING: Setujui Modal ↁEDetail Modal (Ganti View dengan Animasi)');
     
     // Step 1: Animasi slide out untuk modal setujui container
     const modalSetujui = document.getElementById('modalSetujuiPengajuan');
@@ -1163,8 +1163,8 @@ function tutupModalSetujuiPengajuan() {
                 modalDetail.style.pointerEvents = 'auto';
                 
                 console.log('🎬 Animasi detail modal container: slide in');
-                console.log('👁️  Modal Detail ditampilkan kembali dengan animasi');
-                console.log('✅ HANYA overlay detail yang bisa terima events!');
+                console.log('👁�E�E Modal Detail ditampilkan kembali dengan animasi');
+                console.log('✁EHANYA overlay detail yang bisa terima events!');
             }
         }, 300); // Durasi animasi keluar
     }
@@ -1184,20 +1184,20 @@ function tutupModalSetujuiPengajuan() {
 function initCanvasTandaTangan() {
     const canvas = document.getElementById('canvasTandaTanganSetujui');
     if (!canvas) {
-        console.warn('⚠️ Canvas element tidak ditemukan');
+        console.warn('⚠�E�ECanvas element tidak ditemukan');
         return;
     }
     
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-        console.error('❌ Tidak bisa mendapatkan canvas 2D context');
+        console.error('❁ETidak bisa mendapatkan canvas 2D context');
         return;
     }
     
     // Set canvas size (responsive) - SETELAH modal visible
     const container = canvas.parentElement;
     if (!container) {
-        console.warn('⚠️ Canvas container tidak ditemukan');
+        console.warn('⚠�E�ECanvas container tidak ditemukan');
         return;
     }
     
@@ -1222,7 +1222,7 @@ function initCanvasTandaTangan() {
     
     // Skip jika event listener sudah terpasang
     if (canvasInitialized) {
-        console.log('ℹ️ Canvas event listener sudah terpasang sebelumnya, skip rebind');
+        console.log('ℹ�E�ECanvas event listener sudah terpasang sebelumnya, skip rebind');
         return;
     }
     
@@ -1246,7 +1246,7 @@ function initCanvasTandaTangan() {
         const { x, y } = getPos(e);
         ctx.beginPath();
         ctx.moveTo(x, y);
-        console.log('🖌️ Mulai menggambar:', { x, y });
+        console.log('🖌�E�EMulai menggambar:', { x, y });
     }
     
     // Helper: Gambar line dengan kualitas tinggi
@@ -1254,7 +1254,7 @@ function initCanvasTandaTangan() {
         if (!isDrawing) return;
         
         const { x, y } = getPos(e);
-        ctx.lineWidth = 2.5;           // Garis lebih tebal (dari 2 → 2.5) biar terlihat jelas
+        ctx.lineWidth = 2.5;           // Garis lebih tebal (dari 2 ↁE2.5) biar terlihat jelas
         ctx.lineCap = 'round';          // Ujung garis melengkung (smooth)
         ctx.lineJoin = 'round';         // Join point melengkung (smooth)
         ctx.strokeStyle = '#101828';    // Warna gelap untuk kontras tinggi
@@ -1268,7 +1268,7 @@ function initCanvasTandaTangan() {
         if (isDrawing) {
             isDrawing = false;
             ctx.closePath();
-            console.log('✋ Selesai menggambar');
+            console.log('✁ESelesai menggambar');
         }
     }
     
@@ -1278,7 +1278,7 @@ function initCanvasTandaTangan() {
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stop);
     canvas.addEventListener('mouseleave', stop);
-    console.log('🖱️ Mouse events terpasang');
+    console.log('🖱�E�EMouse events terpasang');
     
     // Touch events (mobile)
     canvas.addEventListener('touchstart', (e) => {
@@ -1294,7 +1294,7 @@ function initCanvasTandaTangan() {
     
     // Mark sebagai initialized
     canvasInitialized = true;
-    console.log('✅ Canvas tanda tangan READY dan INTERACTIVE!');
+    console.log('✁ECanvas tanda tangan READY dan INTERACTIVE!');
 }
 
 /**
@@ -1309,13 +1309,13 @@ function initCanvasTandaTangan() {
 function hapusTandaTanganDigital() {
     const canvas = document.getElementById('canvasTandaTanganSetujui');
     if (!canvas) {
-        console.warn('⚠️ Canvas tidak ditemukan saat hapus tanda tangan');
+        console.warn('⚠�E�ECanvas tidak ditemukan saat hapus tanda tangan');
         return;
     }
     
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-        console.error('❌ Tidak bisa mendapatkan context untuk hapus');
+        console.error('❁ETidak bisa mendapatkan context untuk hapus');
         return;
     }
     
@@ -1323,7 +1323,7 @@ function hapusTandaTanganDigital() {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    console.log('🗑️ Tanda tangan dihapus, canvas siap untuk gambar baru');
+    console.log('🗑�E�ETanda tangan dihapus, canvas siap untuk gambar baru');
 }
 
 /**
@@ -1334,12 +1334,12 @@ function hapusTandaTanganDigital() {
  */
 async function konfirmasiSetujuiPengajuan() {
     if (!idPengajuanAktif) {
-        console.error('❌ ID pengajuan tidak ditemukan');
+        console.error('❁EID pengajuan tidak ditemukan');
         alert('Terjadi kesalahan: ID pengajuan tidak ditemukan');
         return;
     }
     
-    console.log('✅ Mengkonfirmasi persetujuan pengajuan:', idPengajuanAktif);
+    console.log('✁EMengkonfirmasi persetujuan pengajuan:', idPengajuanAktif);
     
     // Disable button saat loading
     const btn = document.getElementById('tombolKonfirmasiSetujui');
@@ -1362,7 +1362,7 @@ async function konfirmasiSetujuiPengajuan() {
         console.log('📡 Response dari backend:', { status: response.status, success: result.success, message: result.message });
         
         if (response.ok && result.success) {
-            console.log('✅ Pengajuan berhasil disetujui');
+            console.log('✁EPengajuan berhasil disetujui');
             tampilkanNotifikasi('Pengajuan berhasil disetujui', 'success');
             
             // Langsung reload halaman SEKARANG (tanpa delay)
@@ -1370,7 +1370,7 @@ async function konfirmasiSetujuiPengajuan() {
                 location.reload();
             }, 300);
         } else {
-            console.error('❌ Error response:', result);
+            console.error('❁EError response:', result);
             const pesan = result.message || 'Gagal menyetujui pengajuan';
             tampilkanNotifikasi(pesan, 'error');
             
@@ -1382,7 +1382,7 @@ async function konfirmasiSetujuiPengajuan() {
             if (btnBatal) btnBatal.disabled = false;
         }
     } catch (error) {
-        console.error('❌ Error fetch:', error);
+        console.error('❁EError fetch:', error);
         tampilkanNotifikasi('Terjadi kesalahan saat menyetujui pengajuan: ' + error.message, 'error');
         
         // Re-enable button kalau error
@@ -1402,35 +1402,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const tombolTutup = document.getElementById('tombolTutupModal');
     if (tombolTutup) {
         tombolTutup.addEventListener('click', tutupModalDetailPengajuan);
-        console.log('✅ Event listener "tutup modal detail" terpasang');
+        console.log('✁EEvent listener "tutup modal detail" terpasang');
     }
     
     // Tombol tolak pengajuan (buka modal tolak)
     const tombolTolak = document.getElementById('tombolTolakPengajuan');
     if (tombolTolak) {
         tombolTolak.addEventListener('click', tolakPengajuan);
-        console.log('✅ Event listener "buka modal tolak" terpasang');
+        console.log('✁EEvent listener "buka modal tolak" terpasang');
     }
     
     // Tombol setujui pengajuan
     const tombolSetujui = document.getElementById('tombolSetujuiPengajuan');
     if (tombolSetujui) {
         tombolSetujui.addEventListener('click', setujuiPengajuan);
-        console.log('✅ Event listener "setujui pengajuan" terpasang');
+        console.log('✁EEvent listener "setujui pengajuan" terpasang');
     }
     
     // Tombol batal pada modal tolak
     const tombolBatalTolak = document.getElementById('tombolBatalPenolakan');
     if (tombolBatalTolak) {
         tombolBatalTolak.addEventListener('click', tutupModalTolakPengajuan);
-        console.log('✅ Event listener "batal tolak" terpasang');
+        console.log('✁EEvent listener "batal tolak" terpasang');
     }
     
     // Tombol konfirmasi penolakan
     const tombolKonfirmasiTolak = document.getElementById('tombolKonfirmasiPenolakan');
     if (tombolKonfirmasiTolak) {
         tombolKonfirmasiTolak.addEventListener('click', konfirmasiPenolakan);
-        console.log('✅ Event listener "konfirmasi penolakan" terpasang');
+        console.log('✁EEvent listener "konfirmasi penolakan" terpasang');
     }
     
     // ==================== EVENT LISTENERS MODAL SETUJUI PENGAJUAN ====================
@@ -1439,21 +1439,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const tombolBatalSetujui = document.getElementById('tombolBatalSetujui');
     if (tombolBatalSetujui) {
         tombolBatalSetujui.addEventListener('click', tutupModalSetujuiPengajuan);
-        console.log('✅ Event listener "batal setujui" terpasang');
+        console.log('✁EEvent listener "batal setujui" terpasang');
     }
     
     // Tombol konfirmasi persetujuan
     const tombolKonfirmasiSetujui = document.getElementById('tombolKonfirmasiSetujui');
     if (tombolKonfirmasiSetujui) {
         tombolKonfirmasiSetujui.addEventListener('click', konfirmasiSetujuiPengajuan);
-        console.log('✅ Event listener "konfirmasi persetujuan" terpasang');
+        console.log('✁EEvent listener "konfirmasi persetujuan" terpasang');
     }
     
     // Tombol hapus tanda tangan
     const tombolHapusTandaTangan = document.getElementById('tombolHapusTandaTanganSetujui');
     if (tombolHapusTandaTangan) {
         tombolHapusTandaTangan.addEventListener('click', hapusTandaTanganDigital);
-        console.log('✅ Event listener "hapus tanda tangan" terpasang');
+        console.log('✁EEvent listener "hapus tanda tangan" terpasang');
     }
     
     // Overlay background - tutup modal saat diklik
@@ -1466,7 +1466,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const modalSetujui = document.getElementById('modalSetujuiPengajuan');
             if (modalSetujui && modalSetujui.style.display !== 'none') {
                 tutupModalSetujuiPengajuan();
-                console.log('✅ Modal setujui ditutup via overlay, kembali ke detail');
+                console.log('✁EModal setujui ditutup via overlay, kembali ke detail');
                 return;
             }
             
@@ -1474,16 +1474,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const modalTolak = document.getElementById('modalTolakPengajuan');
             if (modalTolak && modalTolak.style.display !== 'none') {
                 tutupModalTolakPengajuan();
-                console.log('✅ Modal tolak ditutup via overlay, kembali ke detail');
+                console.log('✁EModal tolak ditutup via overlay, kembali ke detail');
             } 
             // Jika hanya modal detail terbuka, tutup modal detail
             else {
                 tutupModalDetailPengajuan();
-                console.log('✅ Modal detail ditutup via overlay');
+                console.log('✁EModal detail ditutup via overlay');
             }
         });
     });
-    console.log('✅ Event listener "overlay click" terpasang untuk tiga modal');
+    console.log('✁EEvent listener "overlay click" terpasang untuk tiga modal');
     
     // Escape key untuk tutup modal dan kembali
     document.addEventListener('keydown', function(event) {
@@ -1492,7 +1492,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const modalSetujui = document.getElementById('modalSetujuiPengajuan');
             if (modalSetujui && modalSetujui.style.display !== 'none') {
                 tutupModalSetujuiPengajuan();
-                console.log('✅ Modal setujui ditutup via Escape');
+                console.log('✁EModal setujui ditutup via Escape');
                 return;
             }
             
@@ -1500,7 +1500,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const modalTolak = document.getElementById('modalTolakPengajuan');
             if (modalTolak && modalTolak.style.display !== 'none') {
                 tutupModalTolakPengajuan();
-                console.log('✅ Modal tolak ditutup via Escape, kembali ke detail');
+                console.log('✁EModal tolak ditutup via Escape, kembali ke detail');
                 return;
             }
             
@@ -1508,12 +1508,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const modalDetail = document.getElementById('modalDetailPengajuan');
             if (modalDetail && modalDetail.style.display !== 'none') {
                 tutupModalDetailPengajuan();
-                console.log('✅ Modal detail ditutup via Escape');
+                console.log('✁EModal detail ditutup via Escape');
             }
         }
     });
-    console.log('✅ Event listener "Escape key" terpasang untuk tiga modal (single display)');
+    console.log('✁EEvent listener "Escape key" terpasang untuk tiga modal (single display)');
 });
 </script>
-
-```

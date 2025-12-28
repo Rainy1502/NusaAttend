@@ -7,8 +7,9 @@
  * - Setiap tengah malam (00:01), sistem akan memeriksa pengguna yang belum absen hari kemarin
  * - Jika belum absen dan bukan karena izin/cuti, tandai sebagai "tidak_hadir"
  * - Catat dalam database dengan status "tidak_hadir"
+ * - Saat pengajuan disetujui, buat absensi otomatis untuk tanggal-tanggal izin
  * 
- * Algoritma:
+ * Algoritma Tidak Hadir:
  * 1. Ambil semua karyawan yang aktif
  * 2. Loop setiap karyawan
  * 3. Cek apakah ada record absensi KEMARIN untuk karyawan tersebut
@@ -16,6 +17,13 @@
  *    - Buat record baru dengan status "tidak_hadir"
  *    - Tandai tanggal kemarin sebagai tanggal absensi
  *    - Simpan ke database
+ * 5. Log hasil untuk monitoring
+ * 
+ * Algoritma Izin/Cuti Otomatis:
+ * 1. Ambil pengajuan dengan status 'disetujui'
+ * 2. Loop setiap hari dalam periode izin (mulai s/d selesai)
+ * 3. Cek apakah sudah ada absensi untuk hari itu
+ * 4. Jika belum ada, buat record Absensi baru dengan status 'izin'
  * 5. Log hasil untuk monitoring
  * 
  * Format Waktu Indonesia:
@@ -34,6 +42,7 @@
 
 const Pengguna = require('../models/Pengguna');
 const Absensi = require('../models/Absensi');
+const Pengajuan = require('../models/Pengajuan');
 
 /**
  * Fungsi: tandaiKaryawanTidakHadir
@@ -45,7 +54,7 @@ const Absensi = require('../models/Absensi');
  */
 async function tandaiKaryawanTidakHadir() {
   try {
-    console.log('\n================= JALANKAN ABSENSI OTOMATIS =================');
+    console.log('\n================= JALANKAN ABSENSI OTOMATIS TIDAK HADIR =================');
     console.log(`⏰ Waktu Eksekusi: ${hitungWaktuIndonesia()}`);
     
     // ==================== STEP 1: HITUNG TANGGAL KEMARIN ====================
@@ -146,7 +155,7 @@ async function tandaiKaryawanTidakHadir() {
     
     // ==================== STEP 4: LAPORAN HASIL ====================
     
-    console.log('\n================= RINGKASAN HASIL ABSENSI OTOMATIS =================');
+    console.log('\n================= RINGKASAN HASIL ABSENSI OTOMATIS TIDAK HADIR =================');
     console.log(`📊 Total Karyawan Diperiksa: ${semuaKaryawan.length}`);
     console.log(`✅ Sudah Punya Record: ${jumlahSudahAda}`);
     console.log(`❌ Ditambahkan Tidak Hadir: ${jumlahTidakHadirBaru}`);
@@ -171,6 +180,235 @@ async function tandaiKaryawanTidakHadir() {
       pesan: 'Terjadi error saat menjalankan absensi otomatis',
       error: error.message,
       waktuEksekusi: new Date()
+    };
+  }
+}
+
+/**
+ * Fungsi: buatAbsensiOtomatisIzin
+ * 
+ * Membuat record absensi otomatis untuk satu pengajuan izin/cuti yang sudah disetujui.
+ * 
+ * @param {string} idPengajuan - ID pengajuan yang akan dibuatkan absensi
+ * @returns {Promise<Object>} Status eksekusi dengan statistik
+ */
+async function buatAbsensiOtomatisIzin(idPengajuan) {
+  try {
+    console.log(`\n📋 Membuat absensi otomatis untuk pengajuan: ${idPengajuan}`);
+    
+    // ==================== STEP 1: AMBIL DATA PENGAJUAN ====================
+    
+    const pengajuan = await Pengajuan.findById(idPengajuan).populate('karyawan_id', 'nama_lengkap');
+    
+    if (!pengajuan) {
+      console.warn(`⚠️  Pengajuan dengan ID ${idPengajuan} tidak ditemukan`);
+      return {
+        sukses: false,
+        pesan: 'Pengajuan tidak ditemukan',
+        idPengajuan: idPengajuan
+      };
+    }
+    
+    console.log(`✅ Pengajuan ditemukan:`);
+    console.log(`   - Jenis: ${pengajuan.jenis_izin}`);
+    console.log(`   - Karyawan: ${pengajuan.karyawan_id.nama_lengkap}`);
+    console.log(`   - Status: ${pengajuan.status}`);
+    console.log(`   - Periode: ${pengajuan.tanggal_mulai} - ${pengajuan.tanggal_selesai}`);
+    
+    // Cek apakah status disetujui
+    if (pengajuan.status !== 'disetujui') {
+      console.warn(`⚠️  Pengajuan belum disetujui (status: ${pengajuan.status})`);
+      return {
+        sukses: false,
+        pesan: `Pengajuan tidak bisa dibuatkan absensi karena belum disetujui (status: ${pengajuan.status})`,
+        idPengajuan: idPengajuan
+      };
+    }
+    
+    // ==================== STEP 2: NORMALIZE TANGGAL ====================
+    
+    const normalisirTanggal = (tanggalStr) => {
+      const tanggal = new Date(tanggalStr);
+      tanggal.setHours(0, 0, 0, 0);
+      return tanggal;
+    };
+    
+    const tanggalMulai = normalisirTanggal(pengajuan.tanggal_mulai);
+    const tanggalSelesai = normalisirTanggal(pengajuan.tanggal_selesai);
+    
+    console.log(`📅 Tanggal range (normalized):`);
+    console.log(`   - Mulai: ${tanggalMulai.toDateString()}`);
+    console.log(`   - Selesai: ${tanggalSelesai.toDateString()}`);
+    
+    // ==================== STEP 3: TENTUKAN STATUS ABSENSI ====================
+    
+    const tentukanStatusAbsensi = (jenisIzin) => {
+      // Semua jenis izin menggunakan status 'izin' agar konsisten
+      if (jenisIzin === 'cuti-tahunan') return 'izin';
+      if (jenisIzin === 'izin-sakit') return 'izin';
+      if (jenisIzin === 'izin-tidak-masuk') return 'izin';
+      if (jenisIzin === 'wfh') return 'izin';
+      return 'izin'; // default
+    };
+    
+    const statusAbsensiNilai = tentukanStatusAbsensi(pengajuan.jenis_izin);
+    console.log(`📊 Status absensi yang akan dibuat: ${statusAbsensiNilai}`);
+    
+    // ==================== STEP 4: LOOP SETIAP HARI & BUAT ABSENSI ====================
+    
+    const tanggalSekarang = new Date(tanggalMulai);
+    let penghitungBuat = 0;
+    let penghitungSudahAda = 0;
+    const detailAbsensi = [];
+    
+    while (tanggalSekarang <= tanggalSelesai) {
+      const hariIni = new Date(tanggalSekarang);
+      const hariIniAwal = new Date(hariIni.getFullYear(), hariIni.getMonth(), hariIni.getDate(), 0, 0, 0, 0);
+      const hariIniAkhir = new Date(hariIni.getFullYear(), hariIni.getMonth(), hariIni.getDate(), 23, 59, 59, 999);
+      
+      // Cek apakah sudah ada record absensi
+      const absensiExist = await Absensi.findOne({
+        id_pengguna: pengajuan.karyawan_id._id,
+        tanggal: {
+          $gte: hariIniAwal,
+          $lte: hariIniAkhir
+        }
+      });
+      
+      const tanggalFormat = hariIni.toLocaleDateString('id-ID');
+      
+      if (!absensiExist) {
+        // Belum ada, buat baru
+        const absensi = new Absensi({
+          id_pengguna: pengajuan.karyawan_id._id,
+          tanggal: hariIniAwal,
+          status: statusAbsensiNilai,
+          keterangan: pengajuan.jenis_izin
+        });
+        
+        await absensi.save();
+        penghitungBuat++;
+        
+        detailAbsensi.push({
+          tanggal: tanggalFormat,
+          status: 'Dibuat',
+          keterangan: pengajuan.jenis_izin
+        });
+        
+        console.log(`   ✅ ${tanggalFormat} - Absensi dibuat (${statusAbsensiNilai})`);
+      } else {
+        // Sudah ada, skip
+        penghitungSudahAda++;
+        
+        detailAbsensi.push({
+          tanggal: tanggalFormat,
+          status: 'Sudah Ada',
+          statusExisting: absensiExist.status,
+          keterangan: absensiExist.keterangan
+        });
+        
+        console.log(`   ℹ️  ${tanggalFormat} - Sudah ada (${absensiExist.status})`);
+      }
+      
+      // Tambah 1 hari
+      tanggalSekarang.setDate(tanggalSekarang.getDate() + 1);
+    }
+    
+    // ==================== STEP 5: LAPORAN HASIL ====================
+    
+    console.log(`\n✅ SELESAI - Absensi otomatis dibuat:`);
+    console.log(`   - Absensi baru: ${penghitungBuat} hari`);
+    console.log(`   - Sudah ada: ${penghitungSudahAda} hari`);
+    
+    return {
+      sukses: true,
+      pesan: 'Absensi otomatis berhasil dibuat',
+      idPengajuan: idPengajuan,
+      jenisIzin: pengajuan.jenis_izin,
+      karyawan: pengajuan.karyawan_id.nama_lengkap,
+      absensiBaruDibuat: penghitungBuat,
+      absensiSudahAda: penghitungSudahAda,
+      totalHari: penghitungBuat + penghitungSudahAda,
+      detailAbsensi: detailAbsensi
+    };
+    
+  } catch (error) {
+    console.error(`❌ ERROR membuat absensi otomatis:`, error.message);
+    return {
+      sukses: false,
+      pesan: 'Terjadi error saat membuat absensi otomatis',
+      idPengajuan: idPengajuan,
+      error: error.message
+    };
+  }
+}
+
+/**
+ * Fungsi: buatAbsensiOtomatisIzinSemuaPengajuan
+ * 
+ * Membuat absensi otomatis untuk SEMUA pengajuan izin/cuti yang sudah disetujui.
+ * Berguna untuk repair/sync data.
+ * 
+ * @returns {Promise<Object>} Status eksekusi dengan statistik lengkap
+ */
+async function buatAbsensiOtomatisIzinSemuaPengajuan() {
+  try {
+    console.log('\n🔧 REPAIR: Membuat absensi otomatis untuk SEMUA pengajuan disetujui');
+    
+    // ==================== STEP 1: AMBIL SEMUA PENGAJUAN DISETUJUI ====================
+    
+    const semuaPengajuanDisetujui = await Pengajuan.find({ status: 'disetujui' })
+      .populate('karyawan_id', 'nama_lengkap')
+      .lean();
+    
+    console.log(`📋 Total pengajuan disetujui ditemukan: ${semuaPengajuanDisetujui.length}`);
+    
+    if (semuaPengajuanDisetujui.length === 0) {
+      console.log('⚠️  Tidak ada pengajuan disetujui');
+      return {
+        sukses: true,
+        pesan: 'Tidak ada pengajuan disetujui untuk diproses',
+        totalPengajuan: 0,
+        hasilPerPengajuan: []
+      };
+    }
+    
+    // ==================== STEP 2: LOOP SETIAP PENGAJUAN ====================
+    
+    const hasilPerPengajuan = [];
+    let totalAbsensiDibuat = 0;
+    
+    for (const pengajuan of semuaPengajuanDisetujui) {
+      const hasil = await buatAbsensiOtomatisIzin(pengajuan._id.toString());
+      hasilPerPengajuan.push(hasil);
+      
+      if (hasil.sukses) {
+        totalAbsensiDibuat += hasil.absensiBaruDibuat || 0;
+      }
+    }
+    
+    // ==================== STEP 3: LAPORAN RINGKASAN ====================
+    
+    console.log(`\n${'='.repeat(60)}`);
+    console.log(`✅ REPAIR ABSENSI OTOMATIS IZIN SELESAI`);
+    console.log(`${'='.repeat(60)}`);
+    console.log(`📊 Total pengajuan diproses: ${semuaPengajuanDisetujui.length}`);
+    console.log(`✅ Total absensi baru dibuat: ${totalAbsensiDibuat} hari`);
+    
+    return {
+      sukses: true,
+      pesan: 'Repair absensi otomatis izin selesai',
+      totalPengajuan: semuaPengajuanDisetujui.length,
+      totalAbsensiBaruDibuat: totalAbsensiDibuat,
+      hasilPerPengajuan: hasilPerPengajuan
+    };
+    
+  } catch (error) {
+    console.error(`❌ ERROR repair absensi:`, error.message);
+    return {
+      sukses: false,
+      pesan: 'Terjadi error saat repair absensi otomatis',
+      error: error.message
     };
   }
 }
@@ -234,6 +472,8 @@ function formatTanggalPendek(tanggal) {
 // ==================== EXPORT ====================
 module.exports = {
   tandaiKaryawanTidakHadir,
+  buatAbsensiOtomatisIzin,
+  buatAbsensiOtomatisIzinSemuaPengajuan,
   hitungWaktuIndonesia,
   formatTanggalIndonesia,
   formatTanggalPendek

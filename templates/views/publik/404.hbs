@@ -1,21 +1,26 @@
 <!-- ==================== HALAMAN 404 TIDAK DITEMUKAN ==================== -->
 <!-- Halaman error ketika user mengakses URL yang tidak ada atau tidak diizinkan -->
-<!-- Terdapat tombol navigasi untuk kembali ke halaman utama -->
+<!-- Menggunakan warna background yang sama dengan login page -->
 
-<div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-  <div style="text-align: center; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); max-width: 500px;">
-    <h1 style="font-size: 72px; margin: 0; color: #764ba2;">404</h1>
-    <h2 style="font-size: 24px; margin: 20px 0 10px 0; color: #333;">{{title}}</h2>
-    <p style="font-size: 16px; color: #666; margin: 10px 0 30px 0;">Halaman yang Anda cari tidak ditemukan atau telah dipindahkan.</p>
-    
-    <div style="display: flex; gap: 12px; justify-content: center;">
-      <a href="/" style="padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">Kembali ke Halaman Utama</a>
-    </div>
+<body style="display: flex; flex-direction: column; min-height: 100vh; margin: 0; padding: 0; background: linear-gradient(148.426deg, #eef6ff 0%, #e0e7ff 100%);">
+  <div style="display: flex; align-items: center; justify-content: center; flex: 1; padding: 20px;">
+    <div style="text-align: center; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); max-width: 500px;">
+      <h1 style="font-size: 72px; margin: 0; color: #6366f1;">404</h1>
+      <h2 style="font-size: 24px; margin: 20px 0 10px 0; color: #333;">{{title}}</h2>
+      <p style="font-size: 16px; color: #666; margin: 10px 0 30px 0;">Halaman yang Anda cari tidak ditemukan atau telah dipindahkan.</p>
+      
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <a href="/" style="padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">Kembali ke Halaman Utama</a>
+      </div>
 
-    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-      <p style="font-size: 12px; color: #999; margin: 0;">
-        <i class="fas fa-home"></i> NusaAttend - Portal Administrasi Kehadiran Tim
-      </p>
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+        <p style="font-size: 12px; color: #999; margin: 0;">
+          <i class="fas fa-home"></i> NusaAttend - Portal Administrasi Kehadiran Tim
+        </p>
+      </div>
     </div>
   </div>
-</div>
+
+  {{!-- ==================== FOOTER GLOBAL ==================== --}}
+  {{> footer}}
+</body>

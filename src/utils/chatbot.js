@@ -105,7 +105,7 @@ exports.kirimKeGroq = async (pesan, infoUser, contextDB) => {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         },
-        timeout: 10000
+        timeout: 30000
       }
     );
 
@@ -223,7 +223,6 @@ INTENT: SISA CUTI / SISA LIBUR
 
 🌴 Sisa Cuti Anda
 • Sisa cuti: X hari
-• Jenis: Cuti Tahunan
 
 ---
 
@@ -276,7 +275,7 @@ DATA AKTUAL PENGGUNA (GUNAKAN SESUAI INTENT)
     // Tampilkan ringkasan status pengguna
     dataAda = true;
     prompt += `\n\n📊 RINGKASAN STATUS ANDA:`;
-    prompt += `\n- Sisa Cuti: 12 hari (standar tahunan)`;
+    prompt += `\n- Sisa Cuti: ${contextDB.ringkasan.sisaCuti} hari`;
     prompt += `\n- Kehadiran bulan ini: ${contextDB.ringkasan.hadiranBulanIni} hari`;
     prompt += `\n- Total pengajuan: ${contextDB.ringkasan.totalPengajuan}`;
     prompt += `\n  └─ Menunggu persetujuan: ${contextDB.ringkasan.menungguPersetujuan}`;
