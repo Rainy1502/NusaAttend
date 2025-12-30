@@ -1438,6 +1438,17 @@ footer a:hover {
   display: block;
 }
 
+/* Pengaturan khusus untuk tabel 'Pengajuan Terbaru' agar tidak mendorong footer
+   Membatasi tinggi wrapper sehingga tabel menjadi scrollable secara vertikal */
+.tabel-pengajuan-container {
+  margin: 0 32px 24px 32px;
+}
+.tabel-pengajuan-container .tabel-wrapper {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+
 /* Tabel daftar karyawan */
 .tabel-daftar-karyawan {
   width: 100%;
