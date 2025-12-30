@@ -288,29 +288,33 @@
         nilaiDurasi.textContent = durasi;
         nilaiTanggalPengajuan.textContent = tanggalPengajuan;
         
+        // Reset persetujuan/penolakan agar tidak terbawa dari sesi sebelumnya
+        bagianPersetujuan.style.display = 'none';
+        bagianPenolakan.style.display = 'none';
+        nilaiTanggalPersetujuan.textContent = '-';
+        nilaiTanggalPenolakan.textContent = '-';
+        nilaiAlasanPenolakan.textContent = '-';
+        
         // Set status badge dan warna
         teksStatusModal.textContent = statusPengajuan;
         badgeStatusModal.className = 'lencana-status';
         if (statusPengajuan === 'Menunggu Persetujuan') {
             badgeStatusModal.classList.add('lencana-menunggu');
             nilaiAlasan.textContent = barisTabel.dataset.alasan || '-';
+            // tidak menampilkan kotak persetujuan/penolakan
         } else if (statusPengajuan === 'Disetujui') {
             badgeStatusModal.classList.add('lencana-disetujui');
             nilaiAlasan.textContent = barisTabel.dataset.alasan || '-';
             nilaiTanggalPersetujuan.textContent = barisTabel.dataset.tanggalPersetujuan || '-';
             bagianPersetujuan.style.display = 'block';
-            bagianPenolakan.style.display = 'none';
         } else if (statusPengajuan === 'Ditolak') {
             badgeStatusModal.classList.add('lencana-ditolak');
             nilaiAlasan.textContent = barisTabel.dataset.alasan || '-';
             nilaiTanggalPenolakan.textContent = barisTabel.dataset.tanggalPenolakan || '-';
             nilaiAlasanPenolakan.textContent = barisTabel.dataset.alasanPenolakan || '-';
-            bagianPersetujuan.style.display = 'none';
             bagianPenolakan.style.display = 'block';
         } else {
             nilaiAlasan.textContent = barisTabel.dataset.alasan || '-';
-            bagianPersetujuan.style.display = 'none';
-            bagianPenolakan.style.display = 'none';
         }
 
         // Tampilkan modal

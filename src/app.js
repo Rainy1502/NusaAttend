@@ -1220,7 +1220,7 @@ app.get("/rekap-kehadiran", middlewareAuntenfikasi, async(req, res) => {
         },
         { 
           $lookup: { 
-            from: "absensis", 
+            from: "absensi", 
             localField: "_id", 
             foreignField: "id_pengguna", 
             as: "absensi" 
@@ -1306,6 +1306,9 @@ app.get("/rekap-kehadiran", middlewareAuntenfikasi, async(req, res) => {
           }
         })
       )
+
+      // Debug: show computed attendance per karyawan
+      console.log('DEBUG: rekap-kehadiran sample:', dataKaryawanAbsensiTotal.map(k => ({ nama: k.nama_lengkap, hadir: k.hadir, izin: k.izin, tidakHadir: k.tidakHadir, persentase: k.persentase })));
 
       const rataRataKehadiranRaw =
           dataKaryawanAbsensiTotal.reduce((sum, k) => sum + k.persentase, 0) / dataKaryawanAbsensiTotal.length;

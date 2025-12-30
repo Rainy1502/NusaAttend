@@ -46,6 +46,15 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
+/* Disable hover animation for attendance card specifically so table area doesn't animate */
+.card.card-riwayat-absensi {
+  transition: none !important;
+}
+.card.card-riwayat-absensi:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 .card-header {
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   font-weight: 600;
@@ -66,6 +75,18 @@ body {
 
 .table tbody tr:hover {
   background-color: rgba(13, 110, 253, 0.05);
+}
+
+/* Disable hover animations specifically for the attendance history table */
+.tabel-riwayat tbody tr,
+.tabel-riwayat tbody tr td,
+.tabel-riwayat tbody tr th {
+  transition: none !important;
+}
+
+.tabel-riwayat tbody tr:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+  transition: none !important;
 }
 
 /* ==================== BUTTON STYLING ==================== */
@@ -5586,17 +5607,19 @@ select.input-form {
   padding: 0 32px;
 }
 
-/* Kartu statistik individual */
+/* Kartu statistik individual (icon + content aligned horizontally) */
 .kartuStatistikPenanggungJawab {
   background: white;
   border: 1px solid #f3f4f6;
   border-radius: 14px;
-  padding: 24px;
+  padding: 20px 24px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* icon and text horizontally */
+  align-items: center; /* vertically center icon + content */
   gap: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
+  flex-wrap: nowrap; /* prevent text from wrapping under the icon */
 }
 
 .kartuStatistikPenanggungJawab:hover {
@@ -5604,15 +5627,31 @@ select.input-form {
   transform: translateY(-2px);
 }
 
+/* ensure content shrinks properly instead of forcing a wrap */
+.contentStatistikPenanggungJawab {
+  min-width: 0;
+}
+
+/* space the icon from the text */
+.iconContainerPenanggungJawab {
+  margin-right: 12px;
+}
+
+/* keep the number on one line */
+.angkaStatistik {
+  white-space: nowrap;
+}
+
 /* Icon container untuk statistik */
 .iconContainerPenanggungJawab {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  font-size: 24px;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 12px;
+  font-size: 22px;
 }
 
 .warningColor {
@@ -5640,6 +5679,7 @@ select.input-form {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  align-items: flex-start; /* left align text when in row layout */
 }
 
 .angkaStatistik {
@@ -5647,7 +5687,7 @@ select.input-form {
   font-weight: 700;
   color: #101828;
   margin: 0;
-  line-height: 32px;
+  line-height: 1;
 }
 
 .labelStatistik {
@@ -5655,6 +5695,21 @@ select.input-form {
   color: #4a5565;
   margin: 0;
   line-height: 20px;
+}
+
+/* Responsive: stack cards on smaller screens */
+@media (max-width: 900px) {
+  .gridStatistikPenanggungJawab {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kartuStatistikPenanggungJawab {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+  }
+  .iconContainerPenanggungJawab {
+    margin-bottom: 8px;
+  }
 }
 
 /* Container pengajuan mendesak */
@@ -5792,6 +5847,25 @@ select.input-form {
 
 .tombolReviewSekarang:active {
   transform: translateY(0);
+}
+
+/* Remove underline and focus outline on action button */
+.tombolReviewSekarang,
+.tombolReviewSekarang:link,
+.tombolReviewSekarang:visited {
+  text-decoration: none;
+}
+
+.tombolReviewSekarang:focus,
+.tombolReviewSekarang:active {
+  outline: none;
+  box-shadow: none;
+  text-decoration: none;
+}
+
+/* Improve mobile tap behavior */
+.tombolReviewSekarang {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Pesan kosong pengajuan */
