@@ -92,22 +92,24 @@
           {{!-- Body Tabel --}}
           <tbody class="body-tabel">
             {{#each pengajuanTerbaru}}
-            {{!-- Baris Tabel untuk setiap pengajuan --}}
-            <tr class="baris-tabel">
-              <td class="sel-jenis-izin">{{this.jenisIzin}}</td>
-              <td class="sel-tanggal">{{this.tanggal}}</td>
-              <td class="sel-diajukan">{{this.diajukan}}</td>
-              <td class="sel-status">
-                {{!-- Badge Status dengan warna berbeda berdasarkan status --}}
-                {{#if (eq this.status 'menunggu')}}
-                  <span class="badge badge-menunggu">menunggu persetujuan</span>
-                {{else if (eq this.status 'disetujui')}}
-                  <span class="badge badge-disetujui">disetujui</span>
-                {{else if (eq this.status 'ditolak')}}
-                  <span class="badge badge-ditolak">ditolak</span>
-                {{/if}}
-              </td>
-            </tr>
+              {{#unless (gte @index 3)}} <!-- Membatasi hanya 3 pengajuan terbaru -->
+                {{!-- Baris Tabel untuk setiap pengajuan --}}
+                <tr class="baris-tabel">
+                  <td class="sel-jenis-izin">{{this.jenisIzin}}</td>
+                  <td class="sel-tanggal">{{this.tanggal}}</td>
+                  <td class="sel-diajukan">{{this.diajukan}}</td>
+                  <td class="sel-status">
+                    {{!-- Badge Status dengan warna berbeda berdasarkan status --}}
+                    {{#if (eq this.status 'menunggu')}}
+                      <span class="badge badge-menunggu">menunggu persetujuan</span>
+                    {{else if (eq this.status 'disetujui')}}
+                      <span class="badge badge-disetujui">disetujui</span>
+                    {{else if (eq this.status 'ditolak')}}
+                      <span class="badge badge-ditolak">ditolak</span>
+                    {{/if}}
+                  </td>
+                </tr>
+              {{/unless}}
             {{/each}}
           </tbody>
         </table>
