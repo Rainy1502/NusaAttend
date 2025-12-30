@@ -130,7 +130,7 @@ Sistem ini memungkinkan karyawan untuk mengajukan izin/cuti dengan mudah melalui
 - ✅ **Penjadwal Berbasis Cron** - Eksekusi otomatis harian dengan node-cron v3.0.2
 - ✅ **Pelacakan Karyawan** - Tandai otomatis "tidak_hadir" jika tidak absen
 - ✅ **Dukungan Zona Waktu WIB** - Sesuai dengan zona waktu Indonesia (UTC+7)
-- ✅ **Jadwal yang Dapat Dikonfigurasi** - Default 01:41 WIB, dapat diubah sesuai kebutuhan
+- ✅ **Jadwal yang Dapat Dikonfigurasi** - Default 00:00 WIB, dapat diubah sesuai kebutuhan
 - ✅ **Deteksi Cerdas** - Periksa absensi hari sebelumnya, cegah duplikasi
 - ✅ **Logging Terperinci** - Format Bahasa Indonesia untuk monitoring
 - ✅ **Penanganan Kesalahan Graceful** - Eksekusi yang kuat dengan pelacakan kesalahan
@@ -307,7 +307,7 @@ NusaAttend/
 │   │   ├── socket-client.js             # Klien Socket.io
 │   │   ├── socket-client-chatbot.js     # Socket chatbot
 │   │   ├── manajemen-karyawan.js        # Penanganan modal
-│   │   └── test-modal.js                # Utilitas pengujian
+│   │   ├── manajemen-penanggung...      # Penanganan modal
 │   └── 📂 img/
 │       ├── Logo NusaAttend.png
 │       └── [gambar lainnya]
@@ -382,7 +382,7 @@ NusaAttend/
 | File Dokumentasi | 15+ |
 | Dependensi | 15+ |
 | File Penjadwal (v1.3) | 2 (service + config) |
-| Cron Penandaan Tidak Hadir | 01:41 WIB (dapat dikonfigurasi) |
+| Cron Penandaan Tidak Hadir | 00:00 WIB (dapat dikonfigurasi) |
 
 ---
 
@@ -744,7 +744,7 @@ MIT License - Lihat file [LICENSE](./LICENSE) untuk detail lengkap
 ### Versi 1.3 (26 Desember 2025) - Produksi + Penjadwal
 - ✨ **Sistem Penandaan Tidak Hadir Otomatis**: Penjadwal berbasis cron untuk menandai "tidak_hadir"
 - ✨ **Integrasi node-cron**: Eksekusi harian dengan zona waktu WIB
-- ✨ **Jadwal yang Dapat Dikonfigurasi**: Default 01:41 WIB, sepenuhnya dapat disesuaikan
+- ✨ **Jadwal yang Dapat Dikonfigurasi**: Default 00:00 WIB, sepenuhnya dapat disesuaikan
 - ✨ **Deteksi Cerdas**: Cegah catatan duplikat, logging terperinci
 - ✅ **Pengujian Manual**: Mode uji untuk memverifikasi sebelum produksi
 - ✅ **Diuji & Diverifikasi**: Berhasil menandai 9/10 karyawan sebagai tidak_hadir
